@@ -4,13 +4,13 @@
 
 ### Read CSV
 
-	$csvFile = new CsvFile(__DIR__ . '/_data/test-input.csv');
+	$csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/_data/test-input.csv');
 	foreach($csvFile as $row) {
 		var_dump($row);
 	}
 
 ### Write CSV
-	$csvFile = new CsvFile(__DIR__ . '/_data/test-output.csv');
+	$csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/_data/test-output.csv');
 	$rows = array(
 		array(
 			'col1', 'col2',

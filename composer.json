@@ -1,8 +1,8 @@
 {
 	"name": "keboola/csv",
-	"description": "Keboola CSV reader writer",
+	"description": "Keboola CSV reader and writer",
 	"homepage": "http://keboola.com",
 	"autoload": {
-        "psr-0": {"Keboola\\Csv": "src/Csv"}
+        "psr-0": {"Keboola\\Csv": "src/Keboola/Csv"}
     }
 }

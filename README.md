@@ -1,4 +1,4 @@
-# Keboola CSV reader/writer
+# Keboola CSV reader/writer [![Build Status](https://secure.travis-ci.org/keboola/php-csv.png)](http://travis-ci.org/keboola/php-csv)
 
 ## Usage
 

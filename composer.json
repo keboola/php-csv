@@ -1,0 +1,8 @@
+{
+	"name": "keboola/csv",
+	"description": "Keboola CSV reader writer",
+	"homepage": "http://keboola.com",
+	"autoload": {
+        "psr-0": {"Keboola\\Csv": "src/Csv"}
+    }
+}

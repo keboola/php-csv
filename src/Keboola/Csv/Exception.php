@@ -1,4 +1,4 @@
-<?php
+?php
 /**
  *
  * User: Martin Halamíček
@@ -18,7 +18,7 @@ class Exception extends \Exception
 
 	protected $_contextParams;
 
-	public function __construct($message = NULL, $code = NULL, $previous = NULL, $stringCode = NULL, $params = NULL)
+	public function __construct($message = null, $code = null, $previous = null, $stringCode = null, $params = null)
 	{
 		$this->setStringCode($stringCode);
 		$this->setContextParams($params);

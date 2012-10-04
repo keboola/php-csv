@@ -46,7 +46,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
 	{
 		if (strlen($delimiter) > 1) {
 			throw new InvalidArgumentException("Delimiter must be a single character. \"$delimiter\" received",
-				Exception::INVALID_PARAM, null, 'invalidParam');
+				Exception::INVALID_PARAM, NULL, 'invalidParam');
 		}
 	}
 
@@ -80,7 +80,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
 	{
 		if (strlen($enclosure) > 1) {
 			throw new InvalidArgumentException("Enclosure must be a single character. \"$enclosure\" received",
-				Exception::INVALID_PARAM, null, 'invalidParam');
+				Exception::INVALID_PARAM, NULL, 'invalidParam');
 		}
 	}
 
@@ -132,7 +132,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
 		}
 
 		throw new InvalidArgumentException("Invalid line break. Please use unix \\n or win \\r\\n line breaks.",
-			Exception::INVALID_PARAM, null, 'invalidParam');
+			Exception::INVALID_PARAM, NULL, 'invalidParam');
 	}
 
 	protected  function _detectLineBreak()
@@ -244,14 +244,14 @@ class CsvFile extends \SplFileInfo implements \Iterator
 
 	protected function _openFile($mode)
 	{
-		if (!is_file($this->getPathname())) {
+		if ($mode == 'r' && !is_file($this->getPathname())) {
 			throw new Exception("Cannot open file $this",
-					Exception::FILE_NOT_EXISTS, null, 'fileNotExists');
+					Exception::FILE_NOT_EXISTS, NULL, 'fileNotExists');
 		}
 		$this->_filePointer = fopen($this->getPathname(), $mode);
 		if (!$this->_filePointer) {
 			throw new Exception("Cannot open file $this",
-				Exception::FILE_NOT_EXISTS, null, 'fileNotExists');
+				Exception::FILE_NOT_EXISTS, NULL, 'fileNotExists');
 		}
 	}
 

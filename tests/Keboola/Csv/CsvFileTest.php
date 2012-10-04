@@ -183,6 +183,10 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 	public function testWrite()
 	{
 		$fileName = __DIR__ . '/_data/_out.csv';
+		if (file_exists($fileName)) {
+			unlink($fileName);
+		}
+
 		$csvFile = new \Keboola\Csv\CsvFile($fileName);
 
 		$rows = array(

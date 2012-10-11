@@ -151,19 +151,20 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 	 * @param $lineBreak
 	 * @dataProvider validLineBreaksData
 	 */
-	public function testLineEndingsDetection($file, $lineBreak)
+	public function testLineEndingsDetection($file, $lineBreak, $lineBreakAsText)
 	{
 		$csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/' . $file);
 		$this->assertEquals($lineBreak, $csvFile->getLineBreak());
+		$this->assertEquals($lineBreakAsText, $csvFile->getLineBreakAsText());
 	}
 
 	public function validLineBreaksData()
 	{
 		return array(
-			array('test-input.csv', "\n"),
-			array('test-input.win.csv', "\r\n"),
-			array('escaping.csv', "\n"),
-			array('just-header.csv', "\n"), // default
+			array('test-input.csv', "\n",'\n'),
+			array('test-input.win.csv', "\r\n", '\r\n'),
+			array('escaping.csv', "\n", '\n'),
+			array('just-header.csv', "\n", '\n'), // default
 		);
 	}
 

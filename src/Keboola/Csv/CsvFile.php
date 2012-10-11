@@ -124,6 +124,11 @@ class CsvFile extends \SplFileInfo implements \Iterator
 		return $this->_lineBreak;
 	}
 
+	public function getLineBreakAsText()
+	{
+		return trim(json_encode($this->getLineBreak()), '"');
+	}
+
 	public function validateLineBreak()
 	{
 		$lineBreak = $this->getLineBreak();

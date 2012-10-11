@@ -63,7 +63,7 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		);
 	}
 
-	public function testEscaping()
+	public function testParse()
 	{
 		$csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/escaping.csv', ",", '"');
 
@@ -92,8 +92,11 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 				"columns with\nnew line", "columns with\ttab",
 			),
 			array(
+				"Columns with WINDOWS\r\nnew line", "second",
+			),
+			array(
 				'column with \n \t \\\\', 'second col',
-			)
+			),
 		);
 
 		$this->assertEquals($expected, $rows);
@@ -159,6 +162,8 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		return array(
 			array('test-input.csv', "\n"),
 			array('test-input.win.csv', "\r\n"),
+			array('escaping.csv', "\n"),
+			array('just-header.csv', "\n"), // default
 		);
 	}
 

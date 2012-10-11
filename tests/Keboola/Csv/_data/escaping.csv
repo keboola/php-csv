@@ -5,4 +5,6 @@ enclosure " in column,hello \
 "column with enclosure "", and comma inside text","second column enclosure in text """
 "columns with
 new line","columns with	tab"
+"Columns with WINDOWS
+new line", "second"
 "column with \n \t \\","second col"

@@ -141,17 +141,27 @@ class CsvFile extends \SplFileInfo implements \Iterator
 		$sample = fread($this->_getFilePointer(), 10000);
 		rewind($this->_getFilePointer());
 
-		if (strpos($sample, "\r\n") !== false) {
-			return "\r\n";
+		$possibleLineBreaks = array(
+			"\r\n", // win
+			"\r", // mac
+			"\n", // unix
+		);
+
+		$lineBreaksPositions = array();
+		foreach($possibleLineBreaks as $lineBreak) {
+			$position = strpos($sample, $lineBreak);
+			if ($position === false) {
+				continue;
+			}
+			$lineBreaksPositions[$lineBreak] = $position;
 		}
 
-		if (strpos($sample, "\r") !== false) {
-			return "\r";
-		}
 
-		return "\n";
+		asort($lineBreaksPositions);
+		reset($lineBreaksPositions);
+
+		return empty($lineBreaksPositions) ? "\n" : key($lineBreaksPositions);
 	}
-
 
 	protected function _closeFile()
 	{

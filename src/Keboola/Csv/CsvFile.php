@@ -170,8 +170,8 @@ class CsvFile extends \SplFileInfo implements \Iterator
 
 	protected function _closeFile()
 	{
-		if (is_resource($this->_getFilePointer())) {
-			fclose($this->_getFilePointer());
+		if (is_resource($this->_filePointer)) {
+			fclose($this->_filePointer);
 		}
 	}
 

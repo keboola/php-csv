@@ -128,6 +128,15 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		);
 	}
 
+	public function testInitInvalidFileShouldNotThrowException()
+	{
+		try {
+			$csvFile = new CsvFile(__DIR__ . '/_data/dafadfsafd.csv');
+		} catch (\Exception $e) {
+			$this->fail('Exception should not be thrown');
+		}
+	}
+
 	/**
 	 * @dataProvider invalidEnclosures
 	 * @expectedException Keboola\Csv\InvalidArgumentException

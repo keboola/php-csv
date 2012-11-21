@@ -125,6 +125,7 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		return array(
 			array('aaaa'),
 			array('ob g'),
+			array(''),
 		);
 	}
 

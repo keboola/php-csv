@@ -48,6 +48,11 @@ class CsvFile extends \SplFileInfo implements \Iterator
 			throw new InvalidArgumentException("Delimiter must be a single character. \"$delimiter\" received",
 				Exception::INVALID_PARAM, NULL, 'invalidParam');
 		}
+
+		if (strlen($delimiter) == 0) {
+			throw new InvalidArgumentException("Delimiter cannot be empty.",
+				Exception::INVALID_PARAM, NULL, 'invalidParam');
+		}
 	}
 
 	public function getDelimiter()

@@ -22,6 +22,13 @@ class CsvFile extends \SplFileInfo implements \Iterator
 	protected $_currentRow;
 	protected $_lineBreak;
 
+	/**
+	 * EOF position
+	 *
+	 * @var integer
+	 **/
+	protected $end_position;
+
 	public function __construct($fileName, $delimiter = self::DEFAULT_DELIMITER, $enclosure = self::DEFAULT_ENCLOSURE)
 	{
 		parent::__construct($fileName);
@@ -89,6 +96,15 @@ class CsvFile extends \SplFileInfo implements \Iterator
 		}
 	}
 
+	/**
+	 * Get the percent read progression of the file
+	 */
+	public function getReadProgress()
+	{
+		$pointer = $this->_getFilePointer();
+
+		return ftell($pointer) / $this->end_position * 100;
+	}
 
 	public function getColumnsCount()
 	{
@@ -273,6 +289,11 @@ class CsvFile extends \SplFileInfo implements \Iterator
 			throw new Exception("Cannot open file $this",
 				Exception::FILE_NOT_EXISTS, NULL, 'fileNotExists');
 		}
+
+		// get the EOF position
+		fseek($this->_filePointer, 0, SEEK_END);
+		$this->end_position = ftell($this->_filePointer);
+		$this->rewind();
 	}
 
 }

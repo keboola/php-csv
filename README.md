@@ -57,5 +57,6 @@ To start using composer in your project follow these steps:
 
 Read more in [Composer documentation](http://getcomposer.org/doc/01-basic-usage.md)
 
+## License
 
-
+MIT

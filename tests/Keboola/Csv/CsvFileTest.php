@@ -268,4 +268,21 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse($csvFile->valid());
 	}
 
+	/**
+	 * Full test battery for getReadProgress method
+	 *
+	 * @covers Keboola\Csv\CsvFile::getReadProgress
+	 */
+	public function testGetreadprogress()
+	{
+		// this file has 4 lines with 4 characters each
+		$file = new CsvFile(__DIR__ . '/_data/test-position.txt');
+
+		// loop through the lines checking the read progress report
+		for ($i=1; $i < 5; $i++) { 
+			$this->assertEquals(25 * $i, $file->getReadProgress());
+
+			$file->next();
+		}
+	}
 }

@@ -4,26 +4,30 @@
 
 ### Read CSV
 
-	$csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/_data/test-input.csv');
-	foreach($csvFile as $row) {
-		var_dump($row);
-	}
+```php
+$csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/_data/test-input.csv');
+foreach($csvFile as $row) {
+	var_dump($row);
+}
+```
 
 ### Write CSV
-	$csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/_data/test-output.csv');
-	$rows = array(
-		array(
-			'col1', 'col2',
-		),
-		array(
-			'line without enclosure', 'second column',
-		),
 
- 	);
+```php
+$csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/_data/test-output.csv');
+$rows = array(
+	array(
+		'col1', 'col2',
+	),
+	array(
+		'line without enclosure', 'second column',
+	),
+);
 
-    foreach ($rows as $row) {
-		$csvFile->writeRow($row);
-	}
+foreach ($rows as $row) {
+	$csvFile->writeRow($row);
+}
+```
 
 ## Installation
 
@@ -32,30 +36,34 @@ To start using composer in your project follow these steps:
 
 **Install composer**
 
-    curl -s http://getcomposer.org/installer | php
-    mv ./composer.phar ~/bin/composer # or /usr/local/bin/composer
-
+```bash
+curl -s http://getcomposer.org/installer | php
+mv ./composer.phar ~/bin/composer # or /usr/local/bin/composer
+```
 
 **Create composer.json file in your project root folder:**
 
-    {
-        "require": {
-            "php" : ">=5.3.2",
-            "keboola/csv": "1.0.*"
-        }
+```json
+{
+    "require": {
+        "php" : ">=5.3.2",
+        "keboola/csv": "1.0.*"
     }
+}
+```
 
 **Install package:**
 
-    composer install
+```bash
+composer install
+```
 
 
 **Add autoloader in your bootstrap script:**
 
-    require 'vendor/autoload.php';
+```bash
+require 'vendor/autoload.php';
+```
 
 
 Read more in [Composer documentation](http://getcomposer.org/doc/01-basic-usage.md)
-
-
-

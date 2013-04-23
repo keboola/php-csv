@@ -16,16 +16,18 @@ class CsvFile extends \SplFileInfo implements \Iterator
 
 	protected $_delimiter;
 	protected $_enclosure;
+	protected $_escapedBy;
 
 	protected $_filePointer;
 	protected $_rowCounter = 0;
 	protected $_currentRow;
 	protected $_lineBreak;
 
-	public function __construct($fileName, $delimiter = self::DEFAULT_DELIMITER, $enclosure = self::DEFAULT_ENCLOSURE)
+	public function __construct($fileName, $delimiter = self::DEFAULT_DELIMITER, $enclosure = self::DEFAULT_ENCLOSURE, $escapedBy = "")
 	{
 		parent::__construct($fileName);
 
+		$this->_escapedBy = $escapedBy;
 		$this->_setDelimiter($delimiter);
 		$this->_setEnclosure($enclosure);
 
@@ -67,7 +69,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
 
 	public function getEscapedBy()
 	{
-		return $this->getEnclosure();
+		return $this->_escapedBy;
 	}
 
 	/**
@@ -251,7 +253,8 @@ class CsvFile extends \SplFileInfo implements \Iterator
 
 		// allow empty enclosure hack
 		$enclosure = !$this->getEnclosure() ? chr(0) : $this->getEnclosure();
-		return fgetcsv($this->_getFilePointer(), null, $this->getDelimiter(), $enclosure, '"');
+		$escapedBy = !$this->_escapedBy ? chr(0) : $this->_escapedBy;
+		return fgetcsv($this->_getFilePointer(), null, $this->getDelimiter(), $enclosure, $escapedBy);
 	}
 
 	protected function _getFilePointer($mode = 'r')

@@ -4,5 +4,8 @@
 	"homepage": "http://keboola.com",
 	"autoload": {
         "psr-0": {"Keboola\\Csv": "src/"}
-    }
+    },
+	"require-dev": {
+		"phpunit/phpunit": "3.7.19"
+	}
 }

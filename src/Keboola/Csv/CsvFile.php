@@ -271,7 +271,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
 			throw new Exception("Cannot open file $this",
 					Exception::FILE_NOT_EXISTS, NULL, 'fileNotExists');
 		}
-		$this->_filePointer = fopen($this->getPathname(), $mode);
+		$this->_filePointer = @fopen($this->getPathname(), $mode);
 		if (!$this->_filePointer) {
 			throw new Exception("Cannot open file $this",
 				Exception::FILE_NOT_EXISTS, NULL, 'fileNotExists');

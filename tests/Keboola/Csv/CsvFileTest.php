@@ -51,6 +51,12 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 				"timestamp",
 		);
 		$this->assertEquals($expected, $csvFile->getHeader());
+
+		$csvFile->next();
+		$expected = array(
+			"1","18","2012-03-20","36","0","83","0","12.55","2012-02-20 08:34:22"
+		);
+		$this->assertEquals($expected, $csvFile->current());
 	}
 
 	public function validCsvFiles()
@@ -58,6 +64,7 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		return array(
 			array('test-input.csv', ','),
 			array('test-input.win.csv', ','),
+			array('test-input.mac.csv', ','),
 			array('test-input.tabs.csv', "\t"),
 			array('test-input.tabs.csv', "	"),
 		);

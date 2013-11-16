@@ -173,28 +173,11 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		return array(
 			array('test-input.csv', "\n",'\n'),
 			array('test-input.win.csv', "\r\n", '\r\n'),
+			array('test-input.mac.csv', "\r",'\r'),
 			array('escaping.csv', "\n", '\n'),
 			array('just-header.csv', "\n", '\n'), // default
 		);
 	}
-
-	/**
-	 * @expectedException Keboola\Csv\InvalidArgumentException
-	 * @dataProvider invalidLineBreaksData
-	 */
-	public function testInvalidLineBreak($file)
-	{
-		$csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/' . $file);
-		$csvFile->validateLineBreak();
-	}
-
-	public function invalidLineBreaksData()
-	{
-		return array(
-			array('test-input.mac.csv'),
-		);
-	}
-
 
 	public function testWrite()
 	{

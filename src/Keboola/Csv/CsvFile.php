@@ -136,17 +136,6 @@ class CsvFile extends \SplFileInfo implements \Iterator
 		return trim(json_encode($this->getLineBreak()), '"');
 	}
 
-	public function validateLineBreak()
-	{
-		$lineBreak = $this->getLineBreak();
-		if (in_array($lineBreak, array("\r\n", "\n"))) {
-			return $lineBreak;
-		}
-
-		throw new InvalidArgumentException("Invalid line break. Please use unix \\n or win \\r\\n line breaks.",
-			Exception::INVALID_PARAM, NULL, 'invalidParam');
-	}
-
 	protected  function _detectLineBreak()
 	{
 		rewind($this->_getFilePointer());
@@ -249,12 +238,13 @@ class CsvFile extends \SplFileInfo implements \Iterator
 
 	protected function _readLine()
 	{
-		$this->validateLineBreak();
-
 		// allow empty enclosure hack
 		$enclosure = !$this->getEnclosure() ? chr(0) : $this->getEnclosure();
 		$escapedBy = !$this->_escapedBy ? chr(0) : $this->_escapedBy;
+		$resetLineEndings = !ini_get('auto_detect_line_endings');
+		if ($resetLineEndings) { ini_set('auto_detect_line_endings', true); }
 		return fgetcsv($this->_getFilePointer(), null, $this->getDelimiter(), $enclosure, $escapedBy);
+		if ($resetLineEndings) { ini_set('auto_detect_line_endings', false); }
 	}
 
 	protected function _getFilePointer($mode = 'r')

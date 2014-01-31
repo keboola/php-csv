@@ -110,7 +110,17 @@ class CsvFile extends \SplFileInfo implements \Iterator
 
 	public function writeRow(array $row)
 	{
-		fwrite($this->_getFilePointer('w+'), $this->rowToStr($row));
+		$str = $this->rowToStr($row);
+		$ret = fwrite($this->_getFilePointer('w+'), $str);
+
+		/* According to http://php.net/fwrite the fwrite() function
+		 should return false on error. However not writing the full 
+		 string (which may occur e.g. when disk is full) is not considered 
+		 as an error. Therefore both conditions are necessary. */
+		if (($ret === false) || (($ret === 0) && (strlen($str) > 0)))  {
+				throw new Exception("Cannot open file $this",
+				Exception::WRITE_ERROR, NULL, 'writeError');
+		}
 	}
 
 	public function rowToStr(array $row)
@@ -271,7 +281,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
 			throw new Exception("Cannot open file $this",
 					Exception::FILE_NOT_EXISTS, NULL, 'fileNotExists');
 		}
-		$this->_filePointer = @fopen($this->getPathname(), $mode);
+		$this->_filePointer = fopen($this->getPathname(), $mode);
 		if (!$this->_filePointer) {
 			throw new Exception("Cannot open file $this",
 				Exception::FILE_NOT_EXISTS, NULL, 'fileNotExists');

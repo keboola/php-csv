@@ -108,7 +108,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
 		return array();
 	}
 
-	public function writeRow(array $row, $mode = 'r')
+	public function writeRow(array $row, $mode = 'w+')
 	{
 		$str = $this->rowToStr($row);
 		$ret = fwrite($this->_getFilePointer($mode), $str);

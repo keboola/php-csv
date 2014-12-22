@@ -50,7 +50,7 @@ mv ./composer.phar ~/bin/composer # or /usr/local/bin/composer
 {
     "require": {
         "php" : ">=5.3.2",
-        "keboola/csv": "1.2.*"
+        "whiteplus/csv": "1.2.*"
     }
 }
 ```

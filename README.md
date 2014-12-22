@@ -8,7 +8,7 @@
 ### Read CSV
 
 ```php
-$csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/_data/test-input.csv');
+$csvFile = new Whiteplus\Csv\CsvFile(__DIR__ . '/_data/test-input.csv');
 foreach($csvFile as $row) {
 	var_dump($row);
 }

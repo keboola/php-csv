@@ -7,37 +7,49 @@
  *
  */
 
-use Keboola\Csv\CsvFile;
+use Whiteplus\Csv\CsvText;
+use Whiteplus\Csv\Csv;
 
-class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
+class Whiteplus_CsvTextTest extends PHPUnit_Framework_TestCase
 {
+
+	public function getInstance($file_path, $delimiter = Csv::DEFAULT_DELIMITER, $enclosure = Csv::DEFAULT_ENCLOSURE, $escapedBy = "") {
+
+		$file_contents = '';
+
+		if (file_exists($file_path)) {
+			$file_contents = file_get_contents($file_path);
+		}
+
+		return new CsvText($file_contents, $delimiter, $enclosure, $escapedBy);
+	}
 
 	public function testExistingFileShouldBeCreated()
 	{
-		$this->assertInstanceOf('Keboola\Csv\CsvFile', new CsvFile(__DIR__ . '/_data/test-input.csv'));
+		$this->assertInstanceOf('Whiteplus\Csv\CsvText', $this->getInstance(__DIR__ . '/_data/test-input.csv'));
 	}
 
-	public function testExceptionShouldBeThrownOnNotExistingFile()
-	{
-		$this->setExpectedException('Keboola\Csv\Exception');
-		$csv = new CsvFile(__DIR__ . '/something.csv');
-		$csv->getHeader();
-	}
+//	public function testExceptionShouldBeThrownOnNotExistingFile()
+//	{
+//		$this->setExpectedException('Whiteplus\Csv\Exception');
+//		$csv = $this->getInstance(__DIR__ . '/something.csv');
+//		$csv->getHeader();
+//	}
 
 	public function testColumnsCount()
 	{
-		$csv = new CsvFile(__DIR__ . '/_data/test-input.csv');
+		$csv = $this->getInstance(__DIR__ . '/_data/test-input.csv');
 
 		$this->assertEquals(9, $csv->getColumnsCount());
 	}
 
 	/**
-	 * @dataProvider validCsvFiles
+	 * @dataProvider validCsvTexts
 	 * @param $fileName
 	 */
 	public function testRead($fileName, $delimiter)
 	{
-		$csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/' . $fileName, $delimiter, '"');
+		$csvFile = $this->getInstance(__DIR__ . '/_data/' . $fileName, $delimiter, '"');
 
 		$expected = array(
 				"id",
@@ -53,7 +65,7 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $csvFile->getHeader());
 	}
 
-	public function validCsvFiles()
+	public function validCsvTexts()
 	{
 		return array(
 			array('test-input.csv', ','),
@@ -65,7 +77,7 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 
 	public function testParse()
 	{
-		$csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/escaping.csv', ",", '"');
+		$csvFile = $this->getInstance(__DIR__ . '/_data/escaping.csv', ",", '"');
 
 		$rows = array();
 		foreach ($csvFile as $row) {
@@ -102,24 +114,83 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $rows);
 	}
 
+	/**
+	 * @dataProvider validJpCsvTexts
+	 * @param $fileName
+	 */
+	public function testParseJp($fileName, $lineBreak, $encoding)
+	{
+		$csvFile = $this->getInstance(__DIR__ . '/_data/' . $fileName, ',', '"');
+
+		$csvFile->setFileEncoding($encoding);
+		$csvFile->setLineBreak($lineBreak);
+
+		$rows = array();
+		foreach ($csvFile as $row) {
+			$rows[] = $row;
+		}
+
+		$expected = array(
+			array("ID","名前","日付"),
+            array("一","ホワイトプラス","2012年03月20日"),
+            array("二","リネット","2012年03月21日")
+		);
+
+		$this->assertEquals($expected, $rows);
+	}
+
+	/**
+	 * @dataProvider validJpCsvTexts
+	 * @param $fileName
+	 */
+	public function testWriteJp($fileName, $lineBreak, $encoding)
+	{
+		$out = __DIR__ . '/_data/_out.csv';
+		if (file_exists($out)) {
+			unlink($out);
+		}
+
+		$csvFile = $this->getInstance($out, ',', '"');
+
+		$csvFile->setFileEncoding($encoding);
+		$csvFile->setLineBreak($lineBreak);
+
+		$csvFile->writeRow( array("ID","名前","日付") );
+		$csvFile->writeRow( array("一","ホワイトプラス","2012年03月20日") );
+		$csvFile->writeRow( array("二","リネット","2012年03月21日") );
+
+		file_put_contents($out, "{$csvFile}");
+
+		$expected = file_get_contents(__DIR__ . '/_data/' . $fileName);
+		$actual = file_get_contents($out);
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function validJpCsvTexts()
+	{
+		return array(
+			array('test-input.jp_sjis.csv', "\r\n", 'SJIS-WIN'),
+			array('test-input.jp_utf_8.csv', "\n", 'UTF-8'),
+		);
+	}
+
 
 	public function testEmptyHeader()
 	{
-		$csvFile = new CsvFile(__DIR__ . '/_data/test-input.empty.csv', ',', '"');
+		$csvFile = $this->getInstance(__DIR__ . '/_data/test-input.empty.csv', ',', '"');
 
 		$this->assertEquals(array(), $csvFile->getHeader());
 	}
 
 	/**
 	 * @dataProvider invalidDelimiters
-	 * @expectedException Keboola\Csv\InvalidArgumentException
+	 * @expectedException Whiteplus\Csv\InvalidArgumentException
 	 * @param $delimiter
 	 */
 	public function testInvalidDelimiterShouldThrowException($delimiter)
 	{
-		new CsvFile(__DIR__ . '/_data/test-input.csv', $delimiter);
+		$this->getInstance(__DIR__ . '/_data/test-input.csv', $delimiter);
 	}
-
 	public function invalidDelimiters()
 	{
 		return array(
@@ -132,7 +203,7 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 	public function testInitInvalidFileShouldNotThrowException()
 	{
 		try {
-			$csvFile = new CsvFile(__DIR__ . '/_data/dafadfsafd.csv');
+			$csvFile = $this->getInstance(__DIR__ . '/_data/dafadfsafd.csv');
 		} catch (\Exception $e) {
 			$this->fail('Exception should not be thrown');
 		}
@@ -140,12 +211,12 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @dataProvider invalidEnclosures
-	 * @expectedException Keboola\Csv\InvalidArgumentException
+	 * @expectedException Whiteplus\Csv\InvalidArgumentException
 	 * @param $enclosure
 	 */
 	public function testInvalidEnclosureShouldThrowException($enclosure)
 	{
-		new CsvFile(__DIR__ . '/_data/test-input.csv', ",", $enclosure);
+		$this->getInstance(__DIR__ . '/_data/test-input.csv', ",", $enclosure);
 	}
 
 	public function invalidEnclosures()
@@ -163,7 +234,7 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testLineEndingsDetection($file, $lineBreak, $lineBreakAsText)
 	{
-		$csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/' . $file);
+		$csvFile = $this->getInstance(__DIR__ . '/_data/' . $file);
 		$this->assertEquals($lineBreak, $csvFile->getLineBreak());
 		$this->assertEquals($lineBreakAsText, $csvFile->getLineBreakAsText());
 	}
@@ -179,12 +250,12 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException Keboola\Csv\InvalidArgumentException
+	 * @expectedException Whiteplus\Csv\InvalidArgumentException
 	 * @dataProvider invalidLineBreaksData
 	 */
 	public function testInvalidLineBreak($file)
 	{
-		$csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/' . $file);
+		$csvFile = $this->getInstance(__DIR__ . '/_data/' . $file);
 		$csvFile->validateLineBreak();
 	}
 
@@ -203,7 +274,7 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 			unlink($fileName);
 		}
 
-		$csvFile = new \Keboola\Csv\CsvFile($fileName);
+		$csvFile = $this->getInstance($fileName);
 
 		$rows = array(
 			array(
@@ -237,7 +308,7 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 
 	public function testIterator()
 	{
-		$csvFile = new CsvFile(__DIR__ . '/_data/test-input.csv');
+		$csvFile = $this->getInstance(__DIR__ . '/_data/test-input.csv');
 
 		$expected = array(
 			"id",

@@ -7,7 +7,7 @@
  *
  */
 
-namespace Keboola\Csv;
+namespace Whiteplus\Csv;
 
 class Exception extends \Exception
 {

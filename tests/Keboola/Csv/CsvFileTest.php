@@ -40,15 +40,15 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		$csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/' . $fileName, $delimiter, '"');
 
 		$expected = array(
-				"id",
-				"idAccount",
-				"date",
-				"totalFollowers",
-				"followers",
-				"totalStatuses",
-				"statuses",
-				"kloutScore",
-				"timestamp",
+            "id",
+            "idAccount",
+            "date",
+            "totalFollowers",
+            "followers",
+            "totalStatuses",
+            "statuses",
+            "kloutScore",
+            "timestamp",
 		);
 		$this->assertEquals($expected, $csvFile->getHeader());
 	}
@@ -156,6 +156,24 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		);
 	}
 
+    /**
+     * @dataProvider invalidNewlines
+     * @expectedException Keboola\Csv\InvalidArgumentException
+     * @param $newline
+     */
+    public function testInvalidNewlineShouldThrowException($newline)
+    {
+        new CsvFile(__DIR__ . '/_data/test-input.csv', ",", '"', '', $newline);
+    }
+
+    public function invalidNewlines()
+    {
+        return array(
+            array(''),
+            array('abc'),
+        );
+    }
+
 	/**
 	 * @param $file
 	 * @param $lineBreak
@@ -233,7 +251,68 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 			$csvFile->writeRow($row);
 		}
 
+        $expectedFileContents =
+            "\"col1\",\"col2\"\n".
+            "\"line without enclosure\",\"second column\"\n".
+            "\"enclosure \"\" in column\",\"hello \\\"\n".
+            "\"line with enclosure\",\"second column\"\n".
+            "\"column with enclosure \"\", and comma inside text\",\"second column enclosure in text \"\"\"\n".
+            "\"columns with\nnew line\",\"columns with\ttab\"\n".
+            "\"column with \\n \\t \\\\\",\"second col\"\n"
+        ;
+
+        $this->assertEquals($expectedFileContents, file_get_contents($fileName));
 	}
+
+    public function testWriteWithWindowsNewline()
+    {
+        $fileName = __DIR__ . '/_data/_out.csv';
+        if (file_exists($fileName)) {
+            unlink($fileName);
+        }
+
+        $csvFile = new \Keboola\Csv\CsvFile($fileName, ',', '"', '', "\r\n");
+
+        $rows = array(
+            array(
+                'col1', 'col2',
+            ),
+            array(
+                'line without enclosure', 'second column',
+            ),
+            array(
+                'enclosure " in column', 'hello \\',
+            ),
+            array(
+                'line with enclosure', 'second column',
+            ),
+            array(
+                'column with enclosure ", and comma inside text', 'second column enclosure in text "',
+            ),
+            array(
+                "columns with\nnew line", "columns with\ttab",
+            ),
+            array(
+                'column with \n \t \\\\', 'second col',
+            )
+        );
+
+        foreach ($rows as $row) {
+            $csvFile->writeRow($row);
+        }
+
+        $expectedFileContents =
+            "\"col1\",\"col2\"\r\n".
+            "\"line without enclosure\",\"second column\"\r\n".
+            "\"enclosure \"\" in column\",\"hello \\\"\r\n".
+            "\"line with enclosure\",\"second column\"\r\n".
+            "\"column with enclosure \"\", and comma inside text\",\"second column enclosure in text \"\"\"\r\n".
+            "\"columns with\nnew line\",\"columns with\ttab\"\r\n".
+            "\"column with \\n \\t \\\\\",\"second col\"\r\n"
+        ;
+
+        $this->assertEquals($expectedFileContents, file_get_contents($fileName));
+    }
 
 	public function testIterator()
 	{
@@ -267,5 +346,4 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		$csvFile->next();
 		$this->assertFalse($csvFile->valid());
 	}
-
 }

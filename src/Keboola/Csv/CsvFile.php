@@ -13,24 +13,31 @@ class CsvFile extends \SplFileInfo implements \Iterator
 {
 	const DEFAULT_DELIMITER = ',';
 	const DEFAULT_ENCLOSURE = '"';
+    const DEFAULT_NEWLINE   = "\n";
 
 	protected $_delimiter;
 	protected $_enclosure;
 	protected $_escapedBy;
 
 	protected $_filePointer;
-	protected $_rowCounter = 0;
+	protected $_rowCounter  = 0;
 	protected $_currentRow;
 	protected $_lineBreak;
+    protected $_newline;
 
-	public function __construct($fileName, $delimiter = self::DEFAULT_DELIMITER, $enclosure = self::DEFAULT_ENCLOSURE, $escapedBy = "")
-	{
+	public function __construct(
+        $fileName,
+        $delimiter = self::DEFAULT_DELIMITER,
+        $enclosure = self::DEFAULT_ENCLOSURE,
+        $escapedBy = "",
+        $newline = self::DEFAULT_NEWLINE
+    ) {
 		parent::__construct($fileName);
 
 		$this->_escapedBy = $escapedBy;
 		$this->_setDelimiter($delimiter);
 		$this->_setEnclosure($enclosure);
-
+        $this->_setNewline($newline);
 	}
 
 	/**
@@ -72,6 +79,11 @@ class CsvFile extends \SplFileInfo implements \Iterator
 		return $this->_escapedBy;
 	}
 
+    public function getNewline()
+    {
+        return $this->_newline;
+    }
+
 	/**
 	 * @param $enclosure
 	 * @return CsvFile
@@ -91,6 +103,24 @@ class CsvFile extends \SplFileInfo implements \Iterator
 		}
 	}
 
+    /**
+     * @param $newline
+     * @return CsvFile
+     */
+    protected function _setNewline($newline)
+    {
+        $this->_validateNewline($newline);
+        $this->_newline = $newline;
+        return $this;
+    }
+
+    protected function _validateNewline($newline)
+    {
+        if (strlen($newline) <= 0 || strlen($newline) > 2) {
+            throw new InvalidArgumentException("Enclosure must be 1 or 2 characters long. \"$newline\" received",
+                Exception::INVALID_PARAM, NULL, 'invalidParam');
+        }
+    }
 
 	public function getColumnsCount()
 	{
@@ -130,7 +160,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
 			$return[] = $this->getEnclosure()
 				. str_replace($this->getEnclosure(), str_repeat($this->getEnclosure(), 2), $column) . $this->getEnclosure();
 		}
-		return implode($this->getDelimiter(), $return) . "\n";
+		return implode($this->getDelimiter(), $return) . $this->getNewline();
 	}
 
 	public function getLineBreak()

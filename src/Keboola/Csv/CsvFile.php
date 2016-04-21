@@ -129,7 +129,8 @@ class CsvFile extends \SplFileInfo implements \Iterator
 		foreach ($row as $column) {
             if (!is_scalar($column) && !is_null($column)) {
                 $type = gettype($column);
-                throw new Exception("Cannot write {$type} into a column", Exception::WRITE_ERROR, null, 'writeError', ['column' => $column]);
+                throw new Exception("Cannot write {$type} into a column",
+                Exception::WRITE_ERROR, null, 'writeError', array('column' => $column));
             }
 
 			$return[] = $this->getEnclosure()

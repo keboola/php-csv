@@ -5,3 +5,5 @@ config.php
 composer.lock
 composer.phar
 vendor
+*.kdev4
+.kdev4

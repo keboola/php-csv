@@ -268,4 +268,21 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse($csvFile->valid());
 	}
 
+	public function testNonStringWrite()
+	{
+        $fileName = __DIR__ . '/_data/_out.csv';
+        if (file_exists($fileName)) {
+            unlink($fileName);
+        }
+
+        $csvFile = new \Keboola\Csv\CsvFile($fileName);
+
+        $row = array(
+            array(
+                'nested'
+            )
+        );
+
+        $csvFile->writeRow($row);
+	}
 }

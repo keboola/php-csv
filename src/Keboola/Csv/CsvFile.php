@@ -114,8 +114,8 @@ class CsvFile extends \SplFileInfo implements \Iterator
 		$ret = fwrite($this->_getFilePointer('w+'), $str);
 
 		/* According to http://php.net/fwrite the fwrite() function
-		 should return false on error. However not writing the full 
-		 string (which may occur e.g. when disk is full) is not considered 
+		 should return false on error. However not writing the full
+		 string (which may occur e.g. when disk is full) is not considered
 		 as an error. Therefore both conditions are necessary. */
 		if (($ret === false) || (($ret === 0) && (strlen($str) > 0)))  {
 				throw new Exception("Cannot open file $this",
@@ -127,6 +127,11 @@ class CsvFile extends \SplFileInfo implements \Iterator
 	{
 		$return = array();
 		foreach ($row as $column) {
+            if (!is_scalar($column) && !is_null($column)) {
+                $type = gettype($column);
+                throw new Exception("Cannot write {$type} into a column", Exception::WRITE_ERROR, null, 'writeError', ['column' => $column]);
+            }
+
 			$return[] = $this->getEnclosure()
 				. str_replace($this->getEnclosure(), str_repeat($this->getEnclosure(), 2), $column) . $this->getEnclosure();
 		}

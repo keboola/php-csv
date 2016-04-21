@@ -127,11 +127,11 @@ class CsvFile extends \SplFileInfo implements \Iterator
 	{
 		$return = array();
 		foreach ($row as $column) {
-            if (!is_scalar($column) && !is_null($column)) {
-                $type = gettype($column);
-                throw new Exception("Cannot write {$type} into a column",
-                Exception::WRITE_ERROR, null, 'writeError', array('column' => $column));
-            }
+			if (!is_scalar($column) && !is_null($column)) {
+				$type = gettype($column);
+				throw new Exception("Cannot write {$type} into a column",
+				Exception::WRITE_ERROR, null, 'writeError', array('column' => $column));
+			}
 
 			$return[] = $this->getEnclosure()
 				. str_replace($this->getEnclosure(), str_repeat($this->getEnclosure(), 2), $column) . $this->getEnclosure();

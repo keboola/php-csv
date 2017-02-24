@@ -51,6 +51,12 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 				"timestamp",
 		);
 		$this->assertEquals($expected, $csvFile->getHeader());
+
+		$csvFile->next();
+		$expected = array(
+			"1","18","2012-03-20","36","0","83","0","12.55","2012-02-20 08:34:22"
+		);
+		$this->assertEquals($expected, $csvFile->current());
 	}
 
 	public function validCsvFiles()
@@ -58,6 +64,7 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		return array(
 			array('test-input.csv', ','),
 			array('test-input.win.csv', ','),
+			array('test-input.mac.csv', ','),
 			array('test-input.tabs.csv', "\t"),
 			array('test-input.tabs.csv', "	"),
 		);
@@ -173,28 +180,11 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 		return array(
 			array('test-input.csv', "\n",'\n'),
 			array('test-input.win.csv', "\r\n", '\r\n'),
+			array('test-input.mac.csv', "\r",'\r'),
 			array('escaping.csv', "\n", '\n'),
 			array('just-header.csv', "\n", '\n'), // default
 		);
 	}
-
-	/**
-	 * @expectedException Keboola\Csv\InvalidArgumentException
-	 * @dataProvider invalidLineBreaksData
-	 */
-	public function testInvalidLineBreak($file)
-	{
-		$csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/' . $file);
-		$csvFile->validateLineBreak();
-	}
-
-	public function invalidLineBreaksData()
-	{
-		return array(
-			array('test-input.mac.csv'),
-		);
-	}
-
 
 	public function testWrite()
 	{

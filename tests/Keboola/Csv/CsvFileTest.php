@@ -12,281 +12,333 @@ use Keboola\Csv\CsvFile;
 class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 {
 
-	public function testExistingFileShouldBeCreated()
-	{
-		$this->assertInstanceOf('Keboola\Csv\CsvFile', new CsvFile(__DIR__ . '/_data/test-input.csv'));
-	}
+    public function testExistingFileShouldBeCreated()
+    {
 
-	public function testExceptionShouldBeThrownOnNotExistingFile()
-	{
-		$this->setExpectedException('Keboola\Csv\Exception');
-		$csv = new CsvFile(__DIR__ . '/something.csv');
-		$csv->getHeader();
-	}
+        $this->assertInstanceOf('Keboola\Csv\CsvFile', new CsvFile(__DIR__ . '/_data/test-input.csv'));
+    }
 
-	public function testColumnsCount()
-	{
-		$csv = new CsvFile(__DIR__ . '/_data/test-input.csv');
+    public function testExceptionShouldBeThrownOnNotExistingFile()
+    {
 
-		$this->assertEquals(9, $csv->getColumnsCount());
-	}
+        $this->setExpectedException('Keboola\Csv\Exception');
+        $csv = new CsvFile(__DIR__ . '/something.csv');
+        $csv->getHeader();
+    }
 
-	/**
-	 * @dataProvider validCsvFiles
-	 * @param $fileName
-	 */
-	public function testRead($fileName, $delimiter)
-	{
-		$csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/' . $fileName, $delimiter, '"');
+    public function testColumnsCount()
+    {
 
-		$expected = array(
-				"id",
-				"idAccount",
-				"date",
-				"totalFollowers",
-				"followers",
-				"totalStatuses",
-				"statuses",
-				"kloutScore",
-				"timestamp",
-		);
-		$this->assertEquals($expected, $csvFile->getHeader());
-	}
+        $csv = new CsvFile(__DIR__ . '/_data/test-input.csv');
 
-	public function validCsvFiles()
-	{
-		return array(
-			array('test-input.csv', ','),
-			array('test-input.win.csv', ','),
-			array('test-input.tabs.csv', "\t"),
-			array('test-input.tabs.csv', "	"),
-		);
-	}
+        $this->assertEquals(9, $csv->getColumnsCount());
+    }
 
-	public function testParse()
-	{
-		$csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/escaping.csv', ",", '"');
+    /**
+     * @dataProvider validCsvFiles
+     *
+     * @param $fileName
+     */
+    public function testRead($fileName, $delimiter)
+    {
 
-		$rows = array();
-		foreach ($csvFile as $row) {
-			$rows[] = $row;
-		}
+        $csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/' . $fileName, $delimiter, '"');
 
-		$expected = array(
-			array(
-				'col1', 'col2',
-			),
-			array(
-				'line without enclosure', 'second column',
-			),
-			array(
-				'enclosure " in column', 'hello \\',
-			),
-			array(
-				'line with enclosure', 'second column',
-			),
-			array(
-				'column with enclosure ", and comma inside text', 'second column enclosure in text "',
-			),
-			array(
-				"columns with\nnew line", "columns with\ttab",
-			),
-			array(
-				"Columns with WINDOWS\r\nnew line", "second",
-			),
-			array(
-				'column with \n \t \\\\', 'second col',
-			),
-		);
+        $expected = array(
+            "id",
+            "idAccount",
+            "date",
+            "totalFollowers",
+            "followers",
+            "totalStatuses",
+            "statuses",
+            "kloutScore",
+            "timestamp",
+        );
+        $this->assertEquals($expected, $csvFile->getHeader());
+    }
 
-		$this->assertEquals($expected, $rows);
-	}
+    public function validCsvFiles()
+    {
 
+        return array(
+            array('test-input.csv', ','),
+            array('test-input.win.csv', ','),
+            array('test-input.tabs.csv', "\t"),
+            array('test-input.tabs.csv', "	"),
+        );
+    }
 
-	public function testEmptyHeader()
-	{
-		$csvFile = new CsvFile(__DIR__ . '/_data/test-input.empty.csv', ',', '"');
+    public function testParse()
+    {
 
-		$this->assertEquals(array(), $csvFile->getHeader());
-	}
+        $csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/escaping.csv', ",", '"');
 
-	/**
-	 * @dataProvider invalidDelimiters
-	 * @expectedException Keboola\Csv\InvalidArgumentException
-	 * @param $delimiter
-	 */
-	public function testInvalidDelimiterShouldThrowException($delimiter)
-	{
-		new CsvFile(__DIR__ . '/_data/test-input.csv', $delimiter);
-	}
+        $rows = array();
+        foreach ($csvFile as $row) {
+            $rows[] = $row;
+        }
 
-	public function invalidDelimiters()
-	{
-		return array(
-			array('aaaa'),
-			array('ob g'),
-			array(''),
-		);
-	}
+        $expected = array(
+            array(
+                'col1',
+                'col2',
+            ),
+            array(
+                'line without enclosure',
+                'second column',
+            ),
+            array(
+                'enclosure " in column',
+                'hello \\',
+            ),
+            array(
+                'line with enclosure',
+                'second column',
+            ),
+            array(
+                'column with enclosure ", and comma inside text',
+                'second column enclosure in text "',
+            ),
+            array(
+                "columns with\nnew line",
+                "columns with\ttab",
+            ),
+            array(
+                "Columns with WINDOWS\r\nnew line",
+                "second",
+            ),
+            array(
+                'column with \n \t \\\\',
+                'second col',
+            ),
+        );
 
-	public function testInitInvalidFileShouldNotThrowException()
-	{
-		try {
-			$csvFile = new CsvFile(__DIR__ . '/_data/dafadfsafd.csv');
-		} catch (\Exception $e) {
-			$this->fail('Exception should not be thrown');
-		}
-	}
+        $this->assertEquals($expected, $rows);
+    }
 
-	/**
-	 * @dataProvider invalidEnclosures
-	 * @expectedException Keboola\Csv\InvalidArgumentException
-	 * @param $enclosure
-	 */
-	public function testInvalidEnclosureShouldThrowException($enclosure)
-	{
-		new CsvFile(__DIR__ . '/_data/test-input.csv', ",", $enclosure);
-	}
+    public function testEmptyHeader()
+    {
 
-	public function invalidEnclosures()
-	{
-		return array(
-			array('aaaa'),
-			array('ob g'),
-		);
-	}
+        $csvFile = new CsvFile(__DIR__ . '/_data/test-input.empty.csv', ',', '"');
 
-	/**
-	 * @param $file
-	 * @param $lineBreak
-	 * @dataProvider validLineBreaksData
-	 */
-	public function testLineEndingsDetection($file, $lineBreak, $lineBreakAsText)
-	{
-		$csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/' . $file);
-		$this->assertEquals($lineBreak, $csvFile->getLineBreak());
-		$this->assertEquals($lineBreakAsText, $csvFile->getLineBreakAsText());
-	}
+        $this->assertEquals(array(), $csvFile->getHeader());
+    }
 
-	public function validLineBreaksData()
-	{
-		return array(
-			array('test-input.csv', "\n",'\n'),
-			array('test-input.win.csv', "\r\n", '\r\n'),
-			array('escaping.csv', "\n", '\n'),
-			array('just-header.csv', "\n", '\n'), // default
-		);
-	}
+    /**
+     * @dataProvider invalidDelimiters
+     * @expectedException Keboola\Csv\InvalidArgumentException
+     *
+     * @param $delimiter
+     */
+    public function testInvalidDelimiterShouldThrowException($delimiter)
+    {
 
-	/**
-	 * @expectedException Keboola\Csv\InvalidArgumentException
-	 * @dataProvider invalidLineBreaksData
-	 */
-	public function testInvalidLineBreak($file)
-	{
-		$csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/' . $file);
-		$csvFile->validateLineBreak();
-	}
+        new CsvFile(__DIR__ . '/_data/test-input.csv', $delimiter);
+    }
 
-	public function invalidLineBreaksData()
-	{
-		return array(
-			array('test-input.mac.csv'),
-		);
-	}
+    public function invalidDelimiters()
+    {
 
+        return array(
+            array('aaaa'),
+            array('ob g'),
+            array(''),
+        );
+    }
 
-	public function testWrite()
-	{
-		$fileName = __DIR__ . '/_data/_out.csv';
-		if (file_exists($fileName)) {
-			unlink($fileName);
-		}
+    public function testInitInvalidFileShouldNotThrowException()
+    {
 
-		$csvFile = new \Keboola\Csv\CsvFile($fileName);
+        try {
+            $csvFile = new CsvFile(__DIR__ . '/_data/dafadfsafd.csv');
+        } catch (\Exception $e) {
+            $this->fail('Exception should not be thrown');
+        }
+    }
 
-		$rows = array(
-			array(
-				'col1', 'col2',
-			),
-			array(
-				'line without enclosure', 'second column',
-			),
-			array(
-				'enclosure " in column', 'hello \\',
-			),
-			array(
-				'line with enclosure', 'second column',
-			),
-			array(
-				'column with enclosure ", and comma inside text', 'second column enclosure in text "',
-			),
-			array(
-				"columns with\nnew line", "columns with\ttab",
-			),
-			array(
-				'column with \n \t \\\\', 'second col',
-			)
-		);
+    /**
+     * @dataProvider invalidEnclosures
+     * @expectedException Keboola\Csv\InvalidArgumentException
+     *
+     * @param $enclosure
+     */
+    public function testInvalidEnclosureShouldThrowException($enclosure)
+    {
 
-		foreach ($rows as $row) {
-			$csvFile->writeRow($row);
-		}
+        new CsvFile(__DIR__ . '/_data/test-input.csv', ",", $enclosure);
+    }
 
-	}
+    public function invalidEnclosures()
+    {
 
-	public function testIterator()
-	{
-		$csvFile = new CsvFile(__DIR__ . '/_data/test-input.csv');
+        return array(
+            array('aaaa'),
+            array('ob g'),
+        );
+    }
 
-		$expected = array(
-			"id",
-			"idAccount",
-			"date",
-			"totalFollowers",
-			"followers",
-			"totalStatuses",
-			"statuses",
-			"kloutScore",
-			"timestamp",
-		);
+    /**
+     * @param $file
+     * @param $lineBreak
+     *
+     * @dataProvider validLineBreaksData
+     */
+    public function testLineEndingsDetection($file, $lineBreak, $lineBreakAsText)
+    {
 
-		// header line
-		$csvFile->rewind();
-		$this->assertEquals($expected, $csvFile->current());
+        $csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/' . $file);
+        $this->assertEquals($lineBreak, $csvFile->getLineBreak());
+        $this->assertEquals($lineBreakAsText, $csvFile->getLineBreakAsText());
+    }
 
-		// first line
-		$csvFile->next();
-		$this->assertTrue($csvFile->valid());
+    public function validLineBreaksData()
+    {
 
-		// second line
-		$csvFile->next();
-		$this->assertTrue($csvFile->valid());
+        return array(
+            array('test-input.csv', "\n", '\n'),
+            array('test-input.win.csv', "\r\n", '\r\n'),
+            array('escaping.csv', "\n", '\n'),
+            array('just-header.csv', "\n", '\n'), // default
+        );
+    }
 
-		// file end
-		$csvFile->next();
-		$this->assertFalse($csvFile->valid());
-	}
+    /**
+     * @expectedException Keboola\Csv\InvalidArgumentException
+     * @dataProvider invalidLineBreaksData
+     */
+    public function testInvalidLineBreak($file)
+    {
 
-	/**
-	 * @expectedException Keboola\Csv\Exception
-	 * @expectedExceptionMessage Cannot write array into a column
-	 */
-	public function testNonStringWrite()
-	{
-		$fileName = __DIR__ . '/_data/_out.csv';
-		if (file_exists($fileName)) {
-			unlink($fileName);
-		}
+        $csvFile = new \Keboola\Csv\CsvFile(__DIR__ . '/_data/' . $file);
+        $csvFile->validateLineBreak();
+    }
 
-		$csvFile = new \Keboola\Csv\CsvFile($fileName);
+    public function invalidLineBreaksData()
+    {
 
-		$row = array(
-			array(
-				'nested'
-			)
-		);
+        return array(
+            array('test-input.mac.csv'),
+        );
+    }
 
-		$csvFile->writeRow($row);
-	}
+    public function testWrite()
+    {
+
+        $fileName = __DIR__ . '/_data/_out.csv';
+        if (file_exists($fileName)) {
+            unlink($fileName);
+        }
+
+        $csvFile = new \Keboola\Csv\CsvFile($fileName);
+
+        $rows = array(
+            array(
+                'col1',
+                'col2',
+            ),
+            array(
+                'line without enclosure',
+                'second column',
+            ),
+            array(
+                'enclosure " in column',
+                'hello \\',
+            ),
+            array(
+                'line with enclosure',
+                'second column',
+            ),
+            array(
+                'column with enclosure ", and comma inside text',
+                'second column enclosure in text "',
+            ),
+            array(
+                "columns with\nnew line",
+                "columns with\ttab",
+            ),
+            array(
+                'column with \n \t \\\\',
+                'second col',
+            ),
+        );
+
+        foreach ($rows as $row) {
+            $csvFile->writeRow($row);
+        }
+
+    }
+
+    public function testIterator()
+    {
+
+        $csvFile = new CsvFile(__DIR__ . '/_data/test-input.csv');
+
+        $expected = array(
+            "id",
+            "idAccount",
+            "date",
+            "totalFollowers",
+            "followers",
+            "totalStatuses",
+            "statuses",
+            "kloutScore",
+            "timestamp",
+        );
+
+        // header line
+        $csvFile->rewind();
+        $this->assertEquals($expected, $csvFile->current());
+
+        // first line
+        $csvFile->next();
+        $this->assertTrue($csvFile->valid());
+
+        // second line
+        $csvFile->next();
+        $this->assertTrue($csvFile->valid());
+
+        // file end
+        $csvFile->next();
+        $this->assertFalse($csvFile->valid());
+    }
+
+    /**
+     * @expectedException Keboola\Csv\Exception
+     * @expectedExceptionMessage Cannot write array into a column
+     */
+    public function testNonStringWrite()
+    {
+
+        $fileName = __DIR__ . '/_data/_out.csv';
+        if (file_exists($fileName)) {
+            unlink($fileName);
+        }
+
+        $csvFile = new \Keboola\Csv\CsvFile($fileName);
+
+        $row = array(
+            array(
+                'nested',
+            ),
+        );
+
+        $csvFile->writeRow($row);
+    }
+
+    public function testSkipsHeaders()
+    {
+
+        $fileName = __DIR__ . '/_data/simple.csv';
+
+        $csvFile = new \Keboola\Csv\CsvFile($fileName);
+        $csvFile->skipFirstLine();
+
+        $this->assertEquals([
+            ['15', '0'],
+            ['18', '0'],
+            ['19', '0'],
+        ], iterator_to_array($csvFile));
+
+    }
 }

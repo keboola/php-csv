@@ -298,9 +298,9 @@ class CsvFile extends \SplFileInfo implements \Iterator
 	public function rewind()
 	{
 		rewind($this->_getFilePointer());
-		if($this->_skipFirstLine) {
-            $this->_readLine();
-        }
+		if ($this->_skipFirstLine) {
+			$this->_readLine();
+		}
 		$this->_currentRow = $this->_readLine();
 		$this->_rowCounter = 0;
 	}

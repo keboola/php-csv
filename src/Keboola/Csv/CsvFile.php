@@ -34,43 +34,43 @@ class CsvFile extends \SplFileInfo implements \Iterator
 
 	}
 
-    /**
-     * Sets the CsvFile to skip the first line when creating an iterator
-     *
-     * @param bool $setting
-     *
-     * @return CsvFile
-     */
-    public function setSkipFirstLine($setting)
-    {
+	/**
+	 * Sets the CsvFile to skip the first line when creating an iterator
+	 *
+	 * @param bool $setting
+	 *
+	 * @return CsvFile
+	 */
+	public function setSkipFirstLine($setting)
+	{
 
-        $this->_skipFirstLine = (bool)$setting;
-        return $this;
-    }
+		$this->_skipFirstLine = (bool)$setting;
+		return $this;
+	}
 
-    /**
-     * Sets the CsvFile to skip the first line when creating an iterator
-     *
-     * @return CsvFile
-     */
-    public function skipFirstLine()
-    {
+	/**
+	 * Sets the CsvFile to skip the first line when creating an iterator
+	 *
+	 * @return CsvFile
+	 */
+	public function skipFirstLine()
+	{
 
-        $this->_skipFirstLine = true;
-        return $this;
-    }
+		$this->_skipFirstLine = true;
+		return $this;
+	}
 
-    /**
-     * Sets the CsvFile NOT to skip the first line when creating an iterator (default)
-     *
-     * @return CsvFile
-     */
-    public function dontSkipFirstLine()
-    {
+	/**
+	 * Sets the CsvFile NOT to skip the first line when creating an iterator (default)
+	 *
+	 * @return CsvFile
+	 */
+	public function dontSkipFirstLine()
+	{
 
-        $this->_skipFirstLine = false;
-        return $this;
-    }
+		$this->_skipFirstLine = false;
+		return $this;
+	}
 
 	/**
 	 * @param $delimiter

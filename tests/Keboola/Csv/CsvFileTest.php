@@ -289,4 +289,20 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 
 		$csvFile->writeRow($row);
 	}
+
+	public function testSkipsHeaders()
+	{
+
+		$fileName = __DIR__ . '/_data/simple.csv';
+
+		$csvFile = new \Keboola\Csv\CsvFile($fileName);
+		$csvFile->skipFirstLine();
+
+		$this->assertEquals([
+			['15', '0'],
+			['18', '0'],
+			['19', '0'],
+		], iterator_to_array($csvFile));
+
+	}
 }

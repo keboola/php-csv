@@ -22,6 +22,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
 	protected $_rowCounter = 0;
 	protected $_currentRow;
 	protected $_lineBreak;
+	protected $_skipFirstLine = false;
 
 	public function __construct($fileName, $delimiter = self::DEFAULT_DELIMITER, $enclosure = self::DEFAULT_ENCLOSURE, $escapedBy = "")
 	{
@@ -31,6 +32,44 @@ class CsvFile extends \SplFileInfo implements \Iterator
 		$this->_setDelimiter($delimiter);
 		$this->_setEnclosure($enclosure);
 
+	}
+
+	/**
+	 * Sets the CsvFile to skip the first line when creating an iterator
+	 *
+	 * @param bool $setting
+	 *
+	 * @return CsvFile
+	 */
+	public function setSkipFirstLine($setting)
+	{
+
+		$this->_skipFirstLine = (bool)$setting;
+		return $this;
+	}
+
+	/**
+	 * Sets the CsvFile to skip the first line when creating an iterator
+	 *
+	 * @return CsvFile
+	 */
+	public function skipFirstLine()
+	{
+
+		$this->_skipFirstLine = true;
+		return $this;
+	}
+
+	/**
+	 * Sets the CsvFile NOT to skip the first line when creating an iterator (default)
+	 *
+	 * @return CsvFile
+	 */
+	public function dontSkipFirstLine()
+	{
+
+		$this->_skipFirstLine = false;
+		return $this;
 	}
 
 	/**
@@ -259,6 +298,9 @@ class CsvFile extends \SplFileInfo implements \Iterator
 	public function rewind()
 	{
 		rewind($this->_getFilePointer());
+		if ($this->_skipFirstLine) {
+			$this->_readLine();
+		}
 		$this->_currentRow = $this->_readLine();
 		$this->_rowCounter = 0;
 	}

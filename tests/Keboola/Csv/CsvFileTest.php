@@ -289,4 +289,52 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 
 		$csvFile->writeRow($row);
 	}
+
+	public function testSkipsHeaders()
+	{
+		$fileName = __DIR__ . '/_data/simple.csv';
+
+		$csvFile = new \Keboola\Csv\CsvFile($fileName, CsvFile::DEFAULT_DELIMITER, CsvFile::DEFAULT_ENCLOSURE, CsvFile::DEFAULT_ENCLOSURE, 1);
+		$this->assertEquals([
+			['15', '0'],
+			['18', '0'],
+			['19', '0'],
+		], iterator_to_array($csvFile));
+
+	}
+
+    public function testSkipNoLines()
+    {
+        $fileName = __DIR__ . '/_data/simple.csv';
+
+        $csvFile = new \Keboola\Csv\CsvFile($fileName, CsvFile::DEFAULT_DELIMITER, CsvFile::DEFAULT_ENCLOSURE, CsvFile::DEFAULT_ENCLOSURE, 0);
+        $this->assertEquals([
+            ['id', 'isImported'],
+            ['15', '0'],
+            ['18', '0'],
+            ['19', '0'],
+        ], iterator_to_array($csvFile));
+
+    }
+
+    public function testSkipsMultipleLines()
+    {
+        $fileName = __DIR__ . '/_data/simple.csv';
+
+        $csvFile = new \Keboola\Csv\CsvFile($fileName, CsvFile::DEFAULT_DELIMITER, CsvFile::DEFAULT_ENCLOSURE, CsvFile::DEFAULT_ENCLOSURE, 3);
+        $this->assertEquals([
+            ['19', '0'],
+        ], iterator_to_array($csvFile));
+
+    }
+
+    public function testSkipsOverflow()
+    {
+        $fileName = __DIR__ . '/_data/simple.csv';
+
+        $csvFile = new \Keboola\Csv\CsvFile($fileName, CsvFile::DEFAULT_DELIMITER, CsvFile::DEFAULT_ENCLOSURE, CsvFile::DEFAULT_ENCLOSURE, 100);
+        $this->assertEquals([], iterator_to_array($csvFile));
+
+    }
+
 }

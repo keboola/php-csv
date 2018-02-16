@@ -13,14 +13,13 @@ class CsvFileTest extends TestCase
         self::assertInstanceOf(CsvFile::class, new CsvFile(__DIR__ . '/data/test-input.csv'));
     }
 
-    /**
-     * @expectedException \Keboola\Csv\Exception
-     * @expectedExceptionMessage Cannot open file
-     */
-    public function testExceptionShouldBeThrownOnNotExistingFile()
+    public function testAccessors()
     {
-        $csv = new CsvFile(__DIR__ . '/something.csv');
-        $csv->getHeader();
+        $csvFile = new CsvFile(__DIR__ . '/data/test-input.csv');
+        self::assertEquals('test-input.csv', $csvFile->getBasename());
+        self::assertEquals("\"", $csvFile->getEnclosure());
+        self::assertEquals("", $csvFile->getEscapedBy());
+        self::assertEquals(",", $csvFile->getDelimiter());
     }
 
     public function testColumnsCount()
@@ -110,25 +109,6 @@ class CsvFileTest extends TestCase
         self::assertEquals([], $csvFile->getHeader());
     }
 
-    /**
-     * @dataProvider invalidDelimiters
-     * @expectedException \Keboola\Csv\InvalidArgumentException
-     * @param string $delimiter
-     */
-    public function testInvalidDelimiterShouldThrowException($delimiter)
-    {
-        new CsvFile(__DIR__ . '/data/test-input.csv', $delimiter);
-    }
-
-    public function invalidDelimiters()
-    {
-        return [
-            ['aaaa'],
-            ['ob g'],
-            [''],
-        ];
-    }
-
     public function testInitInvalidFileShouldNotThrowException()
     {
         try {
@@ -136,24 +116,6 @@ class CsvFileTest extends TestCase
         } catch (\Exception $e) {
             self::fail('Exception should not be thrown');
         }
-    }
-
-    /**
-     * @dataProvider invalidEnclosures
-     * @expectedException \Keboola\Csv\InvalidArgumentException
-     * @param string $enclosure
-     */
-    public function testInvalidEnclosureShouldThrowException($enclosure)
-    {
-        new CsvFile(__DIR__ . '/data/test-input.csv', ",", $enclosure);
-    }
-
-    public function invalidEnclosures()
-    {
-        return [
-            ['aaaa'],
-            ['ob g'],
-        ];
     }
 
     /**
@@ -196,7 +158,6 @@ class CsvFileTest extends TestCase
             ['test-input.mac.csv'],
         ];
     }
-
 
     public function testWrite()
     {
@@ -267,24 +228,6 @@ class CsvFileTest extends TestCase
         // file end
         $csvFile->next();
         self::assertFalse($csvFile->valid());
-    }
-
-    /**
-     * @expectedException \Keboola\Csv\Exception
-     * @expectedExceptionMessage Cannot write array into a column
-     */
-    public function testNonStringWrite()
-    {
-        $fileName = __DIR__ . '/data/_out.csv';
-        if (file_exists($fileName)) {
-            unlink($fileName);
-        }
-
-        $csvFile = new CsvFile($fileName);
-
-        $row = [['nested']];
-
-        $csvFile->writeRow($row);
     }
 
     public function testSkipsHeaders()

@@ -244,10 +244,10 @@ class CsvFile extends \SplFileInfo implements \Iterator
                 'fileNotExists'
             );
         }
-        $this->filePointer = fopen($this->getPathname(), $mode);
+        $this->filePointer = @fopen($this->getPathname(), $mode);
         if (!$this->filePointer) {
             throw new Exception(
-                "Cannot open file {$this->getPathname()}",
+                "Cannot open file {$this->getPathname()} " . error_get_last()['message'],
                 Exception::FILE_NOT_EXISTS,
                 null,
                 'fileNotExists'
@@ -389,7 +389,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
             $lineBreak = $this->getLineBreak();
         } catch (Exception $e) {
             throw new InvalidArgumentException(
-                "Failed to detect line break " . $e->getMessage(),
+                "Failed to detect line break: " . $e->getMessage(),
                 Exception::INVALID_PARAM,
                 $e,
                 'invalidParam'

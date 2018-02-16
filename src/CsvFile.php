@@ -100,7 +100,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
                 "Number of lines to skip must be a positive integer. \"$skipLines\" received.",
                 Exception::INVALID_PARAM,
                 null,
-                'invalidParam'
+                Exception::INVALID_PARAM_STR
             );
         }
     }
@@ -128,7 +128,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
                 "Delimiter must be a single character. \"$delimiter\" received",
                 Exception::INVALID_PARAM,
                 null,
-                'invalidParam'
+                Exception::INVALID_PARAM_STR
             );
         }
 
@@ -137,7 +137,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
                 "Delimiter cannot be empty.",
                 Exception::INVALID_PARAM,
                 null,
-                'invalidParam'
+                Exception::INVALID_PARAM_STR
             );
         }
     }
@@ -165,7 +165,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
                 "Enclosure must be a single character. \"$enclosure\" received",
                 Exception::INVALID_PARAM,
                 null,
-                'invalidParam'
+                Exception::INVALID_PARAM_STR
             );
         }
     }
@@ -241,7 +241,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
                 "Cannot open file {$this->getPathname()}",
                 Exception::FILE_NOT_EXISTS,
                 null,
-                'fileNotExists'
+                Exception::FILE_NOT_EXISTS_STR
             );
         }
         $this->filePointer = @fopen($this->getPathname(), $mode);
@@ -250,7 +250,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
                 "Cannot open file {$this->getPathname()} " . error_get_last()['message'],
                 Exception::FILE_NOT_EXISTS,
                 null,
-                'fileNotExists'
+                Exception::FILE_NOT_EXISTS_STR
             );
         }
     }
@@ -326,7 +326,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
                 "Cannot write to file {$this->getPathname()}",
                 Exception::WRITE_ERROR,
                 null,
-                'writeError'
+                Exception::WRITE_ERROR_STR
             );
         }
     }
@@ -346,7 +346,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
                     "Cannot write {$type} into a column",
                     Exception::WRITE_ERROR,
                     null,
-                    'writeError',
+                    Exception::WRITE_ERROR_STR,
                     ['column' => $column]
                 );
             }
@@ -392,7 +392,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
                 "Failed to detect line break: " . $e->getMessage(),
                 Exception::INVALID_PARAM,
                 $e,
-                'invalidParam'
+                Exception::INVALID_PARAM_STR
             );
         }
         if (in_array($lineBreak, ["\r\n", "\n"])) {
@@ -403,7 +403,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
             "Invalid line break. Please use unix \\n or win \\r\\n line breaks.",
             Exception::INVALID_PARAM,
             null,
-            'invalidParam'
+            Exception::INVALID_PARAM_STR
         );
     }
 

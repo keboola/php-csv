@@ -1,0 +1,11 @@
+version: "2"
+plugins:
+  phpmd:
+    enabled: true
+  phpcodesniffer:
+    enabled: true
+  sonar-php:
+    enabled: true
+    checks:
+      php:S1117:
+        enabled: false

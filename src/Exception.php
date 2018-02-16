@@ -8,6 +8,10 @@ class Exception extends \Exception
     const INVALID_PARAM = 2;
     const WRITE_ERROR = 3;
 
+    const INVALID_PARAM_STR = 'invalidParam';
+    const WRITE_ERROR_STR = 'writeError';
+    const FILE_NOT_EXISTS_STR = 'fileNotExists';
+
     /**
      * @var string
      */

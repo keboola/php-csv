@@ -300,7 +300,6 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 			['18', '0'],
 			['19', '0'],
 		], iterator_to_array($csvFile));
-
 	}
 
     public function testSkipNoLines()
@@ -314,7 +313,6 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
             ['18', '0'],
             ['19', '0'],
         ], iterator_to_array($csvFile));
-
     }
 
     public function testSkipsMultipleLines()
@@ -325,7 +323,6 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
         $this->assertEquals([
             ['19', '0'],
         ], iterator_to_array($csvFile));
-
     }
 
     public function testSkipsOverflow()
@@ -334,7 +331,5 @@ class Keboola_CsvFileTest extends PHPUnit_Framework_TestCase
 
         $csvFile = new \Keboola\Csv\CsvFile($fileName, CsvFile::DEFAULT_DELIMITER, CsvFile::DEFAULT_ENCLOSURE, CsvFile::DEFAULT_ENCLOSURE, 100);
         $this->assertEquals([], iterator_to_array($csvFile));
-
     }
-
 }

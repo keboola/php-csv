@@ -13,25 +13,41 @@ class CsvFile extends \SplFileInfo implements \Iterator
 {
 	const DEFAULT_DELIMITER = ',';
 	const DEFAULT_ENCLOSURE = '"';
+	const DEFAULT_ESCAPED_BY = "";
 
 	protected $_delimiter;
 	protected $_enclosure;
 	protected $_escapedBy;
+	protected $_skipLines;
 
 	protected $_filePointer;
 	protected $_rowCounter = 0;
 	protected $_currentRow;
 	protected $_lineBreak;
 
-	public function __construct($fileName, $delimiter = self::DEFAULT_DELIMITER, $enclosure = self::DEFAULT_ENCLOSURE, $escapedBy = "")
+	public function __construct($fileName, $delimiter = self::DEFAULT_DELIMITER, $enclosure = self::DEFAULT_ENCLOSURE, $escapedBy = self::DEFAULT_ESCAPED_BY, $skipLines = 0)
 	{
 		parent::__construct($fileName);
 
 		$this->_escapedBy = $escapedBy;
 		$this->_setDelimiter($delimiter);
 		$this->_setEnclosure($enclosure);
-
+        $this->_setSkipLines($skipLines);
 	}
+
+	protected function _setSkipLines($skipLines)
+    {
+        $this->_validateSkipLines($skipLines);
+        $this->_skipLines = $skipLines;
+        return $this;
+    }
+
+    protected function _validateSkipLines($skipLines)
+    {
+        if (!is_int($skipLines) || $skipLines < 0) {
+            throw new InvalidArgumentException("Number of lines to skip must be a positive integer", Exception::INVALID_PARAM, null, 'invalidParam');
+        }
+    }
 
 	/**
 	 * @param $delimiter
@@ -259,6 +275,9 @@ class CsvFile extends \SplFileInfo implements \Iterator
 	public function rewind()
 	{
 		rewind($this->_getFilePointer());
+		for ($i = 0; $i < $this->_skipLines; $i++) {
+		    $this->_readLine();
+        }
 		$this->_currentRow = $this->_readLine();
 		$this->_rowCounter = 0;
 	}

@@ -124,10 +124,10 @@ class CsvFile extends \SplFileInfo implements \Iterator
 		return array();
 	}
 
-	public function writeRow(array $row)
+	public function writeRow(array $row, $mode = 'w+')
 	{
 		$str = $this->rowToStr($row);
-		$ret = fwrite($this->_getFilePointer('w+'), $str);
+		$ret = fwrite($this->_getFilePointer($mode), $str);
 
 		/* According to http://php.net/fwrite the fwrite() function
 		 should return false on error. However not writing the full

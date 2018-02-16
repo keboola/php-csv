@@ -4,17 +4,16 @@ namespace Keboola\Csv\Tests;
 
 use Keboola\Csv\CsvFile;
 use Keboola\Csv\Exception;
+use Keboola\Csv\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class CsvFileErrorsTest extends TestCase
 {
-    /**
-     * @expectedException \Keboola\Csv\Exception
-     * @expectedExceptionMessage Cannot open file
-     */
     public function testNonExistentFile()
     {
         $csv = new CsvFile(__DIR__ . '/something.csv');
+        self::expectException(Exception::class);
+        self::expectExceptionMessage('Cannot open file');
         $csv->getHeader();
     }
 
@@ -33,76 +32,68 @@ class CsvFileErrorsTest extends TestCase
     }
 
     /**
-     * @expectedException \Keboola\Csv\Exception
-     * @expectedExceptionMessage fopen( ): failed to open stream: Permission denied
+     * @dataProvider invalidFilenameProvider
+     * @param string $filename
+     * @param string $message
      */
-    public function testInvalidFileName1()
+    public function testInvalidFileName($filename, $message)
     {
-        $csv = new CsvFile(" ");
+        $csv = new CsvFile($filename);
+        self::expectException(Exception::class);
+        self::expectExceptionMessage($message);
         $csv->writeRow(['a', 'b']);
     }
 
-    /**
-     * @expectedException \Keboola\Csv\Exception
-     * @expectedExceptionMessage fopen() expects parameter 1 to be a valid path, string given
-     */
-    public function testInvalidFileName2()
+    public function invalidFileNameProvider()
     {
-        $csv = new CsvFile("\0");
-        $csv->writeRow(['a', 'b']);
+        return [
+            [' ', 'fopen( ): failed to open stream: Permission denied'],
+            ["\0", 'fopen() expects parameter 1 to be a valid path, string given'],
+            ['php://stdin', 'Cannot write to file php://stdin']
+        ];
     }
 
     /**
-     * @expectedException \Keboola\Csv\Exception
-     * @expectedExceptionMessage Cannot write to file php://stdin
-     */
-    public function testInvalidFileName3()
-    {
-        $csv = new CsvFile('php://stdin');
-        $csv->writeRow(['a', 'b']);
-    }
-
-    /**
-     * @dataProvider invalidDelimiters
-     * @expectedException \Keboola\Csv\InvalidArgumentException
+     * @dataProvider invalidDelimiterProvider
      * @param string $delimiter
+     * @param string $message
      */
-    public function testInvalidDelimiterShouldThrowException($delimiter)
+    public function testInvalidDelimiter($delimiter, $message)
     {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage($message);
         new CsvFile(__DIR__ . '/data/test-input.csv', $delimiter);
     }
 
-    public function invalidDelimiters()
+    public function invalidDelimiterProvider()
     {
         return [
-            ['aaaa'],
-            ['ob g'],
-            [''],
+            ['aaaa', 'Delimiter must be a single character. "aaaa" received'],
+            ['ob g', 'Delimiter must be a single character. "ob g" received'],
+            ['', 'Delimiter cannot be empty.'],
         ];
     }
 
     /**
-     * @dataProvider invalidEnclosures
-     * @expectedException \Keboola\Csv\InvalidArgumentException
+     * @dataProvider invalidEnclosureProvider
      * @param string $enclosure
+     * @param string $message
      */
-    public function testInvalidEnclosureShouldThrowException($enclosure)
+    public function testInvalidEnclosureShouldThrowException($enclosure, $message)
     {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage($message);
         new CsvFile(__DIR__ . '/data/test-input.csv', ",", $enclosure);
     }
 
-    public function invalidEnclosures()
+    public function invalidEnclosureProvider()
     {
         return [
-            ['aaaa'],
-            ['ob g'],
+            ['aaaa', 'Enclosure must be a single character. "aaaa" received'],
+            ['ob g', 'Enclosure must be a single character. "ob g" received'],
         ];
     }
 
-    /**
-     * @expectedException \Keboola\Csv\Exception
-     * @expectedExceptionMessage Cannot write array into a column
-     */
     public function testNonStringWrite()
     {
         $fileName = __DIR__ . '/data/_out.csv';
@@ -111,49 +102,43 @@ class CsvFileErrorsTest extends TestCase
         }
 
         $csvFile = new CsvFile($fileName);
-
         $row = [['nested']];
-
+        self::expectException(Exception::class);
+        self::expectExceptionMessage("Cannot write array into a column");
         $csvFile->writeRow($row);
     }
 
     /**
-     * @expectedException \Keboola\Csv\InvalidArgumentException
-     * @expectedExceptionMessage Number of lines to skip must be a positive integer
+     * @dataProvider invalidSkipLinesProvider
+     * @param mixed $skipLines
+     * @param string $message
      */
-    public function testInvalidSkipLines1()
+    public function testInvalidSkipLines($skipLines, $message)
     {
+        self::expectException(Exception::class);
+        self::expectExceptionMessage($message);
         new CsvFile(
             'dummy',
             CsvFile::DEFAULT_DELIMITER,
             CsvFile::DEFAULT_ENCLOSURE,
             CsvFile::DEFAULT_ENCLOSURE,
-            'invalid'
+            $skipLines
         );
     }
 
-    /**
-     * @expectedException \Keboola\Csv\InvalidArgumentException
-     * @expectedExceptionMessage Number of lines to skip must be a positive integer
-     */
-    public function testInvalidSkipLines2()
+    public function invalidSkipLinesProvider()
     {
-        new CsvFile(
-            'dummy',
-            CsvFile::DEFAULT_DELIMITER,
-            CsvFile::DEFAULT_ENCLOSURE,
-            CsvFile::DEFAULT_ENCLOSURE,
-            -123
-        );
+        return [
+            ['invalid', 'Number of lines to skip must be a positive integer. "invalid" received.'],
+            [-123, 'Number of lines to skip must be a positive integer. "-123" received.']
+        ];
     }
 
-    /**
-     * @expectedException \Keboola\Csv\Exception
-     * @expectedExceptionMessage Failed to detect line break: Cannot open file
-     */
     public function testInvalidNewLines()
     {
         $csvFile = new CsvFile(__DIR__ . DIRECTORY_SEPARATOR . 'non-existent');
+        self::expectException(Exception::class);
+        self::expectExceptionMessage('Failed to detect line break: Cannot open file');
         $csvFile->next();
     }
 }

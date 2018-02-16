@@ -97,7 +97,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
     {
         if (!is_int($skipLines) || $skipLines < 0) {
             throw new InvalidArgumentException(
-                "Number of lines to skip must be a positive integer",
+                "Number of lines to skip must be a positive integer. \"$skipLines\" received.",
                 Exception::INVALID_PARAM,
                 null,
                 'invalidParam'

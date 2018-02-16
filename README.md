@@ -2,6 +2,8 @@
 [![Latest Stable Version](https://poser.pugx.org/keboola/csv/v/stable.svg)](https://packagist.org/packages/keboola/csv)
 [![License](https://poser.pugx.org/keboola/csv/license.svg)](https://packagist.org/packages/keboola/csv)
 [![Total Downloads](https://poser.pugx.org/keboola/csv/downloads.svg)](https://packagist.org/packages/keboola/csv)
+[![Maintainability](https://api.codeclimate.com/v1/badges/869a0ab5c1d228279ab0/maintainability)](https://codeclimate.com/github/keboola/php-csv/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/869a0ab5c1d228279ab0/test_coverage)](https://codeclimate.com/github/keboola/php-csv/test_coverage)
 
 ## Usage
 
@@ -13,6 +15,19 @@ foreach($csvFile as $row) {
 	var_dump($row);
 }
 ```
+
+#### Skip lines
+Skip the first two lines:
+
+```php
+use Keboola\Csv\CsvFile;
+$filename = __DIR__ . '/_data/test-input.csv';
+$csvFile = new \Keboola\Csv\CsvFile($fileName, CsvFile::DEFAULT_DELIMITER, CsvFile::DEFAULT_ENCLOSURE, CsvFile::DEFAULT_ENCLOSURE, 2)
+foreach($csvFile as $row) {
+	var_dump($row);
+}
+```
+      
 
 ### Write CSV
 

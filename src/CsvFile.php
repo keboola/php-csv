@@ -1,316 +1,455 @@
 <?php
-/**
- *
- * User: Martin Halamíček
- * Date: 13.4.12
- * Time: 15:31
- *
- */
 
 namespace Keboola\Csv;
 
 class CsvFile extends \SplFileInfo implements \Iterator
 {
-	const DEFAULT_DELIMITER = ',';
-	const DEFAULT_ENCLOSURE = '"';
-	const DEFAULT_ESCAPED_BY = "";
+    const DEFAULT_DELIMITER = ',';
+    const DEFAULT_ENCLOSURE = '"';
+    const DEFAULT_ESCAPED_BY = "";
 
-	protected $_delimiter;
-	protected $_enclosure;
-	protected $_escapedBy;
-	protected $_skipLines;
+    /**
+     * @var string
+     */
+    protected $delimiter;
 
-	protected $_filePointer;
-	protected $_rowCounter = 0;
-	protected $_currentRow;
-	protected $_lineBreak;
+    /**
+     * @var string
+     */
+    protected $enclosure;
 
-	public function __construct($fileName, $delimiter = self::DEFAULT_DELIMITER, $enclosure = self::DEFAULT_ENCLOSURE, $escapedBy = self::DEFAULT_ESCAPED_BY, $skipLines = 0)
-	{
-		parent::__construct($fileName);
+    /**
+     * @var string
+     */
+    protected $escapedBy;
 
-		$this->_escapedBy = $escapedBy;
-		$this->_setDelimiter($delimiter);
-		$this->_setEnclosure($enclosure);
-        $this->_setSkipLines($skipLines);
-	}
+    /**
+     * @var int
+     */
+    protected $skipLines;
 
-	protected function _setSkipLines($skipLines)
+    /**
+     * @var resource
+     */
+    protected $filePointer;
+
+    /**
+     * @var int
+     */
+    protected $rowCounter = 0;
+
+    /**
+     * @var array|null|false
+     */
+    protected $currentRow;
+
+    /**
+     * @var string
+     */
+    protected $lineBreak;
+
+    /**
+     * CsvFile constructor.
+     * @param string $fileName
+     * @param string $delimiter
+     * @param string $enclosure
+     * @param string $escapedBy
+     * @param int $skipLines
+     * @throws InvalidArgumentException
+     */
+    public function __construct(
+        $fileName,
+        $delimiter = self::DEFAULT_DELIMITER,
+        $enclosure = self::DEFAULT_ENCLOSURE,
+        $escapedBy = self::DEFAULT_ESCAPED_BY,
+        $skipLines = 0
+    ) {
+        parent::__construct($fileName);
+
+        $this->escapedBy = $escapedBy;
+        $this->setDelimiter($delimiter);
+        $this->setEnclosure($enclosure);
+        $this->setSkipLines($skipLines);
+    }
+
+    public function __destruct()
     {
-        $this->_validateSkipLines($skipLines);
-        $this->_skipLines = $skipLines;
+        $this->closeFile();
+    }
+
+    /**
+     * @param integer $skipLines
+     * @return CsvFile
+     * @throws InvalidArgumentException
+     */
+    protected function setSkipLines($skipLines)
+    {
+        $this->validateSkipLines($skipLines);
+        $this->skipLines = $skipLines;
         return $this;
     }
 
-    protected function _validateSkipLines($skipLines)
+    /**
+     * @param integer $skipLines
+     * @throws InvalidArgumentException
+     */
+    protected function validateSkipLines($skipLines)
     {
         if (!is_int($skipLines) || $skipLines < 0) {
-            throw new InvalidArgumentException("Number of lines to skip must be a positive integer", Exception::INVALID_PARAM, null, 'invalidParam');
+            throw new InvalidArgumentException(
+                "Number of lines to skip must be a positive integer",
+                Exception::INVALID_PARAM,
+                null,
+                'invalidParam'
+            );
         }
     }
 
-	/**
-	 * @param $delimiter
-	 * @return CsvFile
-	 */
-	protected function _setDelimiter($delimiter)
-	{
-		$this->_validateDelimiter($delimiter);
-		$this->_delimiter = $delimiter;
-		return $this;
-	}
+    /**
+     * @param string $delimiter
+     * @return CsvFile
+     * @throws InvalidArgumentException
+     */
+    protected function setDelimiter($delimiter)
+    {
+        $this->validateDelimiter($delimiter);
+        $this->delimiter = $delimiter;
+        return $this;
+    }
 
-	protected function _validateDelimiter($delimiter)
-	{
-		if (strlen($delimiter) > 1) {
-			throw new InvalidArgumentException("Delimiter must be a single character. \"$delimiter\" received",
-				Exception::INVALID_PARAM, NULL, 'invalidParam');
-		}
-
-		if (strlen($delimiter) == 0) {
-			throw new InvalidArgumentException("Delimiter cannot be empty.",
-				Exception::INVALID_PARAM, NULL, 'invalidParam');
-		}
-	}
-
-	public function getDelimiter()
-	{
-		return $this->_delimiter;
-	}
-
-	public function getEnclosure()
-	{
-		return $this->_enclosure;
-	}
-
-	public function getEscapedBy()
-	{
-		return $this->_escapedBy;
-	}
-
-	/**
-	 * @param $enclosure
-	 * @return CsvFile
-	 */
-	protected  function _setEnclosure($enclosure)
-	{
-		$this->_validateEnclosure($enclosure);
-		$this->_enclosure = $enclosure;
-		return $this;
-	}
-
-	protected function _validateEnclosure($enclosure)
-	{
-		if (strlen($enclosure) > 1) {
-			throw new InvalidArgumentException("Enclosure must be a single character. \"$enclosure\" received",
-				Exception::INVALID_PARAM, NULL, 'invalidParam');
-		}
-	}
-
-
-	public function getColumnsCount()
-	{
-		return count($this->getHeader());
-	}
-
-	public function getHeader()
-	{
-		$this->rewind();
-		$current = $this->current();
-		if (is_array($current)) {
-			return $current;
-		}
-
-		return array();
-	}
-
-	public function writeRow(array $row)
-	{
-		$str = $this->rowToStr($row);
-		$ret = fwrite($this->_getFilePointer('w+'), $str);
-
-		/* According to http://php.net/fwrite the fwrite() function
-		 should return false on error. However not writing the full
-		 string (which may occur e.g. when disk is full) is not considered
-		 as an error. Therefore both conditions are necessary. */
-		if (($ret === false) || (($ret === 0) && (strlen($str) > 0)))  {
-				throw new Exception("Cannot open file $this",
-				Exception::WRITE_ERROR, NULL, 'writeError');
-		}
-	}
-
-	public function rowToStr(array $row)
-	{
-		$return = array();
-		foreach ($row as $column) {
-			if (!is_scalar($column) && !is_null($column)) {
-				$type = gettype($column);
-				throw new Exception("Cannot write {$type} into a column",
-				Exception::WRITE_ERROR, null, 'writeError', array('column' => $column));
-			}
-
-			$return[] = $this->getEnclosure()
-				. str_replace($this->getEnclosure(), str_repeat($this->getEnclosure(), 2), $column) . $this->getEnclosure();
-		}
-		return implode($this->getDelimiter(), $return) . "\n";
-	}
-
-	public function getLineBreak()
-	{
-		if (!$this->_lineBreak) {
-			$this->_lineBreak = $this->_detectLineBreak();
-		}
-		return $this->_lineBreak;
-	}
-
-	public function getLineBreakAsText()
-	{
-		return trim(json_encode($this->getLineBreak()), '"');
-	}
-
-	public function validateLineBreak()
-	{
-		$lineBreak = $this->getLineBreak();
-		if (in_array($lineBreak, array("\r\n", "\n"))) {
-			return $lineBreak;
-		}
-
-		throw new InvalidArgumentException("Invalid line break. Please use unix \\n or win \\r\\n line breaks.",
-			Exception::INVALID_PARAM, NULL, 'invalidParam');
-	}
-
-	protected  function _detectLineBreak()
-	{
-		rewind($this->_getFilePointer());
-		$sample = fread($this->_getFilePointer(), 10000);
-		rewind($this->_getFilePointer());
-
-		$possibleLineBreaks = array(
-			"\r\n", // win
-			"\r", // mac
-			"\n", // unix
-		);
-
-		$lineBreaksPositions = array();
-		foreach($possibleLineBreaks as $lineBreak) {
-			$position = strpos($sample, $lineBreak);
-			if ($position === false) {
-				continue;
-			}
-			$lineBreaksPositions[$lineBreak] = $position;
-		}
-
-
-		asort($lineBreaksPositions);
-		reset($lineBreaksPositions);
-
-		return empty($lineBreaksPositions) ? "\n" : key($lineBreaksPositions);
-	}
-
-	protected function _closeFile()
-	{
-		if (is_resource($this->_filePointer)) {
-			fclose($this->_filePointer);
-		}
-	}
-
-	public function __destruct()
-	{
-		$this->_closeFile();
-	}
-
-	/**
-	 * (PHP 5 &gt;= 5.1.0)<br/>
-	 * Return the current element
-	 * @link http://php.net/manual/en/iterator.current.php
-	 * @return mixed Can return any type.
-	 */
-	public function current()
-	{
-		return $this->_currentRow;
-	}
-
-	/**
-	 * (PHP 5 &gt;= 5.1.0)<br/>
-	 * Move forward to next element
-	 * @link http://php.net/manual/en/iterator.next.php
-	 * @return void Any returned value is ignored.
-	 */
-	public function next()
-	{
-		$this->_currentRow = $this->_readLine();
-		$this->_rowCounter++;
-	}
-
-	/**
-	 * (PHP 5 &gt;= 5.1.0)<br/>
-	 * Return the key of the current element
-	 * @link http://php.net/manual/en/iterator.key.php
-	 * @return scalar scalar on success, integer
-	 * 0 on failure.
-	 */
-	public function key()
-	{
-		return $this->_rowCounter;
-	}
-
-	/**
-	 * (PHP 5 &gt;= 5.1.0)<br/>
-	 * Checks if current position is valid
-	 * @link http://php.net/manual/en/iterator.valid.php
-	 * @return boolean The return value will be casted to boolean and then evaluated.
-	 * Returns true on success or false on failure.
-	 */
-	public function valid()
-	{
-		return $this->_currentRow !== false;
-	}
-
-	/**
-	 * (PHP 5 &gt;= 5.1.0)<br/>
-	 * Rewind the Iterator to the first element
-	 * @link http://php.net/manual/en/iterator.rewind.php
-	 * @return void Any returned value is ignored.
-	 */
-	public function rewind()
-	{
-		rewind($this->_getFilePointer());
-		for ($i = 0; $i < $this->_skipLines; $i++) {
-		    $this->_readLine();
+    /**
+     * @param string $delimiter
+     * @throws InvalidArgumentException
+     */
+    protected function validateDelimiter($delimiter)
+    {
+        if (strlen($delimiter) > 1) {
+            throw new InvalidArgumentException(
+                "Delimiter must be a single character. \"$delimiter\" received",
+                Exception::INVALID_PARAM,
+                null,
+                'invalidParam'
+            );
         }
-		$this->_currentRow = $this->_readLine();
-		$this->_rowCounter = 0;
-	}
 
-	protected function _readLine()
-	{
-		$this->validateLineBreak();
+        if (strlen($delimiter) == 0) {
+            throw new InvalidArgumentException(
+                "Delimiter cannot be empty.",
+                Exception::INVALID_PARAM,
+                null,
+                'invalidParam'
+            );
+        }
+    }
 
-		// allow empty enclosure hack
-		$enclosure = !$this->getEnclosure() ? chr(0) : $this->getEnclosure();
-		$escapedBy = !$this->_escapedBy ? chr(0) : $this->_escapedBy;
-		return fgetcsv($this->_getFilePointer(), null, $this->getDelimiter(), $enclosure, $escapedBy);
-	}
+    /**
+     * @param string $enclosure
+     * @return $this
+     * @throws InvalidArgumentException
+     */
+    protected function setEnclosure($enclosure)
+    {
+        $this->validateEnclosure($enclosure);
+        $this->enclosure = $enclosure;
+        return $this;
+    }
 
-	protected function _getFilePointer($mode = 'r')
-	{
-		if (!is_resource($this->_filePointer)) {
-			$this->_openFile($mode);
-		}
-		return $this->_filePointer;
-	}
+    /**
+     * @param string $enclosure
+     * @throws InvalidArgumentException
+     */
+    protected function validateEnclosure($enclosure)
+    {
+        if (strlen($enclosure) > 1) {
+            throw new InvalidArgumentException(
+                "Enclosure must be a single character. \"$enclosure\" received",
+                Exception::INVALID_PARAM,
+                null,
+                'invalidParam'
+            );
+        }
+    }
 
-	protected function _openFile($mode)
-	{
-		if ($mode == 'r' && !is_file($this->getPathname())) {
-			throw new Exception("Cannot open file $this",
-					Exception::FILE_NOT_EXISTS, NULL, 'fileNotExists');
-		}
-		$this->_filePointer = fopen($this->getPathname(), $mode);
-		if (!$this->_filePointer) {
-			throw new Exception("Cannot open file $this",
-				Exception::FILE_NOT_EXISTS, NULL, 'fileNotExists');
-		}
-	}
+    /**
+     * @return string
+     * @throws Exception
+     */
+    protected function detectLineBreak()
+    {
+        rewind($this->getFilePointer());
+        $sample = fread($this->getFilePointer(), 10000);
+        rewind($this->getFilePointer());
 
+        $possibleLineBreaks = [
+            "\r\n", // win
+            "\r", // mac
+            "\n", // unix
+        ];
+
+        $lineBreaksPositions = [];
+        foreach ($possibleLineBreaks as $lineBreak) {
+            $position = strpos($sample, $lineBreak);
+            if ($position === false) {
+                continue;
+            }
+            $lineBreaksPositions[$lineBreak] = $position;
+        }
+
+
+        asort($lineBreaksPositions);
+        reset($lineBreaksPositions);
+
+        return empty($lineBreaksPositions) ? "\n" : key($lineBreaksPositions);
+    }
+
+    /**
+     * @return array|false|null
+     * @throws Exception
+     * @throws InvalidArgumentException
+     */
+    protected function readLine()
+    {
+        $this->validateLineBreak();
+
+        // allow empty enclosure hack
+        $enclosure = !$this->getEnclosure() ? chr(0) : $this->getEnclosure();
+        $escapedBy = !$this->escapedBy ? chr(0) : $this->escapedBy;
+        return fgetcsv($this->getFilePointer(), null, $this->getDelimiter(), $enclosure, $escapedBy);
+    }
+
+    /**
+     * @param string $mode
+     * @return resource
+     * @throws Exception
+     */
+    protected function getFilePointer($mode = 'r')
+    {
+        if (!is_resource($this->filePointer)) {
+            $this->openCsvFile($mode);
+        }
+        return $this->filePointer;
+    }
+
+    /**
+     * @param string $mode
+     * @throws Exception
+     */
+    protected function openCsvFile($mode)
+    {
+        if ($mode == 'r' && !is_file($this->getPathname())) {
+            throw new Exception(
+                "Cannot open file {$this->getPathname()}",
+                Exception::FILE_NOT_EXISTS,
+                null,
+                'fileNotExists'
+            );
+        }
+        $this->filePointer = fopen($this->getPathname(), $mode);
+        if (!$this->filePointer) {
+            throw new Exception(
+                "Cannot open file {$this->getPathname()}",
+                Exception::FILE_NOT_EXISTS,
+                null,
+                'fileNotExists'
+            );
+        }
+    }
+
+    protected function closeFile()
+    {
+        if (is_resource($this->filePointer)) {
+            fclose($this->filePointer);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getDelimiter()
+    {
+        return $this->delimiter;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEnclosure()
+    {
+        return $this->enclosure;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEscapedBy()
+    {
+        return $this->escapedBy;
+    }
+
+    /**
+     * @return int
+     */
+    public function getColumnsCount()
+    {
+        return count($this->getHeader());
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeader()
+    {
+        $this->rewind();
+        $current = $this->current();
+        if (is_array($current)) {
+            return $current;
+        }
+
+        return [];
+    }
+
+    /**
+     * @param array $row
+     * @throws Exception
+     */
+    public function writeRow(array $row)
+    {
+        $str = $this->rowToStr($row);
+        $ret = fwrite($this->getFilePointer('w+'), $str);
+
+        /* According to http://php.net/fwrite the fwrite() function
+         should return false on error. However not writing the full
+         string (which may occur e.g. when disk is full) is not considered
+         as an error. Therefore both conditions are necessary. */
+        if (($ret === false) || (($ret === 0) && (strlen($str) > 0))) {
+            throw new Exception(
+                "Cannot write to file {$this->getPathname()}",
+                Exception::WRITE_ERROR,
+                null,
+                'writeError'
+            );
+        }
+    }
+
+    /**
+     * @param array $row
+     * @return string
+     * @throws Exception
+     */
+    public function rowToStr(array $row)
+    {
+        $return = [];
+        foreach ($row as $column) {
+            if (!is_scalar($column) && !is_null($column)) {
+                $type = gettype($column);
+                throw new Exception(
+                    "Cannot write {$type} into a column",
+                    Exception::WRITE_ERROR,
+                    null,
+                    'writeError',
+                    ['column' => $column]
+                );
+            }
+
+            $return[] = $this->getEnclosure() .
+                str_replace($this->getEnclosure(), str_repeat($this->getEnclosure(), 2), $column) .
+                $this->getEnclosure();
+        }
+        return implode($this->getDelimiter(), $return) . "\n";
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    public function getLineBreak()
+    {
+        if (!$this->lineBreak) {
+            $this->lineBreak = $this->detectLineBreak();
+        }
+        return $this->lineBreak;
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    public function getLineBreakAsText()
+    {
+        return trim(json_encode($this->getLineBreak()), '"');
+    }
+
+    /**
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    public function validateLineBreak()
+    {
+        try {
+            $lineBreak = $this->getLineBreak();
+        } catch (Exception $e) {
+            throw new InvalidArgumentException(
+                "Failed to detect line break " . $e->getMessage(),
+                Exception::INVALID_PARAM,
+                $e,
+                'invalidParam'
+            );
+        }
+        if (in_array($lineBreak, ["\r\n", "\n"])) {
+            return $lineBreak;
+        }
+
+        throw new InvalidArgumentException(
+            "Invalid line break. Please use unix \\n or win \\r\\n line breaks.",
+            Exception::INVALID_PARAM,
+            null,
+            'invalidParam'
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function current()
+    {
+        return $this->currentRow;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function next()
+    {
+        $this->currentRow = $this->readLine();
+        $this->rowCounter++;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function key()
+    {
+        return $this->rowCounter;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function valid()
+    {
+        return $this->currentRow !== false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rewind()
+    {
+        rewind($this->getFilePointer());
+        for ($i = 0; $i < $this->skipLines; $i++) {
+            $this->readLine();
+        }
+        $this->currentRow = $this->readLine();
+        $this->rowCounter = 0;
+    }
 }

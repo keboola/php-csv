@@ -47,7 +47,7 @@ class CsvFileErrorsTest extends TestCase
     public function invalidFileNameProvider()
     {
         return [
-            ["", 'Cannot open file  fopen(): Filename cannot be empty'],
+            ["", 'Filename cannot be empty'],
             ["\0", 'fopen() expects parameter 1 to be a valid path, string given'],
         ];
     }

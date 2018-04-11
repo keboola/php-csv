@@ -54,7 +54,7 @@ foreach ($rows as $row) {
 ## Installation
 
 The library is available as [composer package](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx). 
-To start using composer in your project follow these steps:
+To start using this library in your project follow these steps:
 
 **Install package:**
 

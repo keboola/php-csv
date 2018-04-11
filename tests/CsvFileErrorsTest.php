@@ -9,20 +9,12 @@ use PHPUnit\Framework\TestCase;
 
 class CsvFileErrorsTest extends TestCase
 {
-    public function testNonExistentFile()
-    {
-        $csv = new CsvFile(__DIR__ . '/something.csv');
-        self::expectException(Exception::class);
-        self::expectExceptionMessage('Cannot open file');
-        $csv->getHeader();
-    }
-
     public function testException()
     {
         try {
-            $csv = new CsvFile(__DIR__ . '/something.csv');
+            $csv = new CsvFile(__DIR__ . '/nonexistent.csv');
             $csv->getHeader();
-            self::fail("Mush throw exception.");
+            self::fail("Must throw exception.");
         } catch (Exception $e) {
             self::assertContains('Cannot open file', $e->getMessage());
             self::assertEquals(1, $e->getCode());

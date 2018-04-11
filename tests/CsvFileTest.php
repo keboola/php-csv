@@ -3,6 +3,7 @@
 namespace Keboola\Csv\Tests;
 
 use Keboola\Csv\CsvFile;
+use Keboola\Csv\Exception;
 use PHPUnit\Framework\TestCase;
 
 class CsvFileTest extends TestCase
@@ -195,6 +196,77 @@ class CsvFileTest extends TestCase
         foreach ($rows as $row) {
             $csvFile->writeRow($row);
         }
+        $data = file_get_contents($fileName);
+        self::assertEquals(
+            "\"col1\",\"col2\"\n" .
+            "\"line without enclosure\",\"second column\"\n".
+            "\"enclosure \"\" in column\",\"hello \\\"\n" .
+            "\"line with enclosure\",\"second column\"\n" .
+            "\"column with enclosure \"\", and comma inside text\",\"second column enclosure in text \"\"\"\n" .
+            "\"columns with\nnew line\",\"columns with\ttab\"\n" .
+            "\"column with \\n \\t \\\\\",\"second col\"\n",
+            $data
+        );
+    }
+
+    public function testWriteInvalidObject()
+    {
+        $fileName = __DIR__ . '/data/_out.csv';
+        if (file_exists($fileName)) {
+            unlink($fileName);
+        }
+
+        $csvFile = new CsvFile($fileName);
+
+        $rows = [
+            [
+                'col1', 'col2',
+            ],
+            [
+                '1', new \stdClass()
+            ]
+        ];
+
+        $csvFile->writeRow($rows[0]);
+        self::expectException(Exception::class);
+        self::expectExceptionMessage("Cannot write object into a column");
+        $csvFile->writeRow($rows[1]);
+    }
+
+    public function testWriteValidObject()
+    {
+        $fileName = __DIR__ . '/data/_out.csv';
+        if (file_exists($fileName)) {
+            unlink($fileName);
+        }
+
+        $csvFile = new CsvFile($fileName);
+        /*
+        $c = new class
+        {
+            public function __toString()
+            {
+                return "me string";
+            }
+        };
+        */
+        $rows = [
+            [
+                'col1', 'col2',
+            ],
+            [
+                '1', new StringObject()
+            ]
+        ];
+
+        $csvFile->writeRow($rows[0]);
+        $csvFile->writeRow($rows[1]);
+        $data = file_get_contents($fileName);
+        self::assertEquals(
+            "\"col1\",\"col2\"\n" .
+            "\"1\",\"me string\"\n",
+            $data
+        );
     }
 
     public function testIterator()

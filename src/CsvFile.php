@@ -340,7 +340,9 @@ class CsvFile extends \SplFileInfo implements \Iterator
     {
         $return = [];
         foreach ($row as $column) {
-            if (!is_scalar($column) && !is_null($column)) {
+            if (!(is_scalar($column) || is_null($column) ||
+                (is_object($column) && method_exists($column, '__toString')))
+            ) {
                 $type = gettype($column);
                 throw new Exception(
                     "Cannot write {$type} into a column",

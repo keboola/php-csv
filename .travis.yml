@@ -1,9 +1,9 @@
 language: php
 before_script: composer install
 php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - hhvm
-
+- 5.6
+- 7.0
+- hhvm
+notifications:
+  slack:
+    secure: WVnUU0fkZS75md3mm7B08SxhP3HDeHbJ8GTPR1DUVjK3MHAmKeSah/plNNxn9I/TdlXnHzQO5WBN33nUq0ODGGT4WFzFa66YTX2tb+bNSmewBOv82hEoITTI1PI9SLq0WNtcamHWCM3Rt1XtiZb3DQk/OcUfiWrrn74q4PPX+VY=

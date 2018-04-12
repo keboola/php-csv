@@ -105,11 +105,6 @@ class CsvFileTest extends TestCase
     {
         $csvFile = new CsvFile(__DIR__ . '/data/escapingEscapedBy.csv', ",", '"', '\\');
 
-        $rows = [];
-        foreach ($csvFile as $row) {
-            $rows[] = $row;
-        }
-
         $expected = [
             [
                 'col1', 'col2',
@@ -137,7 +132,7 @@ class CsvFileTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $rows);
+        self::assertEquals($expected, iterator_to_array($csvFile));
     }
 
     public function testEmptyHeader()

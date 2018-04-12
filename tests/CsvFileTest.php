@@ -207,6 +207,7 @@ class CsvFileTest extends TestCase
             "\"column with \\n \\t \\\\\",\"second col\"\n",
             $data
         );
+        @unlink($fileName);
     }
 
     public function testWriteInvalidObject()
@@ -231,6 +232,7 @@ class CsvFileTest extends TestCase
         self::expectException(Exception::class);
         self::expectExceptionMessage("Cannot write object into a column");
         $csvFile->writeRow($rows[1]);
+        @unlink($fileName);
     }
 
     public function testWriteValidObject()
@@ -267,6 +269,7 @@ class CsvFileTest extends TestCase
             "\"1\",\"me string\"\n",
             $data
         );
+        @unlink($fileName);
     }
 
     public function testIterator()

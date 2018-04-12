@@ -101,6 +101,39 @@ class CsvFileTest extends TestCase
         self::assertEquals($expected, $rows);
     }
 
+    public function testParseEscapedBy()
+    {
+        $csvFile = new CsvFile(__DIR__ . '/data/escapingEscapedBy.csv', ",", '"', '\\');
+
+        $expected = [
+            [
+                'col1', 'col2',
+            ],
+            [
+                'line without enclosure', 'second column',
+            ],
+            [
+                'enclosure \" in column', 'hello \\\\',
+            ],
+            [
+                'line with enclosure', 'second column',
+            ],
+            [
+                'column with enclosure \", and comma inside text', 'second column enclosure in text \"',
+            ],
+            [
+                "columns with\nnew line", "columns with\ttab",
+            ],
+            [
+                "Columns with WINDOWS\r\nnew line", "second",
+            ],
+            [
+                'column with \n \t \\\\', 'second col',
+            ],
+        ];
+
+        self::assertEquals($expected, iterator_to_array($csvFile));
+    }
 
     public function testEmptyHeader()
     {

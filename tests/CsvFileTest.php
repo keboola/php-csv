@@ -198,13 +198,19 @@ class CsvFileTest extends TestCase
         }
         $data = file_get_contents($fileName);
         self::assertEquals(
-            "\"col1\",\"col2\"\n" .
-            "\"line without enclosure\",\"second column\"\n".
-            "\"enclosure \"\" in column\",\"hello \\\"\n" .
-            "\"line with enclosure\",\"second column\"\n" .
-            "\"column with enclosure \"\", and comma inside text\",\"second column enclosure in text \"\"\"\n" .
-            "\"columns with\nnew line\",\"columns with\ttab\"\n" .
-            "\"column with \\n \\t \\\\\",\"second col\"\n",
+            implode(
+                "\n",
+                [
+                    '"col1","col2"',
+                    '"line without enclosure","second column"',
+                    '"enclosure "" in column","hello \\"',
+                    '"line with enclosure","second column"',
+                    '"column with enclosure "", and comma inside text","second column enclosure in text """',
+                    "\"columns with\nnew line\",\"columns with\ttab\"",
+                    '"column with \\n \\t \\\\","second col"',
+                    '',
+                ]
+            ),
             $data
         );
         @unlink($fileName);
@@ -224,8 +230,8 @@ class CsvFileTest extends TestCase
                 'col1', 'col2',
             ],
             [
-                '1', new \stdClass()
-            ]
+                '1', new \stdClass(),
+            ],
         ];
 
         $csvFile->writeRow($rows[0]);
@@ -243,30 +249,27 @@ class CsvFileTest extends TestCase
         }
 
         $csvFile = new CsvFile($fileName);
-        /*
-        $c = new class
-        {
-            public function __toString()
-            {
-                return "me string";
-            }
-        };
-        */
         $rows = [
             [
                 'col1', 'col2',
             ],
             [
-                '1', new StringObject()
-            ]
+                '1', new StringObject(),
+            ],
         ];
 
         $csvFile->writeRow($rows[0]);
         $csvFile->writeRow($rows[1]);
         $data = file_get_contents($fileName);
         self::assertEquals(
-            "\"col1\",\"col2\"\n" .
-            "\"1\",\"me string\"\n",
+            implode(
+                "\n",
+                [
+                    '"col1","col2"' ,
+                    '"1","me string"',
+                    '',
+                ]
+            ),
             $data
         );
         @unlink($fileName);

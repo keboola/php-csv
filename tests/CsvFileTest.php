@@ -193,121 +193,6 @@ class CsvFileTest extends TestCase
         ];
     }
 
-    public function testWrite()
-    {
-        $fileName = __DIR__ . '/data/_out.csv';
-        if (file_exists($fileName)) {
-            unlink($fileName);
-        }
-
-        $csvFile = new CsvFile($fileName);
-
-        $rows = [
-            [
-                'col1', 'col2',
-            ],
-            [
-                'line without enclosure', 'second column',
-            ],
-            [
-                'enclosure " in column', 'hello \\',
-            ],
-            [
-                'line with enclosure', 'second column',
-            ],
-            [
-                'column with enclosure ", and comma inside text', 'second column enclosure in text "',
-            ],
-            [
-                "columns with\nnew line", "columns with\ttab",
-            ],
-            [
-                'column with \n \t \\\\', 'second col',
-            ]
-        ];
-
-        foreach ($rows as $row) {
-            $csvFile->writeRow($row);
-        }
-        $data = file_get_contents($fileName);
-        self::assertEquals(
-            implode(
-                "\n",
-                [
-                    '"col1","col2"',
-                    '"line without enclosure","second column"',
-                    '"enclosure "" in column","hello \\"',
-                    '"line with enclosure","second column"',
-                    '"column with enclosure "", and comma inside text","second column enclosure in text """',
-                    "\"columns with\nnew line\",\"columns with\ttab\"",
-                    '"column with \\n \\t \\\\","second col"',
-                    '',
-                ]
-            ),
-            $data
-        );
-        @unlink($fileName);
-    }
-
-    public function testWriteInvalidObject()
-    {
-        $fileName = __DIR__ . '/data/_out.csv';
-        if (file_exists($fileName)) {
-            unlink($fileName);
-        }
-
-        $csvFile = new CsvFile($fileName);
-
-        $rows = [
-            [
-                'col1', 'col2',
-            ],
-            [
-                '1', new \stdClass(),
-            ],
-        ];
-
-        $csvFile->writeRow($rows[0]);
-        self::expectException(Exception::class);
-        self::expectExceptionMessage("Cannot write object into a column");
-        $csvFile->writeRow($rows[1]);
-        @unlink($fileName);
-    }
-
-    public function testWriteValidObject()
-    {
-        $fileName = __DIR__ . '/data/_out.csv';
-        if (file_exists($fileName)) {
-            unlink($fileName);
-        }
-
-        $csvFile = new CsvFile($fileName);
-        $rows = [
-            [
-                'col1', 'col2',
-            ],
-            [
-                '1', new StringObject(),
-            ],
-        ];
-
-        $csvFile->writeRow($rows[0]);
-        $csvFile->writeRow($rows[1]);
-        $data = file_get_contents($fileName);
-        self::assertEquals(
-            implode(
-                "\n",
-                [
-                    '"col1","col2"' ,
-                    '"1","me string"',
-                    '',
-                ]
-            ),
-            $data
-        );
-        @unlink($fileName);
-    }
-
     public function testIterator()
     {
         $csvFile = new CsvFile(__DIR__ . '/data/test-input.csv');
@@ -406,5 +291,94 @@ class CsvFileTest extends TestCase
             100
         );
         self::assertEquals([], iterator_to_array($csvFile));
+    }
+
+    public function testException()
+    {
+        try {
+            $csv = new CsvFile(__DIR__ . '/nonexistent.csv');
+            $csv->getHeader();
+            self::fail("Must throw exception.");
+        } catch (Exception $e) {
+            self::assertContains('Cannot open file', $e->getMessage());
+            self::assertEquals(1, $e->getCode());
+            self::assertEquals([], $e->getContextParams());
+            self::assertEquals('fileNotExists', $e->getStringCode());
+        }
+    }
+
+    /**
+     * @dataProvider invalidDelimiterProvider
+     * @param string $delimiter
+     * @param string $message
+     */
+    public function testInvalidDelimiter($delimiter, $message)
+    {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage($message);
+        new CsvFile(__DIR__ . '/data/test-input.csv', $delimiter);
+    }
+
+    public function invalidDelimiterProvider()
+    {
+        return [
+            ['aaaa', 'Delimiter must be a single character. "aaaa" received'],
+            ['ob g', 'Delimiter must be a single character. "ob g" received'],
+            ['', 'Delimiter cannot be empty.'],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidEnclosureProvider
+     * @param string $enclosure
+     * @param string $message
+     */
+    public function testInvalidEnclosureShouldThrowException($enclosure, $message)
+    {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage($message);
+        new CsvFile(__DIR__ . '/data/test-input.csv', ",", $enclosure);
+    }
+
+    public function invalidEnclosureProvider()
+    {
+        return [
+            ['aaaa', 'Enclosure must be a single character. "aaaa" received'],
+            ['ob g', 'Enclosure must be a single character. "ob g" received'],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidSkipLinesProvider
+     * @param mixed $skipLines
+     * @param string $message
+     */
+    public function testInvalidSkipLines($skipLines, $message)
+    {
+        self::expectException(Exception::class);
+        self::expectExceptionMessage($message);
+        new CsvFile(
+            'dummy',
+            CsvFile::DEFAULT_DELIMITER,
+            CsvFile::DEFAULT_ENCLOSURE,
+            CsvFile::DEFAULT_ENCLOSURE,
+            $skipLines
+        );
+    }
+
+    public function invalidSkipLinesProvider()
+    {
+        return [
+            ['invalid', 'Number of lines to skip must be a positive integer. "invalid" received.'],
+            [-123, 'Number of lines to skip must be a positive integer. "-123" received.']
+        ];
+    }
+
+    public function testInvalidNewLines()
+    {
+        $csvFile = new CsvFile(__DIR__ . DIRECTORY_SEPARATOR . 'non-existent');
+        self::expectException(Exception::class);
+        self::expectExceptionMessage('Failed to detect line break: Cannot open file');
+        $csvFile->next();
     }
 }

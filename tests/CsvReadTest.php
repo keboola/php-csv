@@ -6,7 +6,7 @@ use Keboola\Csv\CsvFile;
 use Keboola\Csv\Exception;
 use PHPUnit\Framework\TestCase;
 
-class CsvFileTest extends TestCase
+class CsvReadTest extends TestCase
 {
 
     public function testExistingFileShouldBeCreated()

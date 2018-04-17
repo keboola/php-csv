@@ -2,21 +2,9 @@
 
 namespace Keboola\Csv;
 
-class CsvFile extends \SplFileInfo implements \Iterator
+class CsvReader extends AbstractCsvFile implements \Iterator
 {
-    const DEFAULT_DELIMITER = ',';
-    const DEFAULT_ENCLOSURE = '"';
     const DEFAULT_ESCAPED_BY = "";
-
-    /**
-     * @var string
-     */
-    protected $delimiter;
-
-    /**
-     * @var string
-     */
-    protected $enclosure;
 
     /**
      * @var string
@@ -44,9 +32,9 @@ class CsvFile extends \SplFileInfo implements \Iterator
     protected $currentRow;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $lineBreak;
+    protected $header;
 
     /**
      * CsvFile constructor.
@@ -79,7 +67,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
 
     /**
      * @param integer $skipLines
-     * @return CsvFile
+     * @return CsvReader
      * @throws InvalidArgumentException
      */
     protected function setSkipLines($skipLines)
@@ -106,71 +94,6 @@ class CsvFile extends \SplFileInfo implements \Iterator
     }
 
     /**
-     * @param string $delimiter
-     * @return CsvFile
-     * @throws InvalidArgumentException
-     */
-    protected function setDelimiter($delimiter)
-    {
-        $this->validateDelimiter($delimiter);
-        $this->delimiter = $delimiter;
-        return $this;
-    }
-
-    /**
-     * @param string $delimiter
-     * @throws InvalidArgumentException
-     */
-    protected function validateDelimiter($delimiter)
-    {
-        if (strlen($delimiter) > 1) {
-            throw new InvalidArgumentException(
-                "Delimiter must be a single character. \"$delimiter\" received",
-                Exception::INVALID_PARAM,
-                null,
-                Exception::INVALID_PARAM_STR
-            );
-        }
-
-        if (strlen($delimiter) == 0) {
-            throw new InvalidArgumentException(
-                "Delimiter cannot be empty.",
-                Exception::INVALID_PARAM,
-                null,
-                Exception::INVALID_PARAM_STR
-            );
-        }
-    }
-
-    /**
-     * @param string $enclosure
-     * @return $this
-     * @throws InvalidArgumentException
-     */
-    protected function setEnclosure($enclosure)
-    {
-        $this->validateEnclosure($enclosure);
-        $this->enclosure = $enclosure;
-        return $this;
-    }
-
-    /**
-     * @param string $enclosure
-     * @throws InvalidArgumentException
-     */
-    protected function validateEnclosure($enclosure)
-    {
-        if (strlen($enclosure) > 1) {
-            throw new InvalidArgumentException(
-                "Enclosure must be a single character. \"$enclosure\" received",
-                Exception::INVALID_PARAM,
-                null,
-                Exception::INVALID_PARAM_STR
-            );
-        }
-    }
-
-    /**
      * @return string
      * @throws Exception
      */
@@ -178,7 +101,6 @@ class CsvFile extends \SplFileInfo implements \Iterator
     {
         rewind($this->getFilePointer());
         $sample = fread($this->getFilePointer(), 10000);
-        rewind($this->getFilePointer());
 
         $possibleLineBreaks = [
             "\r\n", // win
@@ -217,26 +139,27 @@ class CsvFile extends \SplFileInfo implements \Iterator
         return fgetcsv($this->getFilePointer(), null, $this->getDelimiter(), $enclosure, $escapedBy);
     }
 
-    /**
-     * @param string $mode
-     * @return resource
-     * @throws Exception
-     */
-    protected function getFilePointer($mode = 'r')
+    protected function ensureCsvFile()
     {
         if (!is_resource($this->filePointer)) {
-            $this->openCsvFile($mode);
+            $this->openCsvFile();
         }
+    }
+
+    /**
+     * @return resource
+     */
+    protected function getFilePointer()
+    {
         return $this->filePointer;
     }
 
     /**
-     * @param string $mode
      * @throws Exception
      */
-    protected function openCsvFile($mode)
+    protected function openCsvFile()
     {
-        if ($mode == 'r' && !is_file($this->getPathname())) {
+        if (!is_file($this->getPathname())) {
             throw new Exception(
                 "Cannot open file {$this->getPathname()}",
                 Exception::FILE_NOT_EXISTS,
@@ -244,7 +167,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
                 Exception::FILE_NOT_EXISTS_STR
             );
         }
-        $this->filePointer = @fopen($this->getPathname(), $mode);
+        $this->filePointer = @fopen($this->getPathname(), "r");
         if (!$this->filePointer) {
             throw new Exception(
                 "Cannot open file {$this->getPathname()} " . error_get_last()['message'],
@@ -253,6 +176,9 @@ class CsvFile extends \SplFileInfo implements \Iterator
                 Exception::FILE_NOT_EXISTS_STR
             );
         }
+        $this->header = $this->readLine();
+        $this->lineBreak = $this->detectLineBreak();
+        $this->rewind();
     }
 
     protected function closeFile()
@@ -260,22 +186,6 @@ class CsvFile extends \SplFileInfo implements \Iterator
         if (is_resource($this->filePointer)) {
             fclose($this->filePointer);
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getDelimiter()
-    {
-        return $this->delimiter;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEnclosure()
-    {
-        return $this->enclosure;
     }
 
     /**
@@ -299,70 +209,8 @@ class CsvFile extends \SplFileInfo implements \Iterator
      */
     public function getHeader()
     {
-        $this->rewind();
-        $current = $this->current();
-        if (is_array($current)) {
-            return $current;
-        }
-
-        return [];
-    }
-
-    /**
-     * @param array $row
-     * @throws Exception
-     */
-    public function writeRow(array $row)
-    {
-        $str = $this->rowToStr($row);
-        $ret = fwrite($this->getFilePointer('w+'), $str);
-
-        /* According to http://php.net/fwrite the fwrite() function
-         should return false on error. However not writing the full
-         string (which may occur e.g. when disk is full) is not considered
-         as an error. Therefore both conditions are necessary. */
-        if (($ret === false) || (($ret === 0) && (strlen($str) > 0))) {
-            throw new Exception(
-                "Cannot write to file {$this->getPathname()}",
-                Exception::WRITE_ERROR,
-                null,
-                Exception::WRITE_ERROR_STR
-            );
-        }
-    }
-
-    /**
-     * @param array $row
-     * @return string
-     * @throws Exception
-     */
-    public function rowToStr(array $row)
-    {
-        $return = [];
-        foreach ($row as $column) {
-            if (!(
-                is_scalar($column)
-                || is_null($column)
-                || (
-                    is_object($column)
-                    && method_exists($column, '__toString')
-                )
-            )) {
-                $type = gettype($column);
-                throw new Exception(
-                    "Cannot write {$type} into a column",
-                    Exception::WRITE_ERROR,
-                    null,
-                    Exception::WRITE_ERROR_STR,
-                    ['column' => $column]
-                );
-            }
-
-            $return[] = $this->getEnclosure() .
-                str_replace($this->getEnclosure(), str_repeat($this->getEnclosure(), 2), $column) .
-                $this->getEnclosure();
-        }
-        return implode($this->getDelimiter(), $return) . "\n";
+        $this->ensureCsvFile();
+        return $this->header;
     }
 
     /**
@@ -371,9 +219,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
      */
     public function getLineBreak()
     {
-        if (!$this->lineBreak) {
-            $this->lineBreak = $this->detectLineBreak();
-        }
+        $this->ensureCsvFile();
         return $this->lineBreak;
     }
 
@@ -419,6 +265,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
      */
     public function current()
     {
+        $this->ensureCsvFile();
         return $this->currentRow;
     }
 
@@ -427,6 +274,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
      */
     public function next()
     {
+        $this->ensureCsvFile();
         $this->currentRow = $this->readLine();
         $this->rowCounter++;
     }
@@ -444,6 +292,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
      */
     public function valid()
     {
+        $this->ensureCsvFile();
         return $this->currentRow !== false;
     }
 
@@ -452,6 +301,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
      */
     public function rewind()
     {
+        $this->ensureCsvFile();
         rewind($this->getFilePointer());
         for ($i = 0; $i < $this->skipLines; $i++) {
             $this->readLine();

@@ -144,7 +144,7 @@ class CsvWriter extends AbstractCsvFile
                 null,
                 Exception::INVALID_PARAM,
                 Exception::INVALID_PARAM_STR
-                );
+            );
         }
     }
 }

@@ -102,5 +102,4 @@ class AbstractCsvFile extends SplFileInfo
     {
         return $this->enclosure;
     }
-
 }

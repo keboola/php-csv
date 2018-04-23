@@ -376,10 +376,9 @@ class CsvReadTest extends TestCase
 
     public function testInvalidNewLines()
     {
-        $csvFile = new CsvReader(__DIR__ . DIRECTORY_SEPARATOR . 'non-existent');
         self::expectException(Exception::class);
-        self::expectExceptionMessage('Failed to detect line break: Cannot open file');
-        $csvFile->next();
+        self::expectExceptionMessage('Invalid line break. Please use unix \n or win \r\n line breaks.');
+        $csvFile = new CsvReader(__DIR__ . DIRECTORY_SEPARATOR . 'data/binary');
     }
 
 

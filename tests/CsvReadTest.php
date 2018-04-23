@@ -2,8 +2,10 @@
 
 namespace Keboola\Csv\Tests;
 
-use Keboola\Csv\CsvFile;
+use Keboola\Csv\CsvReader;
+use Keboola\Csv\CsvWriter;
 use Keboola\Csv\Exception;
+use Keboola\Csv\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class CsvReadTest extends TestCase
@@ -11,12 +13,12 @@ class CsvReadTest extends TestCase
 
     public function testExistingFileShouldBeCreated()
     {
-        self::assertInstanceOf(CsvFile::class, new CsvFile(__DIR__ . '/data/test-input.csv'));
+        self::assertInstanceOf(CsvReader::class, new CsvReader(__DIR__ . '/data/test-input.csv'));
     }
 
     public function testAccessors()
     {
-        $csvFile = new CsvFile(__DIR__ . '/data/test-input.csv');
+        $csvFile = new CsvReader(__DIR__ . '/data/test-input.csv');
         self::assertEquals('test-input.csv', $csvFile->getBasename());
         self::assertEquals("\"", $csvFile->getEnclosure());
         self::assertEquals("", $csvFile->getEscapedBy());
@@ -25,7 +27,7 @@ class CsvReadTest extends TestCase
 
     public function testColumnsCount()
     {
-        $csv = new CsvFile(__DIR__ . '/data/test-input.csv');
+        $csv = new CsvReader(__DIR__ . '/data/test-input.csv');
 
         self::assertEquals(9, $csv->getColumnsCount());
     }
@@ -37,7 +39,7 @@ class CsvReadTest extends TestCase
      */
     public function testRead($fileName, $delimiter)
     {
-        $csvFile = new CsvFile(__DIR__ . '/data/' . $fileName, $delimiter, '"');
+        $csvFile = new CsvReader(__DIR__ . '/data/' . $fileName, $delimiter, '"');
 
         $expected = [
             "id",
@@ -65,7 +67,7 @@ class CsvReadTest extends TestCase
 
     public function testParse()
     {
-        $csvFile = new CsvFile(__DIR__ . '/data/escaping.csv', ",", '"');
+        $csvFile = new CsvReader(__DIR__ . '/data/escaping.csv', ",", '"');
 
         $rows = [];
         foreach ($csvFile as $row) {
@@ -104,7 +106,7 @@ class CsvReadTest extends TestCase
 
     public function testParseEscapedBy()
     {
-        $csvFile = new CsvFile(__DIR__ . '/data/escapingEscapedBy.csv', ",", '"', '\\');
+        $csvFile = new CsvReader(__DIR__ . '/data/escapingEscapedBy.csv', ",", '"', '\\');
 
         $expected = [
             [
@@ -138,15 +140,15 @@ class CsvReadTest extends TestCase
 
     public function testEmptyHeader()
     {
-        $csvFile = new CsvFile(__DIR__ . '/data/test-input.empty.csv', ',', '"');
+        $csvFile = new CsvReader(__DIR__ . '/data/test-input.empty.csv', ',', '"');
 
         self::assertEquals([], $csvFile->getHeader());
     }
 
-    public function testInitInvalidFileShouldNotThrowException()
+    public function testInitInvalidFileShouldThrowException()
     {
         try {
-            new CsvFile(__DIR__ . '/data/dafadfsafd.csv');
+            new CsvReader(__DIR__ . '/data/dafadfsafd.csv');
         } catch (\Exception $e) {
             self::fail('Exception should not be thrown');
         }
@@ -160,7 +162,7 @@ class CsvReadTest extends TestCase
      */
     public function testLineEndingsDetection($file, $lineBreak, $lineBreakAsText)
     {
-        $csvFile = new CsvFile(__DIR__ . '/data/' . $file);
+        $csvFile = new CsvReader(__DIR__ . '/data/' . $file);
         self::assertEquals($lineBreak, $csvFile->getLineBreak());
         self::assertEquals($lineBreakAsText, $csvFile->getLineBreakAsText());
     }
@@ -182,7 +184,7 @@ class CsvReadTest extends TestCase
      */
     public function testInvalidLineBreak($file)
     {
-        $csvFile = new CsvFile(__DIR__ . '/data/' . $file);
+        $csvFile = new CsvReader(__DIR__ . '/data/' . $file);
         $csvFile->validateLineBreak();
     }
 
@@ -195,7 +197,7 @@ class CsvReadTest extends TestCase
 
     public function testIterator()
     {
-        $csvFile = new CsvFile(__DIR__ . '/data/test-input.csv');
+        $csvFile = new CsvReader(__DIR__ . '/data/test-input.csv');
 
         $expected = [
             "id",
@@ -230,11 +232,11 @@ class CsvReadTest extends TestCase
     {
         $fileName = __DIR__ . '/data/simple.csv';
 
-        $csvFile = new CsvFile(
+        $csvFile = new CsvReader(
             $fileName,
-            CsvFile::DEFAULT_DELIMITER,
-            CsvFile::DEFAULT_ENCLOSURE,
-            CsvFile::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_DELIMITER,
+            CsvReader::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_ENCLOSURE,
             1
         );
         self::assertEquals([
@@ -248,11 +250,11 @@ class CsvReadTest extends TestCase
     {
         $fileName = __DIR__ . '/data/simple.csv';
 
-        $csvFile = new CsvFile(
+        $csvFile = new CsvReader(
             $fileName,
-            CsvFile::DEFAULT_DELIMITER,
-            CsvFile::DEFAULT_ENCLOSURE,
-            CsvFile::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_DELIMITER,
+            CsvReader::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_ENCLOSURE,
             0
         );
         self::assertEquals([
@@ -267,11 +269,11 @@ class CsvReadTest extends TestCase
     {
         $fileName = __DIR__ . '/data/simple.csv';
 
-        $csvFile = new CsvFile(
+        $csvFile = new CsvReader(
             $fileName,
-            CsvFile::DEFAULT_DELIMITER,
-            CsvFile::DEFAULT_ENCLOSURE,
-            CsvFile::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_DELIMITER,
+            CsvReader::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_ENCLOSURE,
             3
         );
         self::assertEquals([
@@ -283,11 +285,11 @@ class CsvReadTest extends TestCase
     {
         $fileName = __DIR__ . '/data/simple.csv';
 
-        $csvFile = new CsvFile(
+        $csvFile = new CsvReader(
             $fileName,
-            CsvFile::DEFAULT_DELIMITER,
-            CsvFile::DEFAULT_ENCLOSURE,
-            CsvFile::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_DELIMITER,
+            CsvReader::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_ENCLOSURE,
             100
         );
         self::assertEquals([], iterator_to_array($csvFile));
@@ -296,7 +298,7 @@ class CsvReadTest extends TestCase
     public function testException()
     {
         try {
-            $csv = new CsvFile(__DIR__ . '/nonexistent.csv');
+            $csv = new CsvReader(__DIR__ . '/nonexistent.csv');
             $csv->getHeader();
             self::fail("Must throw exception.");
         } catch (Exception $e) {
@@ -316,7 +318,7 @@ class CsvReadTest extends TestCase
     {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage($message);
-        new CsvFile(__DIR__ . '/data/test-input.csv', $delimiter);
+        new CsvReader(__DIR__ . '/data/test-input.csv', $delimiter);
     }
 
     public function invalidDelimiterProvider()
@@ -337,7 +339,7 @@ class CsvReadTest extends TestCase
     {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage($message);
-        new CsvFile(__DIR__ . '/data/test-input.csv', ",", $enclosure);
+        new CsvReader(__DIR__ . '/data/test-input.csv', ",", $enclosure);
     }
 
     public function invalidEnclosureProvider()
@@ -357,11 +359,11 @@ class CsvReadTest extends TestCase
     {
         self::expectException(Exception::class);
         self::expectExceptionMessage($message);
-        new CsvFile(
+        new CsvReader(
             'dummy',
-            CsvFile::DEFAULT_DELIMITER,
-            CsvFile::DEFAULT_ENCLOSURE,
-            CsvFile::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_DELIMITER,
+            CsvReader::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_ENCLOSURE,
             $skipLines
         );
     }
@@ -376,9 +378,80 @@ class CsvReadTest extends TestCase
 
     public function testInvalidNewLines()
     {
-        $csvFile = new CsvFile(__DIR__ . DIRECTORY_SEPARATOR . 'non-existent');
+        $csvFile = new CsvReader(__DIR__ . DIRECTORY_SEPARATOR . 'non-existent');
         self::expectException(Exception::class);
         self::expectExceptionMessage('Failed to detect line break: Cannot open file');
         $csvFile->next();
+    }
+
+
+    public function testValidWithoutRewind()
+    {
+        $fileName = __DIR__ . '/data/simple.csv';
+
+        $csvFile = new CsvReader($fileName);
+        self::assertTrue($csvFile->valid());
+    }
+
+    public function testHeaderNoReset()
+    {
+        $fileName = __DIR__ . '/data/simple.csv';
+
+        $csvFile = new CsvReader($fileName);
+        $csvFile->rewind();
+        self::assertEquals(['id', 'isImported'], $csvFile->current());
+        $csvFile->next();
+        self::assertEquals(['15', '0'], $csvFile->current());
+        self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
+        self::assertEquals(['15', '0'], $csvFile->current());
+    }
+
+    public function testLineBreakWithoutRewind()
+    {
+        $fileName = __DIR__ . '/data/simple.csv';
+
+        $csvFile = new CsvReader($fileName);
+        self::assertEquals("\n", $csvFile->getLineBreak());
+    }
+
+    public function testWriteReadInTheMiddle()
+    {
+        $fileName = __DIR__ . '/data/_out.csv';
+        if (file_exists($fileName)) {
+            unlink($fileName);
+        }
+
+        $csvFile = new CsvReader($fileName);
+        $writer = new CsvWriter($fileName);
+        $rows = [
+            [
+                'col1', 'col2',
+            ],
+            [
+                '1', 'first',
+            ],
+            [
+                '2', 'second',
+            ],
+        ];
+
+        $writer->writeRow($rows[0]);
+        $writer->writeRow($rows[1]);
+        self::assertEquals(['col1', 'col2'], $csvFile->getHeader());
+        $writer->writeRow($rows[2]);
+        $data = file_get_contents($fileName);
+        self::assertEquals(
+            implode(
+                "\n",
+                [
+                    '"col1","col2"' ,
+                    '"1","first"',
+                    '"2","second"',
+                    '',
+                ]
+            ),
+            $data
+        );
+        @unlink($fileName);
     }
 }

@@ -45,6 +45,7 @@ class CsvWriter extends AbstractCsvFile
      */
     public function writeRow(array $row)
     {
+        $this->ensureCsvFile();
         $str = $this->rowToStr($row);
         $ret = fwrite($this->getFilePointer(), $str);
 

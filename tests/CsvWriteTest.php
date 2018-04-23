@@ -2,12 +2,25 @@
 
 namespace Keboola\Csv\Tests;
 
-use Keboola\Csv\CsvFile;
+use Keboola\Csv\CsvWriter;
 use Keboola\Csv\Exception;
 use PHPUnit\Framework\TestCase;
 
 class CsvWriteTest extends TestCase
 {
+    public function testNewFileShouldBeCreated()
+    {
+        self::assertInstanceOf(CsvWriter::class, new CsvWriter(__DIR__ . '/data/non-existent-file.csv'));
+    }
+
+    public function testAccessors()
+    {
+        $csvFile = new CsvWriter(__DIR__ . '/data/test-input.csv');
+        self::assertEquals('test-input.csv', $csvFile->getBasename());
+        self::assertEquals("\"", $csvFile->getEnclosure());
+        self::assertEquals(",", $csvFile->getDelimiter());
+    }
+
     public function testWrite()
     {
         $fileName = __DIR__ . '/data/_out.csv';
@@ -15,7 +28,7 @@ class CsvWriteTest extends TestCase
             unlink($fileName);
         }
 
-        $csvFile = new CsvFile($fileName);
+        $csvFile = new CsvWriter($fileName);
 
         $rows = [
             [
@@ -71,7 +84,7 @@ class CsvWriteTest extends TestCase
             unlink($fileName);
         }
 
-        $csvFile = new CsvFile($fileName);
+        $csvFile = new CsvWriter($fileName);
 
         $rows = [
             [
@@ -96,7 +109,7 @@ class CsvWriteTest extends TestCase
             unlink($fileName);
         }
 
-        $csvFile = new CsvFile($fileName);
+        $csvFile = new CsvWriter($fileName);
         $rows = [
             [
                 'col1', 'col2',
@@ -130,7 +143,7 @@ class CsvWriteTest extends TestCase
      */
     public function testInvalidFileName($filename, $message)
     {
-        $csv = new CsvFile($filename);
+        $csv = new CsvWriter($filename);
         self::expectException(Exception::class);
         self::expectExceptionMessage($message);
         $csv->writeRow(['a', 'b']);
@@ -151,7 +164,7 @@ class CsvWriteTest extends TestCase
             unlink($fileName);
         }
 
-        $csvFile = new CsvFile($fileName);
+        $csvFile = new CsvWriter($fileName);
         $row = [['nested']];
         self::expectException(Exception::class);
         self::expectExceptionMessage("Cannot write array into a column");

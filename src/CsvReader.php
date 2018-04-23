@@ -176,8 +176,9 @@ class CsvReader extends AbstractCsvFile implements \Iterator
                 Exception::FILE_NOT_EXISTS_STR
             );
         }
-        $this->header = $this->readLine();
         $this->lineBreak = $this->detectLineBreak();
+        rewind($this->getFilePointer());
+        $this->header = $this->readLine();
         $this->rewind();
     }
 
@@ -210,7 +211,10 @@ class CsvReader extends AbstractCsvFile implements \Iterator
     public function getHeader()
     {
         $this->ensureCsvFile();
-        return $this->header;
+        if ($this->header) {
+            return $this->header;
+        }
+        return [];
     }
 
     /**

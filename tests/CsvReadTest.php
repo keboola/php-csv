@@ -147,11 +147,9 @@ class CsvReadTest extends TestCase
 
     public function testInitInvalidFileShouldThrowException()
     {
-        try {
-            new CsvReader(__DIR__ . '/data/dafadfsafd.csv');
-        } catch (\Exception $e) {
-            self::fail('Exception should not be thrown');
-        }
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Cannot open file');
+        new CsvReader(__DIR__ . '/data/dafadfsafd.csv');
     }
 
     /**
@@ -416,13 +414,10 @@ class CsvReadTest extends TestCase
 
     public function testWriteReadInTheMiddle()
     {
-        $fileName = __DIR__ . '/data/_out.csv';
-        if (file_exists($fileName)) {
-            unlink($fileName);
-        }
-
-        $csvFile = new CsvReader($fileName);
+        $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('csv-test');
         $writer = new CsvWriter($fileName);
+        $reader = new CsvReader($fileName);
+        self::assertEquals([], $reader->getHeader());
         $rows = [
             [
                 'col1', 'col2',
@@ -436,9 +431,15 @@ class CsvReadTest extends TestCase
         ];
 
         $writer->writeRow($rows[0]);
+        $reader->next();
+        self::assertEquals(false, $reader->current());
         $writer->writeRow($rows[1]);
-        self::assertEquals(['col1', 'col2'], $csvFile->getHeader());
         $writer->writeRow($rows[2]);
+        $reader->rewind();
+        $reader->next();
+        self::assertEquals(['1', 'first'], $reader->current());
+        $reader->next();
+        self::assertEquals(['2', 'second'], $reader->current());
         $data = file_get_contents($fileName);
         self::assertEquals(
             implode(
@@ -452,6 +453,5 @@ class CsvReadTest extends TestCase
             ),
             $data
         );
-        @unlink($fileName);
     }
 }

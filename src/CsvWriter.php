@@ -32,6 +32,7 @@ class CsvWriter extends AbstractCsvFile
         $this->setMode($mode);
         $this->setDelimiter($delimiter);
         $this->setEnclosure($enclosure);
+        $this->openCsvFile();
     }
 
     public function __destruct()
@@ -45,7 +46,6 @@ class CsvWriter extends AbstractCsvFile
      */
     public function writeRow(array $row)
     {
-        $this->ensureCsvFile();
         $str = $this->rowToStr($row);
         $ret = fwrite($this->getFilePointer(), $str);
 
@@ -103,13 +103,6 @@ class CsvWriter extends AbstractCsvFile
     protected function getFilePointer()
     {
         return $this->filePointer;
-    }
-
-    protected function ensureCsvFile()
-    {
-        if (!is_resource($this->filePointer)) {
-            $this->openCsvFile();
-        }
     }
 
     /**

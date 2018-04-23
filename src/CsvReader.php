@@ -58,6 +58,7 @@ class CsvReader extends AbstractCsvFile implements \Iterator
         $this->setDelimiter($delimiter);
         $this->setEnclosure($enclosure);
         $this->setSkipLines($skipLines);
+        $this->openCsvFile();
     }
 
     public function __destruct()
@@ -139,13 +140,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
         return fgetcsv($this->getFilePointer(), null, $this->getDelimiter(), $enclosure, $escapedBy);
     }
 
-    protected function ensureCsvFile()
-    {
-        if (!is_resource($this->filePointer)) {
-            $this->openCsvFile();
-        }
-    }
-
     /**
      * @return resource
      */
@@ -210,7 +204,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
      */
     public function getHeader()
     {
-        $this->ensureCsvFile();
         if ($this->header) {
             return $this->header;
         }
@@ -223,7 +216,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
      */
     public function getLineBreak()
     {
-        $this->ensureCsvFile();
         return $this->lineBreak;
     }
 
@@ -269,7 +261,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
      */
     public function current()
     {
-        $this->ensureCsvFile();
         return $this->currentRow;
     }
 
@@ -278,7 +269,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
      */
     public function next()
     {
-        $this->ensureCsvFile();
         $this->currentRow = $this->readLine();
         $this->rowCounter++;
     }
@@ -296,7 +286,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
      */
     public function valid()
     {
-        $this->ensureCsvFile();
         return $this->currentRow !== false;
     }
 
@@ -305,7 +294,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
      */
     public function rewind()
     {
-        $this->ensureCsvFile();
         rewind($this->getFilePointer());
         for ($i = 0; $i < $this->skipLines; $i++) {
             $this->readLine();

@@ -15,21 +15,16 @@ class CsvWriteTest extends TestCase
 
     public function testAccessors()
     {
-        $csvFile = new CsvWriter(__DIR__ . '/data/test-input.csv');
-        self::assertEquals('test-input.csv', $csvFile->getBasename());
+        $csvFile = new CsvWriter(sys_get_temp_dir() . '/test-write.csv');
+        self::assertEquals('test-write.csv', $csvFile->getBasename());
         self::assertEquals("\"", $csvFile->getEnclosure());
         self::assertEquals(",", $csvFile->getDelimiter());
     }
 
     public function testWrite()
     {
-        $fileName = __DIR__ . '/data/_out.csv';
-        if (file_exists($fileName)) {
-            unlink($fileName);
-        }
-
+        $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('csv-test');
         $csvFile = new CsvWriter($fileName);
-
         $rows = [
             [
                 'col1', 'col2',
@@ -74,16 +69,11 @@ class CsvWriteTest extends TestCase
             ),
             $data
         );
-        @unlink($fileName);
     }
 
     public function testWriteInvalidObject()
     {
-        $fileName = __DIR__ . '/data/_out.csv';
-        if (file_exists($fileName)) {
-            unlink($fileName);
-        }
-
+        $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('csv-test');
         $csvFile = new CsvWriter($fileName);
 
         $rows = [
@@ -99,16 +89,11 @@ class CsvWriteTest extends TestCase
         self::expectException(Exception::class);
         self::expectExceptionMessage("Cannot write object into a column");
         $csvFile->writeRow($rows[1]);
-        @unlink($fileName);
     }
 
     public function testWriteValidObject()
     {
-        $fileName = __DIR__ . '/data/_out.csv';
-        if (file_exists($fileName)) {
-            unlink($fileName);
-        }
-
+        $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('csv-test');
         $csvFile = new CsvWriter($fileName);
         $rows = [
             [
@@ -133,7 +118,6 @@ class CsvWriteTest extends TestCase
             ),
             $data
         );
-        @unlink($fileName);
     }
 
     /**
@@ -143,10 +127,9 @@ class CsvWriteTest extends TestCase
      */
     public function testInvalidFileName($filename, $message)
     {
-        $csv = new CsvWriter($filename);
         self::expectException(Exception::class);
         self::expectExceptionMessage($message);
-        $csv->writeRow(['a', 'b']);
+        new CsvWriter($filename);
     }
 
     public function invalidFileNameProvider()
@@ -159,16 +142,11 @@ class CsvWriteTest extends TestCase
 
     public function testNonStringWrite()
     {
-        $fileName = __DIR__ . '/data/_out.csv';
-        if (file_exists($fileName)) {
-            unlink($fileName);
-        }
-
+        $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('csv-test');
         $csvFile = new CsvWriter($fileName);
         $row = [['nested']];
         self::expectException(Exception::class);
         self::expectExceptionMessage("Cannot write array into a column");
         $csvFile->writeRow($row);
     }
-
 }

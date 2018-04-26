@@ -234,7 +234,7 @@ class CsvReadTest extends TestCase
             $fileName,
             CsvReader::DEFAULT_DELIMITER,
             CsvReader::DEFAULT_ENCLOSURE,
-            CsvReader::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_ESCAPED_BY,
             1
         );
         self::assertEquals([
@@ -252,7 +252,7 @@ class CsvReadTest extends TestCase
             $fileName,
             CsvReader::DEFAULT_DELIMITER,
             CsvReader::DEFAULT_ENCLOSURE,
-            CsvReader::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_ESCAPED_BY,
             0
         );
         self::assertEquals([
@@ -271,7 +271,7 @@ class CsvReadTest extends TestCase
             $fileName,
             CsvReader::DEFAULT_DELIMITER,
             CsvReader::DEFAULT_ENCLOSURE,
-            CsvReader::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_ESCAPED_BY,
             3
         );
         self::assertEquals([
@@ -287,7 +287,7 @@ class CsvReadTest extends TestCase
             $fileName,
             CsvReader::DEFAULT_DELIMITER,
             CsvReader::DEFAULT_ENCLOSURE,
-            CsvReader::DEFAULT_ENCLOSURE,
+            CsvReader::DEFAULT_ESCAPED_BY,
             100
         );
         self::assertEquals([], iterator_to_array($csvFile));

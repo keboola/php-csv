@@ -432,7 +432,7 @@ class CsvReadTest extends TestCase
 
         $writer->writeRow($rows[0]);
         $reader->next();
-        self::assertEquals(false, $reader->current());
+        self::assertEquals(false, $reader->current(), "Reader must be at end of file");
         $writer->writeRow($rows[1]);
         $writer->writeRow($rows[2]);
         $reader->rewind();

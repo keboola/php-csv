@@ -136,7 +136,7 @@ class CsvWriter extends AbstractCsvFile
 
     protected function validateMode($mode)
     {
-        $allowedModes = ['w', 'w+', 'a', 'a+', 'x'];
+        $allowedModes = ['w', 'a', 'x'];
         if (!in_array($mode, $allowedModes)) {
             throw new Exception(
                 "Invalid file mode: " . $mode . " allowed modes: " . implode(',', $allowedModes),

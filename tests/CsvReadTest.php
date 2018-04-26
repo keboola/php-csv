@@ -390,7 +390,7 @@ class CsvReadTest extends TestCase
         self::assertTrue($csvFile->valid());
     }
 
-    public function testHeaderNoReset()
+    public function testHeaderNoRewindOnGetHeader()
     {
         $fileName = __DIR__ . '/data/simple.csv';
 
@@ -409,6 +409,7 @@ class CsvReadTest extends TestCase
 
         $csvFile = new CsvReader($fileName);
         self::assertEquals("\n", $csvFile->getLineBreak());
+        self::assertEquals(['id', 'isImported'], $csvFile->current());
     }
 
     public function testWriteReadInTheMiddle()

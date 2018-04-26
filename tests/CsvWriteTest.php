@@ -17,8 +17,8 @@ class CsvWriteTest extends TestCase
     {
         $csvFile = new CsvWriter(sys_get_temp_dir() . '/test-write.csv');
         self::assertEquals('test-write.csv', $csvFile->getBasename());
-        self::assertEquals("\"", $csvFile->getEnclosure());
-        self::assertEquals(",", $csvFile->getDelimiter());
+        self::assertEquals('"', $csvFile->getEnclosure());
+        self::assertEquals(',', $csvFile->getDelimiter());
     }
 
     public function testWrite()

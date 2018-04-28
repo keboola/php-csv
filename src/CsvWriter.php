@@ -140,9 +140,8 @@ class CsvWriter extends AbstractCsvFile
         if (!in_array($mode, $allowedModes)) {
             throw new Exception(
                 "Invalid file mode: " . $mode . " allowed modes: " . implode(',', $allowedModes),
-                0,
-                null,
                 Exception::INVALID_PARAM,
+                null,
                 Exception::INVALID_PARAM_STR
             );
         }

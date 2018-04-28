@@ -87,7 +87,7 @@ class CsvWriteTest extends TestCase
 
         $csvFile->writeRow($rows[0]);
         self::expectException(Exception::class);
-        self::expectExceptionMessage("Cannot write object into a column");
+        self::expectExceptionMessage("Cannot write data into column: stdClass::");
         $csvFile->writeRow($rows[1]);
     }
 
@@ -146,7 +146,7 @@ class CsvWriteTest extends TestCase
         $csvFile = new CsvWriter($fileName);
         $row = [['nested']];
         self::expectException(Exception::class);
-        self::expectExceptionMessage("Cannot write array into a column");
+        self::expectExceptionMessage("Cannot write data into column: array");
         $csvFile->writeRow($row);
     }
 }

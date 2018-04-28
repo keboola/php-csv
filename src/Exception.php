@@ -18,11 +18,6 @@ class Exception extends \Exception
     protected $stringCode;
 
     /**
-     * @var array
-     */
-    protected $contextParams;
-
-    /**
      * Exception constructor.
      * @param string $message
      * @param int $code
@@ -33,7 +28,6 @@ class Exception extends \Exception
     public function __construct($message = "", $code = 0, $previous = null, $stringCode = null, $params = null)
     {
         $this->setStringCode($stringCode);
-        $this->setContextParams($params);
         parent::__construct($message, $code, $previous);
     }
 
@@ -52,24 +46,6 @@ class Exception extends \Exception
     public function setStringCode($stringCode)
     {
         $this->stringCode = (string)$stringCode;
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getContextParams()
-    {
-        return $this->contextParams;
-    }
-
-    /**
-     * @param array|null $contextParams
-     * @return Exception
-     */
-    public function setContextParams($contextParams)
-    {
-        $this->contextParams = (array)$contextParams;
         return $this;
     }
 }

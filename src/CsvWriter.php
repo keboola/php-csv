@@ -82,11 +82,10 @@ class CsvWriter extends AbstractCsvFile
             )) {
                 $type = gettype($column);
                 throw new Exception(
-                    "Cannot write {$type} into a column",
+                    "Cannot write data into column: " . var_export($column, true),
                     Exception::WRITE_ERROR,
                     null,
-                    Exception::WRITE_ERROR_STR,
-                    ['column' => $column]
+                    Exception::WRITE_ERROR_STR
                 );
             }
 

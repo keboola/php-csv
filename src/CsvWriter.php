@@ -80,7 +80,6 @@ class CsvWriter extends AbstractCsvFile
                     && method_exists($column, '__toString')
                 )
             )) {
-                $type = gettype($column);
                 throw new Exception(
                     "Cannot write data into column: " . var_export($column, true),
                     Exception::WRITE_ERROR,

@@ -237,6 +237,7 @@ class CsvReadTest extends TestCase
             CsvReader::DEFAULT_ESCAPED_BY,
             1
         );
+        self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
         self::assertEquals([
             ['15', '0'],
             ['18', '0'],
@@ -255,6 +256,7 @@ class CsvReadTest extends TestCase
             CsvReader::DEFAULT_ESCAPED_BY,
             0
         );
+        self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
         self::assertEquals([
             ['id', 'isImported'],
             ['15', '0'],
@@ -274,6 +276,7 @@ class CsvReadTest extends TestCase
             CsvReader::DEFAULT_ESCAPED_BY,
             3
         );
+        self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
         self::assertEquals([
             ['19', '0'],
         ], iterator_to_array($csvFile));
@@ -290,6 +293,7 @@ class CsvReadTest extends TestCase
             CsvReader::DEFAULT_ESCAPED_BY,
             100
         );
+        self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
         self::assertEquals([], iterator_to_array($csvFile));
     }
 
@@ -377,7 +381,7 @@ class CsvReadTest extends TestCase
     {
         self::expectException(Exception::class);
         self::expectExceptionMessage('Invalid line break. Please use unix \n or win \r\n line breaks.');
-        $csvFile = new CsvReader(__DIR__ . DIRECTORY_SEPARATOR . 'data/binary');
+        new CsvReader(__DIR__ . DIRECTORY_SEPARATOR . 'data/binary');
     }
 
 

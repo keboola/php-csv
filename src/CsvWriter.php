@@ -20,22 +20,31 @@ class CsvWriter extends AbstractCsvFile
     private $fileName = '';
 
     /**
+     * @var string
+     */
+    private $lineBreak;
+
+    /**
      * CsvFile constructor.
      * @param mixed $file
      * @param string $delimiter
      * @param string $enclosure
      * @param string $mode
+     * @param string $lineBreak
      * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function __construct(
         $file,
         $delimiter = self::DEFAULT_DELIMITER,
         $enclosure = self::DEFAULT_ENCLOSURE,
-        $mode = 'w'
+        $mode = 'w',
+        $lineBreak = "\n"
     ) {
         $this->setMode($mode);
         $this->setDelimiter($delimiter);
         $this->setEnclosure($enclosure);
+        $this->setLineBreak($lineBreak);
         if (is_string($file)) {
             $this->openCsvFile($file);
             $this->fileName = $file;
@@ -103,7 +112,7 @@ class CsvWriter extends AbstractCsvFile
                 str_replace($this->getEnclosure(), str_repeat($this->getEnclosure(), 2), $column) .
                 $this->getEnclosure();
         }
-        return implode($this->getDelimiter(), $return) . "\n";
+        return implode($this->getDelimiter(), $return) . $this->lineBreak;
     }
 
     /**
@@ -150,6 +159,29 @@ class CsvWriter extends AbstractCsvFile
         if (!in_array($mode, $allowedModes)) {
             throw new Exception(
                 "Invalid file mode: " . $mode . " allowed modes: " . implode(',', $allowedModes),
+                Exception::INVALID_PARAM,
+                null,
+                Exception::INVALID_PARAM_STR
+            );
+        }
+    }
+
+    private function setLineBreak($lineBreak)
+    {
+        $this->validateLineBreak($lineBreak);
+        $this->lineBreak = $lineBreak;
+    }
+
+    private function validateLineBreak($lineBreak)
+    {
+        $allowedLineBreaks = [
+            "\r\n", // win
+            "\r", // mac
+            "\n", // unix
+        ];
+        if (!in_array($lineBreak, $allowedLineBreaks)) {
+            throw new Exception(
+                "Invalid line break: " . json_encode($lineBreak) . " allowed modes: " . json_encode($allowedLineBreaks),
                 Exception::INVALID_PARAM,
                 null,
                 Exception::INVALID_PARAM_STR

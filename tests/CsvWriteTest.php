@@ -188,4 +188,40 @@ class CsvWriteTest extends TestCase
         self::expectExceptionMessage('Invalid file: array');
         new CsvWriter(['dummy']);
     }
+
+    public function testWriteLineBreak()
+    {
+        $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('csv-test');
+        $csvFile = new CsvWriter(
+            $fileName,
+            CsvWriter::DEFAULT_DELIMITER,
+            CsvWriter::DEFAULT_ENCLOSURE,
+            'w',
+            "\r\n"
+        );
+        $rows = [
+            [
+                'col1', 'col2',
+            ],
+            [
+                'val1', 'val2',
+            ],
+        ];
+
+        foreach ($rows as $row) {
+            $csvFile->writeRow($row);
+        }
+        $data = file_get_contents($fileName);
+        self::assertEquals(
+            implode(
+                "\r\n",
+                [
+                    '"col1","col2"',
+                    '"val1","val2"',
+                    '',
+                ]
+            ),
+            $data
+        );
+    }
 }

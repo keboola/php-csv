@@ -2,9 +2,7 @@
 
 namespace Keboola\Csv;
 
-use SplFileInfo;
-
-class AbstractCsvFile extends SplFileInfo
+class AbstractCsvFile
 {
     const DEFAULT_DELIMITER = ',';
     const DEFAULT_ENCLOSURE = '"';
@@ -23,6 +21,7 @@ class AbstractCsvFile extends SplFileInfo
      * @var string
      */
     protected $lineBreak;
+
 
     /**
      * @param string $delimiter

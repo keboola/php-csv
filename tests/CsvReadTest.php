@@ -19,7 +19,6 @@ class CsvReadTest extends TestCase
     public function testAccessors()
     {
         $csvFile = new CsvReader(__DIR__ . '/data/test-input.csv');
-        self::assertEquals('test-input.csv', $csvFile->getBasename());
         self::assertEquals("\"", $csvFile->getEnclosure());
         self::assertEquals("", $csvFile->getEscapedBy());
         self::assertEquals(",", $csvFile->getDelimiter());
@@ -456,5 +455,35 @@ class CsvReadTest extends TestCase
             ),
             $data
         );
+    }
+
+    public function testReadPointer()
+    {
+        $fileName = __DIR__ . '/data/simple.csv';
+        $file = fopen($fileName, 'r');
+        $csvFile = new CsvReader($file);
+        self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
+        self::assertEquals([
+            ['id', 'isImported'],
+            ['15', '0'],
+            ['18', '0'],
+            ['19', '0'],
+        ], iterator_to_array($csvFile));
+    }
+
+    public function testInvalidPointer()
+    {
+        $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('csv-test');
+        $file = fopen($fileName, 'w');
+        $csvFile = new CsvReader($file);
+        self::assertEquals([], $csvFile->getHeader());
+        self::assertEquals([], iterator_to_array($csvFile));
+    }
+
+    public function testInvalidFile()
+    {
+        self::expectException(Exception::class);
+        self::expectExceptionMessage('Invalid file: array');
+        new CsvReader(['bad']);
     }
 }

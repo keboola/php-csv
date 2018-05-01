@@ -37,28 +37,42 @@ class CsvReader extends AbstractCsvFile implements \Iterator
     protected $header;
 
     /**
+     * @var string
+     */
+    private $fileName;
+
+    /**
      * CsvFile constructor.
-     * @param string $fileName
+     * @param mixed $file
      * @param string $delimiter
      * @param string $enclosure
      * @param string $escapedBy
      * @param int $skipLines
-     * @throws InvalidArgumentException
+     * @throws Exception
      */
     public function __construct(
-        $fileName,
+        $file,
         $delimiter = self::DEFAULT_DELIMITER,
         $enclosure = self::DEFAULT_ENCLOSURE,
         $escapedBy = self::DEFAULT_ESCAPED_BY,
         $skipLines = 0
     ) {
-        parent::__construct($fileName);
-
         $this->escapedBy = $escapedBy;
         $this->setDelimiter($delimiter);
         $this->setEnclosure($enclosure);
         $this->setSkipLines($skipLines);
-        $this->openCsvFile();
+        if (is_string($file)) {
+            $this->openCsvFile($file);
+            $this->fileName = $file;
+        } elseif (is_resource($file)) {
+            $this->filePointer = $file;
+        } else {
+            throw new InvalidArgumentException("Invalid file: " . var_export($file, true));
+        }
+        $this->lineBreak = $this->detectLineBreak();
+        rewind($this->filePointer);
+        $this->header = $this->readLine();
+        $this->rewind();
     }
 
     public function __destruct()
@@ -149,31 +163,29 @@ class CsvReader extends AbstractCsvFile implements \Iterator
     }
 
     /**
+     * @param $fileName
      * @throws Exception
+     * @throws InvalidArgumentException
      */
-    protected function openCsvFile()
+    protected function openCsvFile($fileName)
     {
-        if (!is_file($this->getPathname())) {
+        if (!is_file($fileName)) {
             throw new Exception(
-                "Cannot open file {$this->getPathname()}",
+                "Cannot open file " . $fileName,
                 Exception::FILE_NOT_EXISTS,
                 null,
                 Exception::FILE_NOT_EXISTS_STR
             );
         }
-        $this->filePointer = @fopen($this->getPathname(), "r");
+        $this->filePointer = @fopen($fileName, "r");
         if (!$this->filePointer) {
             throw new Exception(
-                "Cannot open file {$this->getPathname()} " . error_get_last()['message'],
+                "Cannot open file {$fileName} " . error_get_last()['message'],
                 Exception::FILE_NOT_EXISTS,
                 null,
                 Exception::FILE_NOT_EXISTS_STR
             );
         }
-        $this->lineBreak = $this->detectLineBreak();
-        rewind($this->getFilePointer());
-        $this->header = $this->readLine();
-        $this->rewind();
     }
 
     protected function closeFile()

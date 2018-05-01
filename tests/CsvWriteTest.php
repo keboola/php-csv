@@ -10,13 +10,13 @@ class CsvWriteTest extends TestCase
 {
     public function testNewFileShouldBeCreated()
     {
-        self::assertInstanceOf(CsvWriter::class, new CsvWriter(__DIR__ . '/data/non-existent-file.csv'));
+        $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('csv-test');
+        self::assertInstanceOf(CsvWriter::class, new CsvWriter($fileName));
     }
 
     public function testAccessors()
     {
         $csvFile = new CsvWriter(sys_get_temp_dir() . '/test-write.csv');
-        self::assertEquals('test-write.csv', $csvFile->getBasename());
         self::assertEquals('"', $csvFile->getEnclosure());
         self::assertEquals(',', $csvFile->getDelimiter());
     }
@@ -148,5 +148,44 @@ class CsvWriteTest extends TestCase
         self::expectException(Exception::class);
         self::expectExceptionMessage("Cannot write data into column: array");
         $csvFile->writeRow($row);
+    }
+
+    public function testWritePointer()
+    {
+        $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('csv-test');
+        $pointer = fopen($fileName, 'w');
+        $csvFile = new CsvWriter($pointer);
+        $rows = [['col1', 'col2']];
+        $csvFile->writeRow($rows[0]);
+        $data = file_get_contents($fileName);
+        self::assertEquals(
+            implode(
+                "\n",
+                [
+                    '"col1","col2"' ,
+                    '',
+                ]
+            ),
+            $data
+        );
+    }
+
+    public function testInvalidPointer()
+    {
+        $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('csv-test');
+        touch($fileName);
+        $pointer = fopen($fileName, 'r');
+        $csvFile = new CsvWriter($pointer);
+        $rows = [['col1', 'col2']];
+        self::expectException(Exception::class);
+        self::expectExceptionMessage('Cannot write to CSV file');
+        $csvFile->writeRow($rows[0]);
+    }
+
+    public function testInvalidFile()
+    {
+        self::expectException(Exception::class);
+        self::expectExceptionMessage('Invalid file: array');
+        new CsvWriter(['dummy']);
     }
 }

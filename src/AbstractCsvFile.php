@@ -10,18 +10,12 @@ class AbstractCsvFile
     /**
      * @var string
      */
-    protected $delimiter;
+    private $delimiter;
 
     /**
      * @var string
      */
-    protected $enclosure;
-
-    /**
-     * @var string
-     */
-    protected $lineBreak;
-
+    private $enclosure;
 
     /**
      * @param string $delimiter

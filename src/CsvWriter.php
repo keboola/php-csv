@@ -7,7 +7,7 @@ class CsvWriter extends AbstractCsvFile
     /**
      * @var resource
      */
-    protected $filePointer;
+    private $filePointer;
 
     /**
      * @var string

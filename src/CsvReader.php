@@ -9,37 +9,42 @@ class CsvReader extends AbstractCsvFile implements \Iterator
     /**
      * @var string
      */
-    protected $escapedBy;
+    private $escapedBy;
 
     /**
      * @var int
      */
-    protected $skipLines;
+    private $skipLines;
 
     /**
      * @var resource
      */
-    protected $filePointer;
+    private $filePointer;
 
     /**
      * @var int
      */
-    protected $rowCounter = 0;
+    private $rowCounter = 0;
 
     /**
      * @var array|null|false
      */
-    protected $currentRow;
+    private $currentRow;
 
     /**
      * @var array
      */
-    protected $header;
+    private $header;
 
     /**
      * @var string
      */
     private $fileName;
+
+    /**
+     * @var string
+     */
+    private $lineBreak;
 
     /**
      * CsvFile constructor.
@@ -110,7 +115,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
 
     /**
      * @return string
-     * @throws Exception
      */
     protected function detectLineBreak()
     {
@@ -165,7 +169,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
     /**
      * @param $fileName
      * @throws Exception
-     * @throws InvalidArgumentException
      */
     protected function openCsvFile($fileName)
     {
@@ -224,7 +227,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
 
     /**
      * @return string
-     * @throws Exception
      */
     public function getLineBreak()
     {
@@ -233,7 +235,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
 
     /**
      * @return string
-     * @throws Exception
      */
     public function getLineBreakAsText()
     {

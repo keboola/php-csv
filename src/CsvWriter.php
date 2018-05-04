@@ -136,7 +136,7 @@ class CsvWriter extends AbstractCsvFile
 
     protected function closeFile()
     {
-        if (is_resource($this->filePointer)) {
+        if ($this->fileName && is_resource($this->filePointer)) {
             fclose($this->filePointer);
         }
     }

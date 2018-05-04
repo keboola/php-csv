@@ -153,17 +153,21 @@ class CsvWriteTest extends TestCase
     public function testWritePointer()
     {
         $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('csv-test');
-        $pointer = fopen($fileName, 'w');
-        $csvFile = new CsvWriter($pointer);
+        $file = fopen($fileName, 'w');
+        $csvFile = new CsvWriter($file);
         $rows = [['col1', 'col2']];
         $csvFile->writeRow($rows[0]);
+
+        // check that the file pointer remains valid
+        unset($csvFile);
+        fwrite($file, 'foo,bar');
         $data = file_get_contents($fileName);
         self::assertEquals(
             implode(
                 "\n",
                 [
                     '"col1","col2"' ,
-                    '',
+                    'foo,bar',
                 ]
             ),
             $data

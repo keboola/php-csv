@@ -187,7 +187,7 @@ class CsvReader extends AbstractCsvFile implements \Iterator
 
     protected function closeFile()
     {
-        if (is_resource($this->filePointer)) {
+        if ($this->fileName && is_resource($this->filePointer)) {
             fclose($this->filePointer);
         }
     }

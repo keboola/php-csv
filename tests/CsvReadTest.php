@@ -468,6 +468,11 @@ class CsvReadTest extends TestCase
             ['18', '0'],
             ['19', '0'],
         ], iterator_to_array($csvFile));
+        // check that the file pointer remains valid
+        unset($csvFile);
+        rewind($file);
+        $data = fread($file, 13);
+        self::assertEquals('id,isImported', $data);
     }
 
     public function testInvalidPointer()

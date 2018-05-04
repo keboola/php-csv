@@ -17,11 +17,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
     private $skipLines;
 
     /**
-     * @var resource
-     */
-    private $filePointer;
-
-    /**
      * @var int
      */
     private $rowCounter = 0;
@@ -35,11 +30,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
      * @var array
      */
     private $header;
-
-    /**
-     * @var string
-     */
-    private $fileName;
 
     /**
      * @var string
@@ -99,18 +89,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
         }
     }
 
-    private function setFile($file)
-    {
-        if (is_string($file)) {
-            $this->openCsvFile($file);
-            $this->fileName = $file;
-        } elseif (is_resource($file)) {
-            $this->filePointer = $file;
-        } else {
-            throw new InvalidArgumentException("Invalid file: " . var_export($file, true));
-        }
-    }
-
     /**
      * @param $fileName
      * @throws Exception
@@ -160,14 +138,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
         reset($lineBreaksPositions);
 
         return empty($lineBreaksPositions) ? "\n" : key($lineBreaksPositions);
-    }
-
-    /**
-     * @return resource
-     */
-    protected function getFilePointer()
-    {
-        return $this->filePointer;
     }
 
     /**
@@ -229,18 +199,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
         }
         $this->currentRow = $this->readLine();
         $this->rowCounter = 0;
-    }
-
-    public function __destruct()
-    {
-        $this->closeFile();
-    }
-
-    protected function closeFile()
-    {
-        if ($this->fileName && is_resource($this->filePointer)) {
-            fclose($this->filePointer);
-        }
     }
 
     /**

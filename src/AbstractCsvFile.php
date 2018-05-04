@@ -2,10 +2,18 @@
 
 namespace Keboola\Csv;
 
-class AbstractCsvFile
+abstract class AbstractCsvFile
 {
     const DEFAULT_DELIMITER = ',';
     const DEFAULT_ENCLOSURE = '"';
+    /**
+     * @var string
+     */
+    protected $fileName;
+    /**
+     * @var resource
+     */
+    protected $filePointer;
 
     /**
      * @var string
@@ -16,6 +24,14 @@ class AbstractCsvFile
      * @var string
      */
     private $enclosure;
+
+    /**
+     * @return string
+     */
+    public function getDelimiter()
+    {
+        return $this->delimiter;
+    }
 
     /**
      * @param string $delimiter
@@ -49,6 +65,14 @@ class AbstractCsvFile
     }
 
     /**
+     * @return string
+     */
+    public function getEnclosure()
+    {
+        return $this->enclosure;
+    }
+
+    /**
      * @param string $enclosure
      * @return $this
      * @throws InvalidArgumentException
@@ -74,19 +98,40 @@ class AbstractCsvFile
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getDelimiter()
+    public function __destruct()
     {
-        return $this->delimiter;
+        $this->closeFile();
+    }
+
+    protected function closeFile()
+    {
+        if ($this->fileName && is_resource($this->filePointer)) {
+            fclose($this->filePointer);
+        }
     }
 
     /**
-     * @return string
+     * @param string|resource $file
      */
-    public function getEnclosure()
+    protected function setFile($file)
     {
-        return $this->enclosure;
+        if (is_string($file)) {
+            $this->openCsvFile($file);
+            $this->fileName = $file;
+        } elseif (is_resource($file)) {
+            $this->filePointer = $file;
+        } else {
+            throw new InvalidArgumentException("Invalid file: " . var_export($file, true));
+        }
+    }
+
+    protected abstract function openCsvFile($fileName);
+
+    /**
+     * @return resource
+     */
+    protected function getFilePointer()
+    {
+        return $this->filePointer;
     }
 }

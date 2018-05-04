@@ -5,16 +5,6 @@ namespace Keboola\Csv;
 class CsvWriter extends AbstractCsvFile
 {
     /**
-     * @var resource
-     */
-    private $filePointer;
-
-    /**
-     * @var string
-     */
-    private $fileName = '';
-
-    /**
      * @var string
      */
     private $lineBreak;
@@ -40,12 +30,18 @@ class CsvWriter extends AbstractCsvFile
         $this->setFile($file);
     }
 
+    /**
+     * @param string $lineBreak
+     */
     private function setLineBreak($lineBreak)
     {
         $this->validateLineBreak($lineBreak);
         $this->lineBreak = $lineBreak;
     }
 
+    /**
+     * @param string $lineBreak
+     */
     private function validateLineBreak($lineBreak)
     {
         $allowedLineBreaks = [
@@ -61,18 +57,6 @@ class CsvWriter extends AbstractCsvFile
         }
     }
 
-    private function setFile($file)
-    {
-        if (is_string($file)) {
-            $this->openCsvFile($file);
-            $this->fileName = $file;
-        } elseif (is_resource($file)) {
-            $this->filePointer = $file;
-        } else {
-            throw new InvalidArgumentException("Invalid file: " . var_export($file, true));
-        }
-    }
-
     /**
      * @param string $fileName
      * @throws Exception
@@ -85,18 +69,6 @@ class CsvWriter extends AbstractCsvFile
                 "Cannot open file {$fileName} " . error_get_last()['message'],
                 Exception::FILE_NOT_EXISTS
             );
-        }
-    }
-
-    public function __destruct()
-    {
-        $this->closeFile();
-    }
-
-    protected function closeFile()
-    {
-        if ($this->fileName && is_resource($this->filePointer)) {
-            fclose($this->filePointer);
         }
     }
 
@@ -149,13 +121,5 @@ class CsvWriter extends AbstractCsvFile
                 $this->getEnclosure();
         }
         return implode($this->getDelimiter(), $return) . $this->lineBreak;
-    }
-
-    /**
-     * @return resource
-     */
-    protected function getFilePointer()
-    {
-        return $this->filePointer;
     }
 }

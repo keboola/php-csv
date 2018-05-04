@@ -41,13 +41,34 @@ $rows = [
 		'col1', 'col2',
 	],
 	[
-		'line without enclosure', 'second column',
+		'first column', 'second column',
 	],
 ];
 
 foreach ($rows as $row) {
 	$csvFile->writeRow($row);
 }
+```
+
+### Append to CSV
+
+```php
+$fileName = __DIR__ . '/_data/test-output.csv';
+$file = fopen($fileName, 'a');
+$csvFile = new Keboola\Csv\CsvWriter($file);
+$rows = [
+	[
+		'col1', 'col2',
+	],
+	[
+		'first column', 'second column',
+	],
+];
+
+foreach ($rows as $row) {
+	$csvFile->writeRow($row);
+}
+fclose($file);
 ```
 
 ## Installation

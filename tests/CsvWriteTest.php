@@ -190,6 +190,7 @@ class CsvWriteTest extends TestCase
     {
         self::expectException(Exception::class);
         self::expectExceptionMessage('Invalid file: array');
+        /** @noinspection PhpParamsInspection */
         new CsvWriter(['dummy']);
     }
 

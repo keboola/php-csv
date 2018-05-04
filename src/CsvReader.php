@@ -73,11 +73,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
         $this->rewind();
     }
 
-    public function __destruct()
-    {
-        $this->closeFile();
-    }
-
     /**
      * @param integer $skipLines
      * @return CsvReader
@@ -100,6 +95,39 @@ class CsvReader extends AbstractCsvFile implements \Iterator
             throw new InvalidArgumentException(
                 "Number of lines to skip must be a positive integer. \"$skipLines\" received.",
                 Exception::INVALID_PARAM
+            );
+        }
+    }
+
+    private function setFile($file)
+    {
+        if (is_string($file)) {
+            $this->openCsvFile($file);
+            $this->fileName = $file;
+        } elseif (is_resource($file)) {
+            $this->filePointer = $file;
+        } else {
+            throw new InvalidArgumentException("Invalid file: " . var_export($file, true));
+        }
+    }
+
+    /**
+     * @param $fileName
+     * @throws Exception
+     */
+    protected function openCsvFile($fileName)
+    {
+        if (!is_file($fileName)) {
+            throw new Exception(
+                "Cannot open file " . $fileName,
+                Exception::FILE_NOT_EXISTS
+            );
+        }
+        $this->filePointer = @fopen($fileName, "r");
+        if (!$this->filePointer) {
+            throw new Exception(
+                "Cannot open file {$fileName} " . error_get_last()['message'],
+                Exception::FILE_NOT_EXISTS
             );
         }
     }
@@ -135,6 +163,14 @@ class CsvReader extends AbstractCsvFile implements \Iterator
     }
 
     /**
+     * @return resource
+     */
+    protected function getFilePointer()
+    {
+        return $this->filePointer;
+    }
+
+    /**
      * @return array|false|null
      * @throws Exception
      * @throws InvalidArgumentException
@@ -150,32 +186,54 @@ class CsvReader extends AbstractCsvFile implements \Iterator
     }
 
     /**
-     * @return resource
+     * @return string
+     * @throws InvalidArgumentException
      */
-    protected function getFilePointer()
+    protected function validateLineBreak()
     {
-        return $this->filePointer;
+        try {
+            $lineBreak = $this->getLineBreak();
+        } catch (Exception $e) {
+            throw new InvalidArgumentException(
+                "Failed to detect line break: " . $e->getMessage(),
+                Exception::INVALID_PARAM,
+                $e
+            );
+        }
+        if (in_array($lineBreak, ["\r\n", "\n"])) {
+            return $lineBreak;
+        }
+
+        throw new InvalidArgumentException(
+            "Invalid line break. Please use unix \\n or win \\r\\n line breaks.",
+            Exception::INVALID_PARAM
+        );
     }
 
     /**
-     * @param $fileName
-     * @throws Exception
+     * @return string
      */
-    protected function openCsvFile($fileName)
+    public function getLineBreak()
     {
-        if (!is_file($fileName)) {
-            throw new Exception(
-                "Cannot open file " . $fileName,
-                Exception::FILE_NOT_EXISTS
-            );
+        return $this->lineBreak;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rewind()
+    {
+        rewind($this->getFilePointer());
+        for ($i = 0; $i < $this->skipLines; $i++) {
+            $this->readLine();
         }
-        $this->filePointer = @fopen($fileName, "r");
-        if (!$this->filePointer) {
-            throw new Exception(
-                "Cannot open file {$fileName} " . error_get_last()['message'],
-                Exception::FILE_NOT_EXISTS
-            );
-        }
+        $this->currentRow = $this->readLine();
+        $this->rowCounter = 0;
+    }
+
+    public function __destruct()
+    {
+        $this->closeFile();
     }
 
     protected function closeFile()
@@ -215,42 +273,9 @@ class CsvReader extends AbstractCsvFile implements \Iterator
     /**
      * @return string
      */
-    public function getLineBreak()
-    {
-        return $this->lineBreak;
-    }
-
-    /**
-     * @return string
-     */
     public function getLineBreakAsText()
     {
         return trim(json_encode($this->getLineBreak()), '"');
-    }
-
-    /**
-     * @return string
-     * @throws InvalidArgumentException
-     */
-    public function validateLineBreak()
-    {
-        try {
-            $lineBreak = $this->getLineBreak();
-        } catch (Exception $e) {
-            throw new InvalidArgumentException(
-                "Failed to detect line break: " . $e->getMessage(),
-                Exception::INVALID_PARAM,
-                $e
-            );
-        }
-        if (in_array($lineBreak, ["\r\n", "\n"])) {
-            return $lineBreak;
-        }
-
-        throw new InvalidArgumentException(
-            "Invalid line break. Please use unix \\n or win \\r\\n line breaks.",
-            Exception::INVALID_PARAM
-        );
     }
 
     /**
@@ -284,30 +309,5 @@ class CsvReader extends AbstractCsvFile implements \Iterator
     public function valid()
     {
         return $this->currentRow !== false;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rewind()
-    {
-        rewind($this->getFilePointer());
-        for ($i = 0; $i < $this->skipLines; $i++) {
-            $this->readLine();
-        }
-        $this->currentRow = $this->readLine();
-        $this->rowCounter = 0;
-    }
-
-    private function setFile($file)
-    {
-        if (is_string($file)) {
-            $this->openCsvFile($file);
-            $this->fileName = $file;
-        } elseif (is_resource($file)) {
-            $this->filePointer = $file;
-        } else {
-            throw new InvalidArgumentException("Invalid file: " . var_export($file, true));
-        }
     }
 }

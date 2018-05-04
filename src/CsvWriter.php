@@ -40,9 +40,64 @@ class CsvWriter extends AbstractCsvFile
         $this->setFile($file);
     }
 
+    private function setLineBreak($lineBreak)
+    {
+        $this->validateLineBreak($lineBreak);
+        $this->lineBreak = $lineBreak;
+    }
+
+    private function validateLineBreak($lineBreak)
+    {
+        $allowedLineBreaks = [
+            "\r\n", // win
+            "\r", // mac
+            "\n", // unix
+        ];
+        if (!in_array($lineBreak, $allowedLineBreaks)) {
+            throw new Exception(
+                "Invalid line break: " . json_encode($lineBreak) . " allowed line breaks: " . json_encode($allowedLineBreaks),
+                Exception::INVALID_PARAM
+            );
+        }
+    }
+
+    private function setFile($file)
+    {
+        if (is_string($file)) {
+            $this->openCsvFile($file);
+            $this->fileName = $file;
+        } elseif (is_resource($file)) {
+            $this->filePointer = $file;
+        } else {
+            throw new InvalidArgumentException("Invalid file: " . var_export($file, true));
+        }
+    }
+
+    /**
+     * @param string $fileName
+     * @throws Exception
+     */
+    protected function openCsvFile($fileName)
+    {
+        $this->filePointer = @fopen($fileName, 'w');
+        if (!$this->filePointer) {
+            throw new Exception(
+                "Cannot open file {$fileName} " . error_get_last()['message'],
+                Exception::FILE_NOT_EXISTS
+            );
+        }
+    }
+
     public function __destruct()
     {
         $this->closeFile();
+    }
+
+    protected function closeFile()
+    {
+        if ($this->fileName && is_resource($this->filePointer)) {
+            fclose($this->filePointer);
+        }
     }
 
     /**
@@ -102,60 +157,5 @@ class CsvWriter extends AbstractCsvFile
     protected function getFilePointer()
     {
         return $this->filePointer;
-    }
-
-    /**
-     * @param string $fileName
-     * @throws Exception
-     */
-    protected function openCsvFile($fileName)
-    {
-        $this->filePointer = @fopen($fileName, 'w');
-        if (!$this->filePointer) {
-            throw new Exception(
-                "Cannot open file {$fileName} " . error_get_last()['message'],
-                Exception::FILE_NOT_EXISTS
-            );
-        }
-    }
-
-    protected function closeFile()
-    {
-        if ($this->fileName && is_resource($this->filePointer)) {
-            fclose($this->filePointer);
-        }
-    }
-
-    private function setLineBreak($lineBreak)
-    {
-        $this->validateLineBreak($lineBreak);
-        $this->lineBreak = $lineBreak;
-    }
-
-    private function validateLineBreak($lineBreak)
-    {
-        $allowedLineBreaks = [
-            "\r\n", // win
-            "\r", // mac
-            "\n", // unix
-        ];
-        if (!in_array($lineBreak, $allowedLineBreaks)) {
-            throw new Exception(
-                "Invalid line break: " . json_encode($lineBreak) . " allowed line breaks: " . json_encode($allowedLineBreaks),
-                Exception::INVALID_PARAM
-            );
-        }
-    }
-
-    private function setFile($file)
-    {
-        if (is_string($file)) {
-            $this->openCsvFile($file);
-            $this->fileName = $file;
-        } elseif (is_resource($file)) {
-            $this->filePointer = $file;
-        } else {
-            throw new InvalidArgumentException("Invalid file: " . var_export($file, true));
-        }
     }
 }

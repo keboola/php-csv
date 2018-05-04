@@ -76,9 +76,7 @@ class CsvWriter extends AbstractCsvFile
         if (($ret === false) || (($ret === 0) && (strlen($str) > 0))) {
             throw new Exception(
                 "Cannot write to CSV file " . $this->fileName . " " . error_get_last()['message'],
-                Exception::WRITE_ERROR,
-                null,
-                Exception::WRITE_ERROR_STR
+                Exception::WRITE_ERROR
             );
         }
     }
@@ -102,9 +100,7 @@ class CsvWriter extends AbstractCsvFile
             )) {
                 throw new Exception(
                     "Cannot write data into column: " . var_export($column, true),
-                    Exception::WRITE_ERROR,
-                    null,
-                    Exception::WRITE_ERROR_STR
+                    Exception::WRITE_ERROR
                 );
             }
 
@@ -133,9 +129,7 @@ class CsvWriter extends AbstractCsvFile
         if (!$this->filePointer) {
             throw new Exception(
                 "Cannot open file {$fileName} " . error_get_last()['message'],
-                Exception::FILE_NOT_EXISTS,
-                null,
-                Exception::FILE_NOT_EXISTS_STR
+                Exception::FILE_NOT_EXISTS
             );
         }
     }
@@ -153,15 +147,17 @@ class CsvWriter extends AbstractCsvFile
         $this->mode = $mode;
     }
 
+    /**
+     * @param $mode
+     * @throws Exception
+     */
     protected function validateMode($mode)
     {
         $allowedModes = ['w', 'a', 'x'];
         if (!in_array($mode, $allowedModes)) {
             throw new Exception(
                 "Invalid file mode: " . $mode . " allowed modes: " . implode(',', $allowedModes),
-                Exception::INVALID_PARAM,
-                null,
-                Exception::INVALID_PARAM_STR
+                Exception::INVALID_PARAM
             );
         }
     }
@@ -182,9 +178,7 @@ class CsvWriter extends AbstractCsvFile
         if (!in_array($lineBreak, $allowedLineBreaks)) {
             throw new Exception(
                 "Invalid line break: " . json_encode($lineBreak) . " allowed modes: " . json_encode($allowedLineBreaks),
-                Exception::INVALID_PARAM,
-                null,
-                Exception::INVALID_PARAM_STR
+                Exception::INVALID_PARAM
             );
         }
     }

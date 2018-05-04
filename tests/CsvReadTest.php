@@ -305,7 +305,6 @@ class CsvReadTest extends TestCase
         } catch (Exception $e) {
             self::assertContains('Cannot open file', $e->getMessage());
             self::assertEquals(1, $e->getCode());
-            self::assertEquals('fileNotExists', $e->getStringCode());
         }
     }
 

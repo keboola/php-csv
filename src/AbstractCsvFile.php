@@ -36,18 +36,14 @@ class AbstractCsvFile
         if (strlen($delimiter) > 1) {
             throw new InvalidArgumentException(
                 "Delimiter must be a single character. \"$delimiter\" received",
-                Exception::INVALID_PARAM,
-                null,
-                Exception::INVALID_PARAM_STR
+                Exception::INVALID_PARAM
             );
         }
 
         if (strlen($delimiter) == 0) {
             throw new InvalidArgumentException(
                 "Delimiter cannot be empty.",
-                Exception::INVALID_PARAM,
-                null,
-                Exception::INVALID_PARAM_STR
+                Exception::INVALID_PARAM
             );
         }
     }
@@ -73,9 +69,7 @@ class AbstractCsvFile
         if (strlen($enclosure) > 1) {
             throw new InvalidArgumentException(
                 "Enclosure must be a single character. \"$enclosure\" received",
-                Exception::INVALID_PARAM,
-                null,
-                Exception::INVALID_PARAM_STR
+                Exception::INVALID_PARAM
             );
         }
     }

@@ -51,7 +51,8 @@ class CsvWriter extends AbstractCsvFile
         ];
         if (!in_array($lineBreak, $allowedLineBreaks)) {
             throw new Exception(
-                "Invalid line break: " . json_encode($lineBreak) . " allowed line breaks: " . json_encode($allowedLineBreaks),
+                "Invalid line break: " . json_encode($lineBreak) .
+                " allowed line breaks: " . json_encode($allowedLineBreaks),
                 Exception::INVALID_PARAM
             );
         }

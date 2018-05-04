@@ -125,7 +125,7 @@ abstract class AbstractCsvFile
         }
     }
 
-    protected abstract function openCsvFile($fileName);
+    abstract protected function openCsvFile($fileName);
 
     /**
      * @return resource

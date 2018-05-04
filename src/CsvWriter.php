@@ -12,11 +12,6 @@ class CsvWriter extends AbstractCsvFile
     /**
      * @var string
      */
-    private $mode;
-
-    /**
-     * @var string
-     */
     private $fileName = '';
 
     /**
@@ -38,10 +33,8 @@ class CsvWriter extends AbstractCsvFile
         $file,
         $delimiter = self::DEFAULT_DELIMITER,
         $enclosure = self::DEFAULT_ENCLOSURE,
-        $mode = 'w',
         $lineBreak = "\n"
     ) {
-        $this->setMode($mode);
         $this->setDelimiter($delimiter);
         $this->setEnclosure($enclosure);
         $this->setLineBreak($lineBreak);
@@ -125,7 +118,7 @@ class CsvWriter extends AbstractCsvFile
      */
     protected function openCsvFile($fileName)
     {
-        $this->filePointer = @fopen($fileName, $this->mode);
+        $this->filePointer = @fopen($fileName, 'w');
         if (!$this->filePointer) {
             throw new Exception(
                 "Cannot open file {$fileName} " . error_get_last()['message'],
@@ -138,27 +131,6 @@ class CsvWriter extends AbstractCsvFile
     {
         if ($this->fileName && is_resource($this->filePointer)) {
             fclose($this->filePointer);
-        }
-    }
-
-    protected function setMode($mode)
-    {
-        $this->validateMode($mode);
-        $this->mode = $mode;
-    }
-
-    /**
-     * @param $mode
-     * @throws Exception
-     */
-    protected function validateMode($mode)
-    {
-        $allowedModes = ['w', 'a', 'x'];
-        if (!in_array($mode, $allowedModes)) {
-            throw new Exception(
-                "Invalid file mode: " . $mode . " allowed modes: " . implode(',', $allowedModes),
-                Exception::INVALID_PARAM
-            );
         }
     }
 

@@ -200,7 +200,6 @@ class CsvWriteTest extends TestCase
             $fileName,
             CsvWriter::DEFAULT_DELIMITER,
             CsvWriter::DEFAULT_ENCLOSURE,
-            'w',
             "\r\n"
         );
         $rows = [

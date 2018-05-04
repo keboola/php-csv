@@ -27,7 +27,6 @@ class CsvReadTest extends TestCase
     public function testColumnsCount()
     {
         $csv = new CsvReader(__DIR__ . '/data/test-input.csv');
-
         self::assertEquals(9, $csv->getColumnsCount());
     }
 
@@ -140,7 +139,6 @@ class CsvReadTest extends TestCase
     public function testEmptyHeader()
     {
         $csvFile = new CsvReader(__DIR__ . '/data/test-input.empty.csv', ',', '"');
-
         self::assertEquals([], $csvFile->getHeader());
     }
 
@@ -174,22 +172,11 @@ class CsvReadTest extends TestCase
         ];
     }
 
-    /**
-     * @expectedException \Keboola\Csv\InvalidArgumentException
-     * @dataProvider invalidLineBreaksData
-     * @param string $file
-     */
-    public function testInvalidLineBreak($file)
+    public function testInvalidLineBreak()
     {
-        $csvFile = new CsvReader(__DIR__ . '/data/' . $file);
-        $csvFile->validateLineBreak();
-    }
-
-    public function invalidLineBreaksData()
-    {
-        return [
-            ['test-input.mac.csv'],
-        ];
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('Invalid line break. Please use unix \n or win \r\n line breaks.');
+        new CsvReader(__DIR__ . '/data/test-input.mac.csv');
     }
 
     public function testIterator()

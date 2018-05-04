@@ -21,10 +21,9 @@ class CsvWriter extends AbstractCsvFile
 
     /**
      * CsvFile constructor.
-     * @param mixed $file
+     * @param string|resource $file
      * @param string $delimiter
      * @param string $enclosure
-     * @param string $mode
      * @param string $lineBreak
      * @throws Exception
      * @throws InvalidArgumentException
@@ -38,14 +37,7 @@ class CsvWriter extends AbstractCsvFile
         $this->setDelimiter($delimiter);
         $this->setEnclosure($enclosure);
         $this->setLineBreak($lineBreak);
-        if (is_string($file)) {
-            $this->openCsvFile($file);
-            $this->fileName = $file;
-        } elseif (is_resource($file)) {
-            $this->filePointer = $file;
-        } else {
-            throw new InvalidArgumentException("Invalid file: " . var_export($file, true));
-        }
+        $this->setFile($file);
     }
 
     public function __destruct()
@@ -149,9 +141,21 @@ class CsvWriter extends AbstractCsvFile
         ];
         if (!in_array($lineBreak, $allowedLineBreaks)) {
             throw new Exception(
-                "Invalid line break: " . json_encode($lineBreak) . " allowed modes: " . json_encode($allowedLineBreaks),
+                "Invalid line break: " . json_encode($lineBreak) . " allowed line breaks: " . json_encode($allowedLineBreaks),
                 Exception::INVALID_PARAM
             );
+        }
+    }
+
+    private function setFile($file)
+    {
+        if (is_string($file)) {
+            $this->openCsvFile($file);
+            $this->fileName = $file;
+        } elseif (is_resource($file)) {
+            $this->filePointer = $file;
+        } else {
+            throw new InvalidArgumentException("Invalid file: " . var_export($file, true));
         }
     }
 }

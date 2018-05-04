@@ -48,7 +48,7 @@ class CsvReader extends AbstractCsvFile implements \Iterator
 
     /**
      * CsvFile constructor.
-     * @param mixed $file
+     * @param string|resource $file
      * @param string $delimiter
      * @param string $enclosure
      * @param string $escapedBy
@@ -66,14 +66,7 @@ class CsvReader extends AbstractCsvFile implements \Iterator
         $this->setDelimiter($delimiter);
         $this->setEnclosure($enclosure);
         $this->setSkipLines($skipLines);
-        if (is_string($file)) {
-            $this->openCsvFile($file);
-            $this->fileName = $file;
-        } elseif (is_resource($file)) {
-            $this->filePointer = $file;
-        } else {
-            throw new InvalidArgumentException("Invalid file: " . var_export($file, true));
-        }
+        $this->setFile($file);
         $this->lineBreak = $this->detectLineBreak();
         rewind($this->filePointer);
         $this->header = $this->readLine();
@@ -304,5 +297,17 @@ class CsvReader extends AbstractCsvFile implements \Iterator
         }
         $this->currentRow = $this->readLine();
         $this->rowCounter = 0;
+    }
+
+    private function setFile($file)
+    {
+        if (is_string($file)) {
+            $this->openCsvFile($file);
+            $this->fileName = $file;
+        } elseif (is_resource($file)) {
+            $this->filePointer = $file;
+        } else {
+            throw new InvalidArgumentException("Invalid file: " . var_export($file, true));
+        }
     }
 }

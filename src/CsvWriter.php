@@ -88,7 +88,9 @@ class CsvWriter extends AbstractCsvFile
          as an error. Therefore both conditions are necessary. */
         if (($ret === false) || (($ret === 0) && (strlen($str) > 0))) {
             throw new Exception(
-                "Cannot write to CSV file " . $this->fileName . " " . error_get_last()['message'],
+                "Cannot write to CSV file " . $this->fileName .
+                ' Error: ' . error_get_last()['message'] . ' Return: ' . json_encode($ret) .
+                ' To write: ' . strlen($str) . ' Written: ' . $ret,
                 Exception::WRITE_ERROR
             );
         }

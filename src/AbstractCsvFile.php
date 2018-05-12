@@ -51,7 +51,7 @@ abstract class AbstractCsvFile
     {
         if (strlen($delimiter) > 1) {
             throw new InvalidArgumentException(
-                "Delimiter must be a single character. \"$delimiter\" received",
+                "Delimiter must be a single character. " . json_encode($delimiter) . " received",
                 Exception::INVALID_PARAM
             );
         }
@@ -92,7 +92,7 @@ abstract class AbstractCsvFile
     {
         if (strlen($enclosure) > 1) {
             throw new InvalidArgumentException(
-                "Enclosure must be a single character. \"$enclosure\" received",
+                "Enclosure must be a single character. " . json_encode($enclosure) . " received",
                 Exception::INVALID_PARAM
             );
         }

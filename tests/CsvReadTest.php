@@ -311,7 +311,8 @@ class CsvReadTest extends TestCase
     {
         return [
             ['aaaa', 'Delimiter must be a single character. "aaaa" received'],
-            ['ob g', 'Delimiter must be a single character. "ob g" received'],
+            ['🎁', 'Delimiter must be a single character. "\ud83c\udf81" received'],
+            [",\n", 'Delimiter must be a single character. ",\n" received'],
             ['', 'Delimiter cannot be empty.'],
         ];
     }

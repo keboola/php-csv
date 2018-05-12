@@ -323,7 +323,9 @@ class CsvFile extends \SplFileInfo implements \Iterator
          as an error. Therefore both conditions are necessary. */
         if (($ret === false) || (($ret === 0) && (strlen($str) > 0))) {
             throw new Exception(
-                "Cannot write to file {$this->getPathname()}",
+                "Cannot write to CSV file " . $this->getPathname() .
+                ' Error: ' . error_get_last()['message'] . ' Return: ' . json_encode($ret) .
+                ' To write: ' . strlen($str) . ' Written: ' . $ret,
                 Exception::WRITE_ERROR,
                 null,
                 Exception::WRITE_ERROR_STR

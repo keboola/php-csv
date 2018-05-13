@@ -80,7 +80,7 @@ class CsvWriter extends AbstractCsvFile
     public function writeRow(array $row)
     {
         $str = $this->rowToStr($row);
-        $ret = fwrite($this->getFilePointer(), $str);
+        $ret = @fwrite($this->getFilePointer(), $str);
 
         /* According to http://php.net/fwrite the fwrite() function
          should return false on error. However not writing the full
@@ -89,7 +89,8 @@ class CsvWriter extends AbstractCsvFile
         if (($ret === false) || (($ret === 0) && (strlen($str) > 0))) {
             throw new Exception(
                 "Cannot write to CSV file " . $this->fileName .
-                ' Error: ' . error_get_last()['message'] . ' Return: ' . json_encode($ret) .
+                (error_get_last() ? 'Error: ' . error_get_last()['message'] : '') .
+                ' Return: ' . json_encode($ret) .
                 ' To write: ' . strlen($str) . ' Written: ' . $ret,
                 Exception::WRITE_ERROR
             );

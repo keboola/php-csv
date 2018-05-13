@@ -182,7 +182,23 @@ class CsvWriteTest extends TestCase
         $csvFile = new CsvWriter($pointer);
         $rows = [['col1', 'col2']];
         self::expectException(Exception::class);
-        self::expectExceptionMessage('Cannot write to CSV file');
+        self::expectExceptionMessage('Cannot write to CSV file  Return: 0 To write: 14 Written: 0');
+        $csvFile->writeRow($rows[0]);
+    }
+
+    public function testInvalidPointer2()
+    {
+        $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('csv-test');
+        touch($fileName);
+        $pointer = fopen($fileName, 'r');
+        $csvFile = new CsvWriter($pointer);
+        fclose($pointer);
+        $rows = [['col1', 'col2']];
+        self::expectException(Exception::class);
+        self::expectExceptionMessage(
+            'Cannot write to CSV file Error: fwrite(): supplied resource is not ' .
+            'a valid stream resource Return: false To write: 14 Written: '
+        );
         $csvFile->writeRow($rows[0]);
     }
 

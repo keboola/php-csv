@@ -196,7 +196,7 @@ class CsvWriteTest extends TestCase
         $rows = [['col1', 'col2']];
         self::expectException(Exception::class);
         self::expectExceptionMessage(
-            'is not a valid stream resource Return: false To write: 14 Written: '
+            'a valid stream resource Return: false To write: 14 Written: '
         );
         $csvFile->writeRow($rows[0]);
     }

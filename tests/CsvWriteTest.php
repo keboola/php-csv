@@ -196,8 +196,7 @@ class CsvWriteTest extends TestCase
         $rows = [['col1', 'col2']];
         self::expectException(Exception::class);
         self::expectExceptionMessage(
-            'Cannot write to CSV file Error: fwrite(): supplied resource is not ' .
-            'a valid stream resource Return: false To write: 14 Written: '
+            'is not a valid stream resource Return: false To write: 14 Written: '
         );
         $csvFile->writeRow($rows[0]);
     }

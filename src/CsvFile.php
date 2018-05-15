@@ -405,12 +405,12 @@ class CsvFile extends \SplFileInfo implements \Iterator
                 Exception::INVALID_PARAM_STR
             );
         }
-        if (in_array($lineBreak, ["\r\n", "\n"])) {
+        if (in_array($lineBreak, ["\r\n", "\n", "\r"])) {
             return $lineBreak;
         }
 
         throw new InvalidArgumentException(
-            "Invalid line break. Please use unix \\n or win \\r\\n line breaks.",
+            "Invalid line break. Please use unix \\n or win \\r\\n or Mac \\r line breaks.",
             Exception::INVALID_PARAM,
             null,
             Exception::INVALID_PARAM_STR

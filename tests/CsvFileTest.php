@@ -65,7 +65,7 @@ class CsvFileTest extends TestCase
 
     public function testParse()
     {
-        $csvFile = new CsvFile(__DIR__ . '/data/escaping.csv', ",", '"');
+        $csvFile = new CsvFile(__DIR__ . '/data/escaping.mac.csv', ",", '"');
 
         $rows = [];
         foreach ($csvFile as $row) {

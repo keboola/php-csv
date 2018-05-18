@@ -210,6 +210,7 @@ class CsvFile extends \SplFileInfo implements \Iterator
     protected function readLine()
     {
         $this->validateLineBreak();
+        ini_set('auto_detect_line_endings', '1');
 
         // allow empty enclosure hack
         $enclosure = !$this->getEnclosure() ? chr(0) : $this->getEnclosure();

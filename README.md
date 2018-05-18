@@ -7,26 +7,25 @@
 
 The library provides a simple reader and writer for CSV files according to [RFC4180](https://tools.ietf.org/html/rfc4180). 
 The library is licensed under the [MIT](https://github.com/keboola/php-csv/blob/master/LICENSE) license. The library provides 
-a single `CsvFile` class for both reading and writing CSV files. The class is designed to be **immutable** and minimalistic.
+classes `CsvReader` and `CsvWriter` for reading and writing CSV files. The classes are designed to be **immutable** 
+and minimalistic.
 
 ## Usage
 
 ### Read CSV
 
 ```php
-$csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/_data/test-input.csv');
+$csvFile = new Keboola\Csv\CsvReader(__DIR__ . '/_data/test-input.csv');
 foreach($csvFile as $row) {
 	var_dump($row);
 }
 ```
 
 #### Skip lines
-Skip the first two lines:
+Skip the first line:
 
 ```php
-use Keboola\Csv\CsvFile;
-$filename = __DIR__ . '/_data/test-input.csv';
-$csvFile = new \Keboola\Csv\CsvFile($fileName, CsvFile::DEFAULT_DELIMITER, CsvFile::DEFAULT_ENCLOSURE, CsvFile::DEFAULT_ENCLOSURE, 2)
+$csvFile = new \Keboola\Csv\CsvFile($fileName, CsvFile::DEFAULT_DELIMITER, CsvFile::DEFAULT_ENCLOSURE, CsvFile::DEFAULT_ESCAPED_BY, 1)
 foreach($csvFile as $row) {
 	var_dump($row);
 }
@@ -36,19 +35,40 @@ foreach($csvFile as $row) {
 ### Write CSV
 
 ```php
-$csvFile = new Keboola\Csv\CsvFile(__DIR__ . '/_data/test-output.csv');
-$rows = array(
-	array(
+$csvFile = new Keboola\Csv\CsvWriter(__DIR__ . '/_data/test-output.csv');
+$rows = [
+	[
 		'col1', 'col2',
-	),
-	array(
-		'line without enclosure', 'second column',
-	),
-);
+	],
+	[
+		'first column', 'second column',
+	],
+];
 
 foreach ($rows as $row) {
 	$csvFile->writeRow($row);
 }
+```
+
+### Append to CSV
+
+```php
+$fileName = __DIR__ . '/_data/test-output.csv';
+$file = fopen($fileName, 'a');
+$csvFile = new Keboola\Csv\CsvWriter($file);
+$rows = [
+	[
+		'col1', 'col2',
+	],
+	[
+		'first column', 'second column',
+	],
+];
+
+foreach ($rows as $row) {
+	$csvFile->writeRow($row);
+}
+fclose($file);
 ```
 
 ## Installation
@@ -68,6 +88,5 @@ composer require keboola/csv
 ```bash
 require 'vendor/autoload.php';
 ```
-
 
 Read more in [Composer documentation](http://getcomposer.org/doc/01-basic-usage.md)

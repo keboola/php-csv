@@ -63,9 +63,13 @@ class CsvFileTest extends TestCase
         ];
     }
 
-    public function testParse()
+	/**
+	 * @dataProvider testParseProvider
+	 * @throws \Keboola\Csv\InvalidArgumentException
+	 */
+    public function testParse($inputFilePath)
     {
-        $csvFile = new CsvFile(__DIR__ . '/data/escaping.mac.csv', ",", '"');
+        $csvFile = new CsvFile($inputFilePath, ",", '"');
 
         $rows = [];
         foreach ($csvFile as $row) {
@@ -101,6 +105,21 @@ class CsvFileTest extends TestCase
 
         self::assertEquals($expected, $rows);
     }
+
+    public function testParseProvider()
+	{
+		return [
+			'linux' => [
+				__DIR__ . '/data/escaping.csv',
+			],
+			'mac' => [
+				__DIR__ . '/data/escaping.mac.csv',
+			],
+			'win' => [
+				__DIR__ . '/data/escaping.win.csv'
+			],
+		];
+	}
 
     public function testParseEscapedBy()
     {

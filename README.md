@@ -25,7 +25,13 @@ foreach($csvFile as $row) {
 Skip the first line:
 
 ```php
-$csvFile = new \Keboola\Csv\CsvFile($fileName, CsvFile::DEFAULT_DELIMITER, CsvFile::DEFAULT_ENCLOSURE, CsvFile::DEFAULT_ESCAPED_BY, 1)
+$csvFile = new \Keboola\Csv\CsvFile(
+    $fileName,
+    CsvFile::DEFAULT_DELIMITER,
+    CsvFile::DEFAULT_ENCLOSURE,
+    CsvFile::DEFAULT_ESCAPED_BY,
+    1
+)
 foreach($csvFile as $row) {
 	var_dump($row);
 }
@@ -69,6 +75,29 @@ foreach ($rows as $row) {
 	$csvFile->writeRow($row);
 }
 fclose($file);
+```
+
+### Write CSV With Windows new-lines
+
+```php
+$csvFile = new Keboola\Csv\CsvWriter(
+    'test-output.csv',
+    CsvWriter::DEFAULT_DELIMITER,
+    CsvWriter::DEFAULT_ENCLOSURE,
+    "\r\n"
+)
+$rows = [
+	[
+		'col1', 'col2',
+	],
+	[
+		'first column', 'second column',
+	],
+];
+
+foreach ($rows as $row) {
+	$csvFile->writeRow($row);
+}
 ```
 
 ## Installation

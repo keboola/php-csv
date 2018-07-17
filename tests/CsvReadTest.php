@@ -283,6 +283,18 @@ class CsvReadTest extends TestCase
         self::assertEquals([], iterator_to_array($csvFile));
     }
 
+    public function testWeirdTsv()
+    {
+        $fileName = __DIR__ . '/data/weird.tsv';
+
+        $csvFile = new CsvReader(
+            $fileName,
+            "\t",
+            ""
+        );
+        self::assertEquals(2, count($csvFile));
+    }
+
     public function testException()
     {
         try {

@@ -292,7 +292,11 @@ class CsvReadTest extends TestCase
             "\t",
             ""
         );
-        self::assertEquals(2, count($csvFile));
+        $i = 0;
+        foreach ($csvFile as $row) {
+            $i++;
+        }
+        self::assertEquals(2, $i);
     }
 
     public function testException()

@@ -1,9 +1,24 @@
 language: php
-before_script: composer install
 php:
-- 5.6
-- 7.0
-- hhvm
+  - 5.6
+  - 7.0
+  - hhvm
+
+before_script: 
+  - composer install
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - export GIT_COMMIT_SHA=$TRAVIS_COMMIT
+  - export GIT_BRANCH=$TRAVIS_BRANCH  
+  - ./cc-test-reporter before-build
+
+script:
+  - vendor/bin/phpunit --coverage-clover ./build/logs/clover.xml
+
+after_success:
+  - ./cc-test-reporter after-build --exit-code 0 --debug
+
 notifications:
+  email: false  
   slack:
     secure: WVnUU0fkZS75md3mm7B08SxhP3HDeHbJ8GTPR1DUVjK3MHAmKeSah/plNNxn9I/TdlXnHzQO5WBN33nUq0ODGGT4WFzFa66YTX2tb+bNSmewBOv82hEoITTI1PI9SLq0WNtcamHWCM3Rt1XtiZb3DQk/OcUfiWrrn74q4PPX+VY=

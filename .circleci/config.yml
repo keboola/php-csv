@@ -1,4 +1,5 @@
-version: 2
+version: 2.1
+
 jobs:
   php72-build:
     docker:
@@ -24,7 +25,6 @@ jobs:
           command: vendor/bin/phpunit
 
 workflows:
-  version: 2
   build:
     jobs:
       - php72-build

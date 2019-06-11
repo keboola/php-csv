@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  php72-build:
+    docker:
+      - image: circleci/php:7.2
+    steps:
+      - checkout
+      - run: vendor/bin/phpunit
+  php73-build:
+    docker:
+      - image: circleci/php:7.3
+    steps:
+      - checkout
+      - run: vendor/bin/phpunit
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - php72-build
+      - php73-build

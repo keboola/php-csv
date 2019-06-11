@@ -1,9 +1,0 @@
-machine:
-  php:
-    version: 5.4.21
-dependencies:
-  pre:
-    - echo "memory_limit = 1024M" > ~/.phpenv/versions/$(phpenv global)/etc/conf.d/memory.ini
-test:
-  override:
-    - vendor/bin/phpunit

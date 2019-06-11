@@ -5,12 +5,14 @@ jobs:
       - image: circleci/php:7.2
     steps:
       - checkout
+      - run: composer install
       - run: vendor/bin/phpunit
   php73-build:
     docker:
       - image: circleci/php:7.3
     steps:
       - checkout
+      - run: composer install
       - run: vendor/bin/phpunit
 
 workflows:

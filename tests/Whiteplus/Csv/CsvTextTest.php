@@ -7,10 +7,11 @@
  *
  */
 
+use PHPUnit\Framework\TestCase;
 use Whiteplus\Csv\CsvText;
 use Whiteplus\Csv\Csv;
 
-class Whiteplus_CsvTextTest extends PHPUnit_Framework_TestCase
+class Whiteplus_CsvTextTest extends TestCase
 {
 
 	public function getInstance($file_path, $delimiter = Csv::DEFAULT_DELIMITER, $enclosure = Csv::DEFAULT_ENCLOSURE, $escapedBy = "") {
@@ -184,11 +185,11 @@ class Whiteplus_CsvTextTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @dataProvider invalidDelimiters
-	 * @expectedException Whiteplus\Csv\InvalidArgumentException
 	 * @param $delimiter
 	 */
 	public function testInvalidDelimiterShouldThrowException($delimiter)
 	{
+		$this->expectException(Whiteplus\Csv\InvalidArgumentException::class);
 		$this->getInstance(__DIR__ . '/_data/test-input.csv', $delimiter);
 	}
 	public function invalidDelimiters()
@@ -200,6 +201,9 @@ class Whiteplus_CsvTextTest extends PHPUnit_Framework_TestCase
 		);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testInitInvalidFileShouldNotThrowException()
 	{
 		try {
@@ -211,11 +215,11 @@ class Whiteplus_CsvTextTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @dataProvider invalidEnclosures
-	 * @expectedException Whiteplus\Csv\InvalidArgumentException
 	 * @param $enclosure
 	 */
 	public function testInvalidEnclosureShouldThrowException($enclosure)
 	{
+		$this->expectException(Whiteplus\Csv\InvalidArgumentException::class);
 		$this->getInstance(__DIR__ . '/_data/test-input.csv', ",", $enclosure);
 	}
 
@@ -250,11 +254,11 @@ class Whiteplus_CsvTextTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException Whiteplus\Csv\InvalidArgumentException
 	 * @dataProvider invalidLineBreaksData
 	 */
 	public function testInvalidLineBreak($file)
 	{
+		$this->expectException(Whiteplus\Csv\InvalidArgumentException::class);
 		$csvFile = $this->getInstance(__DIR__ . '/_data/' . $file);
 		$csvFile->validateLineBreak();
 	}
@@ -267,6 +271,9 @@ class Whiteplus_CsvTextTest extends PHPUnit_Framework_TestCase
 	}
 
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testWrite()
 	{
 		$fileName = __DIR__ . '/_data/_out.csv';

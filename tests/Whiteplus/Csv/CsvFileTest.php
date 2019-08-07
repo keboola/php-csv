@@ -340,4 +340,35 @@ class Whiteplus_CsvFileTest extends TestCase
 		$this->assertFalse($csvFile->valid());
 	}
 
+	public function utf16LeCsvFiles(): array
+	{
+		return [
+			['test-input.utf_16le_lf.csv', "\n"],
+			['test-input.utf_16le_crlf.csv', "\r\n"],
+		];
+	}
+
+	/**
+	 * @dataProvider utf16LeCsvFiles
+	 */
+	public function testParseUtf16Le(string $file, string $lineBreak): void
+	{
+		$csvFile = $this->getInstance(__DIR__ . '/_data/' . $file);
+
+		$csvFile->setFileEncoding('UTF-16LE');
+		$csvFile->setLineBreak($lineBreak);
+
+		$rows = [];
+		foreach ($csvFile as $row) {
+			$rows[] = $row;
+		}
+
+		$expected = [
+			['foo', 'bar', 'baz'],
+			['あいうえお', 'かきくけこ', 'さしすせそ'],
+			['東京', '神奈川', '埼玉'],
+		];
+
+		$this->assertEquals($expected, $rows);
+	}
 }

@@ -26,6 +26,7 @@ abstract class Csv implements \Iterator
 	protected $_encoder;
 	protected $_decoder;
 	protected $_file_encoding;
+	protected $_line_length = 4096;
 	protected $_line_separator; // For UTF-16LE it's multibyte, e.g. 0x0A00
 
 	public function __construct(
@@ -112,6 +113,11 @@ abstract class Csv implements \Iterator
 		if ($file_encoding == 'UTF-16LE') {
 			$this->_setLineSeparator("\x0A\x00");
 		};
+	}
+
+	public function setLineLength(int $lineLength): void
+	{
+		$this->_line_length = $lineLength;
 	}
 
 	public function _setLineSeparator(string $lineSeparator): void
@@ -292,6 +298,11 @@ abstract class Csv implements \Iterator
 	public function getFileEncoding(): ?string
 	{
 		return $this->_file_encoding;
+	}
+
+	public function getLineLength(): ?int
+	{
+		return $this->_line_length;
 	}
 
 	protected function _getLineSeparator(): ?string

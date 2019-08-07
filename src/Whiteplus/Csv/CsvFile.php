@@ -70,7 +70,7 @@ class CsvFile extends Csv {
 
     protected function _readLine() {
         if ($this->getFileEncoding() == 'UTF-16LE') {
-            $line = stream_get_line($this->_getFilePointer(), 4096, $this->_getLineSeparator());
+            $line = stream_get_line($this->_getFilePointer(), $this->getLineLength(), $this->_getLineSeparator());
             if (substr($line, -2) == "\x0D\x00") {
                 // for CRLF
                 $this->_setLineSeparator("\x0D\x00" . $this->_getLineSeparator());

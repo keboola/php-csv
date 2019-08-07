@@ -25,6 +25,7 @@ abstract class Csv implements \Iterator
 
 	protected $_encoder;
 	protected $_decoder;
+	protected $_file_encoding;
 
 	public function __construct(
 		$delimiter = self::DEFAULT_DELIMITER, $enclosure = self::DEFAULT_ENCLOSURE, $escapedBy = "") {
@@ -105,6 +106,8 @@ abstract class Csv implements \Iterator
                 return mb_convert_encoding($line, $system_encoding, $file_encoding);
             };
 		}
+
+		$this->_file_encoding = $file_encoding;
 	}
 
 	public function writeRow(array $row)
@@ -275,6 +278,11 @@ abstract class Csv implements \Iterator
 		reset($lineBreaksPositions);
 
 		return empty($lineBreaksPositions) ? "\n" : key($lineBreaksPositions);
+	}
+
+	public function getFileEncoding(): ?string
+	{
+		return $this->_file_encoding;
 	}
 
 	/**

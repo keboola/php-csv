@@ -69,6 +69,9 @@ class CsvFile extends Csv {
     }
 
     protected function _readLine() {
+        if ($this->getFileEncoding() == 'UTF-16LE') {
+            return stream_get_line($this->_getFilePointer(), 4096, "\x0A\x00");
+        }
         return fgets($this->_getFilePointer());
     }
 

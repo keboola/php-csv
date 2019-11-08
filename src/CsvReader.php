@@ -4,12 +4,10 @@ namespace Keboola\Csv;
 
 class CsvReader extends AbstractCsvFile implements \Iterator
 {
-    const DEFAULT_ESCAPED_BY = "";
-
     /**
-     * @var string
+     * @deprecated use Keboola\Csv\CsvOptions::DEFAULT_ENCLOSURE
      */
-    private $escapedBy;
+    const DEFAULT_ESCAPED_BY = CsvOptions::DEFAULT_ESCAPED_BY;
 
     /**
      * @var int
@@ -47,14 +45,12 @@ class CsvReader extends AbstractCsvFile implements \Iterator
      */
     public function __construct(
         $file,
-        $delimiter = self::DEFAULT_DELIMITER,
-        $enclosure = self::DEFAULT_ENCLOSURE,
-        $escapedBy = self::DEFAULT_ESCAPED_BY,
+        $delimiter = CsvOptions::DEFAULT_DELIMITER,
+        $enclosure = CsvOptions::DEFAULT_ENCLOSURE,
+        $escapedBy = CsvOptions::DEFAULT_ESCAPED_BY,
         $skipLines = 0
     ) {
-        $this->escapedBy = $escapedBy;
-        $this->setDelimiter($delimiter);
-        $this->setEnclosure($enclosure);
+        $this->options = new CsvOptions($delimiter, $enclosure, $escapedBy);
         $this->setSkipLines($skipLines);
         $this->setFile($file);
         $this->lineBreak = $this->detectLineBreak();
@@ -151,7 +147,7 @@ class CsvReader extends AbstractCsvFile implements \Iterator
 
         // allow empty enclosure hack
         $enclosure = !$this->getEnclosure() ? chr(0) : $this->getEnclosure();
-        $escapedBy = !$this->escapedBy ? chr(0) : $this->escapedBy;
+        $escapedBy = !$this->getEscapedBy() ? chr(0) : $this->getEscapedBy();
         return fgetcsv($this->getFilePointer(), null, $this->getDelimiter(), $enclosure, $escapedBy);
     }
 
@@ -206,7 +202,7 @@ class CsvReader extends AbstractCsvFile implements \Iterator
      */
     public function getEscapedBy()
     {
-        return $this->escapedBy;
+        return $this->options->getEscapedBy();
     }
 
     /**

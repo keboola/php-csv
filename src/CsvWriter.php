@@ -20,12 +20,11 @@ class CsvWriter extends AbstractCsvFile
      */
     public function __construct(
         $file,
-        $delimiter = self::DEFAULT_DELIMITER,
-        $enclosure = self::DEFAULT_ENCLOSURE,
+        $delimiter = CsvOptions::DEFAULT_DELIMITER,
+        $enclosure = CsvOptions::DEFAULT_ENCLOSURE,
         $lineBreak = "\n"
     ) {
-        $this->setDelimiter($delimiter);
-        $this->setEnclosure($enclosure);
+        $this->options = new CsvOptions($delimiter, $enclosure);
         $this->setLineBreak($lineBreak);
         $this->setFile($file);
     }

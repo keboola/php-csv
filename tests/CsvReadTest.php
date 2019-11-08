@@ -238,9 +238,9 @@ class CsvReadTest extends TestCase
 
         $csvFile = new CsvReader(
             $fileName,
-            CsvReader::DEFAULT_DELIMITER,
-            CsvReader::DEFAULT_ENCLOSURE,
-            CsvReader::DEFAULT_ESCAPED_BY,
+            CsvOptions::DEFAULT_DELIMITER,
+            CsvOptions::DEFAULT_ENCLOSURE,
+            CsvOptions::DEFAULT_ESCAPED_BY,
             0
         );
         self::assertEquals(['id', 'isImported'], $csvFile->getHeader());

@@ -35,30 +35,10 @@ class CsvOptions
         $escapedBy = self::DEFAULT_ESCAPED_BY
     ) {
         $this->escapedBy = $escapedBy;
-        $this->setDelimiter($delimiter);
-        $this->setEnclosure($enclosure);
-    }
-
-    /**
-     * @param string $delimiter
-     * @throws InvalidArgumentException
-     */
-    protected function setDelimiter($delimiter)
-    {
         $this->validateDelimiter($delimiter);
         $this->delimiter = $delimiter;
-    }
-
-    /**
-     * @param string $enclosure
-     * @return $this
-     * @throws InvalidArgumentException
-     */
-    protected function setEnclosure($enclosure)
-    {
         $this->validateEnclosure($enclosure);
         $this->enclosure = $enclosure;
-        return $this;
     }
 
     /**

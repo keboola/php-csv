@@ -2,6 +2,7 @@
 
 namespace Keboola\Csv\Tests;
 
+use Keboola\Csv\CsvOptions;
 use Keboola\Csv\CsvWriter;
 use Keboola\Csv\Exception;
 use PHPUnit\Framework\TestCase;
@@ -214,8 +215,8 @@ class CsvWriteTest extends TestCase
         $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('csv-test');
         $csvFile = new CsvWriter(
             $fileName,
-            CsvWriter::DEFAULT_DELIMITER,
-            CsvWriter::DEFAULT_ENCLOSURE,
+            CsvOptions::DEFAULT_DELIMITER,
+            CsvOptions::DEFAULT_ENCLOSURE,
             "\r\n"
         );
         $rows = [

@@ -2,6 +2,7 @@
 
 namespace Keboola\Csv\Tests;
 
+use Keboola\Csv\CsvOptions;
 use Keboola\Csv\CsvReader;
 use Keboola\Csv\CsvWriter;
 use Keboola\Csv\Exception;
@@ -218,9 +219,9 @@ class CsvReadTest extends TestCase
 
         $csvFile = new CsvReader(
             $fileName,
-            CsvReader::DEFAULT_DELIMITER,
-            CsvReader::DEFAULT_ENCLOSURE,
-            CsvReader::DEFAULT_ESCAPED_BY,
+            CsvOptions::DEFAULT_DELIMITER,
+            CsvOptions::DEFAULT_ENCLOSURE,
+            CsvOptions::DEFAULT_ESCAPED_BY,
             1
         );
         self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
@@ -237,9 +238,9 @@ class CsvReadTest extends TestCase
 
         $csvFile = new CsvReader(
             $fileName,
-            CsvReader::DEFAULT_DELIMITER,
-            CsvReader::DEFAULT_ENCLOSURE,
-            CsvReader::DEFAULT_ESCAPED_BY,
+            CsvOptions::DEFAULT_DELIMITER,
+            CsvOptions::DEFAULT_ENCLOSURE,
+            CsvOptions::DEFAULT_ESCAPED_BY,
             0
         );
         self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
@@ -257,9 +258,9 @@ class CsvReadTest extends TestCase
 
         $csvFile = new CsvReader(
             $fileName,
-            CsvReader::DEFAULT_DELIMITER,
-            CsvReader::DEFAULT_ENCLOSURE,
-            CsvReader::DEFAULT_ESCAPED_BY,
+            CsvOptions::DEFAULT_DELIMITER,
+            CsvOptions::DEFAULT_ENCLOSURE,
+            CsvOptions::DEFAULT_ESCAPED_BY,
             3
         );
         self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
@@ -274,9 +275,9 @@ class CsvReadTest extends TestCase
 
         $csvFile = new CsvReader(
             $fileName,
-            CsvReader::DEFAULT_DELIMITER,
-            CsvReader::DEFAULT_ENCLOSURE,
-            CsvReader::DEFAULT_ESCAPED_BY,
+            CsvOptions::DEFAULT_DELIMITER,
+            CsvOptions::DEFAULT_ENCLOSURE,
+            CsvOptions::DEFAULT_ESCAPED_BY,
             100
         );
         self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
@@ -348,9 +349,9 @@ class CsvReadTest extends TestCase
         self::expectExceptionMessage($message);
         new CsvReader(
             'dummy',
-            CsvReader::DEFAULT_DELIMITER,
-            CsvReader::DEFAULT_ENCLOSURE,
-            CsvReader::DEFAULT_ENCLOSURE,
+            CsvOptions::DEFAULT_DELIMITER,
+            CsvOptions::DEFAULT_ENCLOSURE,
+            CsvOptions::DEFAULT_ENCLOSURE,
             $skipLines
         );
     }

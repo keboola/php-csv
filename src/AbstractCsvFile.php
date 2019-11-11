@@ -4,8 +4,15 @@ namespace Keboola\Csv;
 
 abstract class AbstractCsvFile
 {
-    const DEFAULT_DELIMITER = ',';
-    const DEFAULT_ENCLOSURE = '"';
+    /**
+     * @deprecated use Keboola\Csv\CsvOptions::DEFAULT_DELIMITER
+     */
+    const DEFAULT_DELIMITER = CsvOptions::DEFAULT_DELIMITER;
+    /**
+     * @deprecated use Keboola\Csv\CsvOptions::DEFAULT_ENCLOSURE
+     */
+    const DEFAULT_ENCLOSURE = CsvOptions::DEFAULT_ENCLOSURE;
+
     /**
      * @var string
      */
@@ -14,54 +21,17 @@ abstract class AbstractCsvFile
      * @var resource
      */
     protected $filePointer;
-
     /**
-     * @var string
+     * @var CsvOptions
      */
-    private $delimiter;
-
-    /**
-     * @var string
-     */
-    private $enclosure;
+    protected $options;
 
     /**
      * @return string
      */
     public function getDelimiter()
     {
-        return $this->delimiter;
-    }
-
-    /**
-     * @param string $delimiter
-     * @throws InvalidArgumentException
-     */
-    protected function setDelimiter($delimiter)
-    {
-        $this->validateDelimiter($delimiter);
-        $this->delimiter = $delimiter;
-    }
-
-    /**
-     * @param string $delimiter
-     * @throws InvalidArgumentException
-     */
-    protected function validateDelimiter($delimiter)
-    {
-        if (strlen($delimiter) > 1) {
-            throw new InvalidArgumentException(
-                "Delimiter must be a single character. " . json_encode($delimiter) . " received",
-                Exception::INVALID_PARAM
-            );
-        }
-
-        if (strlen($delimiter) == 0) {
-            throw new InvalidArgumentException(
-                "Delimiter cannot be empty.",
-                Exception::INVALID_PARAM
-            );
-        }
+        return $this->options->getDelimiter();
     }
 
     /**
@@ -69,33 +39,7 @@ abstract class AbstractCsvFile
      */
     public function getEnclosure()
     {
-        return $this->enclosure;
-    }
-
-    /**
-     * @param string $enclosure
-     * @return $this
-     * @throws InvalidArgumentException
-     */
-    protected function setEnclosure($enclosure)
-    {
-        $this->validateEnclosure($enclosure);
-        $this->enclosure = $enclosure;
-        return $this;
-    }
-
-    /**
-     * @param string $enclosure
-     * @throws InvalidArgumentException
-     */
-    protected function validateEnclosure($enclosure)
-    {
-        if (strlen($enclosure) > 1) {
-            throw new InvalidArgumentException(
-                "Enclosure must be a single character. " . json_encode($enclosure) . " received",
-                Exception::INVALID_PARAM
-            );
-        }
+        return $this->options->getEnclosure();
     }
 
     public function __destruct()

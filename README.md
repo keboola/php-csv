@@ -1,4 +1,5 @@
-# Keboola CSV reader/writer [![Build Status](https://travis-ci.org/keboola/php-csv.svg?branch=master)](https://travis-ci.org/keboola/php-csv)
+# Keboola CSV reader/writer [![Build Status](https://travis-ci.com/keboola/php-csv.svg?branch=master)](https://travis-ci.com/keboola/php-csv)
+
 [![Latest Stable Version](https://poser.pugx.org/keboola/csv/v/stable.svg)](https://packagist.org/packages/keboola/csv)
 [![License](https://poser.pugx.org/keboola/csv/license.svg)](https://packagist.org/packages/keboola/csv)
 [![Total Downloads](https://poser.pugx.org/keboola/csv/downloads.svg)](https://packagist.org/packages/keboola/csv)

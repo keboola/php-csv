@@ -382,14 +382,6 @@ class CsvReadTest extends TestCase
         ];
     }
 
-    public function testInvalidNewLines()
-    {
-        self::expectException(Exception::class);
-        self::expectExceptionMessage('Invalid line break. Please use unix \n or win \r\n line breaks.');
-        new CsvReader(__DIR__ . DIRECTORY_SEPARATOR . 'data/binary');
-    }
-
-
     public function testValidWithoutRewind()
     {
         $fileName = __DIR__ . '/data/simple.csv';

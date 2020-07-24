@@ -114,26 +114,7 @@ class CsvReader extends AbstractCsvFile implements \Iterator
         rewind($this->getFilePointer());
         $sample = fread($this->getFilePointer(), 10000);
 
-        $possibleLineBreaks = [
-            "\r\n", // win
-            "\r", // mac
-            "\n", // unix
-        ];
-
-        $lineBreaksPositions = [];
-        foreach ($possibleLineBreaks as $lineBreak) {
-            $position = strpos($sample, $lineBreak);
-            if ($position === false) {
-                continue;
-            }
-            $lineBreaksPositions[$lineBreak] = $position;
-        }
-
-
-        asort($lineBreaksPositions);
-        reset($lineBreaksPositions);
-
-        return empty($lineBreaksPositions) ? "\n" : key($lineBreaksPositions);
+        return LineBreaksHelper::detectLineBreaks($sample, $this->getEnclosure(), $this->getEscapedBy());
     }
 
     /**

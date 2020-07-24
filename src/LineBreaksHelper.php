@@ -61,6 +61,7 @@ class LineBreaksHelper
          * enclosure: |"|, escapedBy: |\|,  regexp: ~"(?>(?>\\"|\\\\)|[^"])*"~
         */
         $regexpDelimiter = '~';
+        // @formatter:off
         $regexp =
             // regexp start
             $regexpDelimiter .
@@ -90,6 +91,7 @@ class LineBreaksHelper
                 preg_quote($enclosure, $regexpDelimiter) .
             // regexp end
             $regexpDelimiter;
+        // @formatter:on
 
         return preg_replace($regexp, $doubleEnclosure, $sample);
     }

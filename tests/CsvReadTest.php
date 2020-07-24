@@ -137,6 +137,24 @@ class CsvReadTest extends TestCase
         self::assertEquals($expected, iterator_to_array($csvFile));
     }
 
+    public function testParseMacLineEndsInField()
+    {
+        $csvFile = new CsvReader(__DIR__ . '/data/test-input.lineBreaks.csv', ",", '"', '\\');
+
+        $expected = [
+            [
+                'test',
+                "some text\rwith\r\\r line breaks\rinside\rbut\rrows\rare\rusing \\n \\\"line\\\" break\r",
+            ],
+            [
+                'name', 'data'
+            ]
+        ];
+
+        self::assertEquals($expected, iterator_to_array($csvFile));
+    }
+
+
     public function testEmptyHeader()
     {
         $csvFile = new CsvReader(__DIR__ . '/data/test-input.empty.csv', ',', '"');

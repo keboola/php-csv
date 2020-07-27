@@ -500,6 +500,10 @@ class CsvReadTest extends TestCase
      */
     public function testPerformance($fileContent, $expectedRows, $maxDuration)
     {
+        self::markTestSkipped(
+            'Run this test only manually. Because the duration is very different in local CI environment.'
+        );
+
         try {
             $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('perf-test');
             file_put_contents($fileName, $fileContent);

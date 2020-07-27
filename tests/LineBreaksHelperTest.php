@@ -136,7 +136,5 @@ class LineBreaksHelperTest extends TestCase
                 $lineEnd
             ];
         }
-
-
     }
 }

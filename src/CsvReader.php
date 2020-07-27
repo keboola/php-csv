@@ -111,8 +111,8 @@ class CsvReader extends AbstractCsvFile implements \Iterator
      */
     protected function detectLineBreak()
     {
-        rewind($this->getFilePointer());
-        $sample = fread($this->getFilePointer(), 10000);
+        @rewind($this->getFilePointer());
+        $sample = @fread($this->getFilePointer(), 10000);
 
         return LineBreaksHelper::detectLineBreaks($sample, $this->getEnclosure(), $this->getEscapedBy());
     }
@@ -129,7 +129,7 @@ class CsvReader extends AbstractCsvFile implements \Iterator
         // allow empty enclosure hack
         $enclosure = !$this->getEnclosure() ? chr(0) : $this->getEnclosure();
         $escapedBy = !$this->getEscapedBy() ? chr(0) : $this->getEscapedBy();
-        return fgetcsv($this->getFilePointer(), null, $this->getDelimiter(), $enclosure, $escapedBy);
+        return @fgetcsv($this->getFilePointer(), null, $this->getDelimiter(), $enclosure, $escapedBy);
     }
 
     /**

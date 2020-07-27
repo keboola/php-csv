@@ -7,7 +7,9 @@ use Keboola\Csv\CsvReader;
 use Keboola\Csv\CsvWriter;
 use Keboola\Csv\Exception;
 use Keboola\Csv\InvalidArgumentException;
+use phpDocumentor\Reflection\Types\Void_;
 use PHPUnit\Framework\TestCase;
+use Webmozart\Assert\Assert;
 
 class CsvReadTest extends TestCase
 {
@@ -488,5 +490,51 @@ class CsvReadTest extends TestCase
         self::expectException(Exception::class);
         self::expectExceptionMessage('Invalid file: array');
         new CsvReader(['bad']);
+    }
+
+    /**
+     * @dataProvider getPerformanceTestInputs
+     * @param string $fileContent
+     * @param int $expectedRows
+     * @param float $maxDuration
+     */
+    public function testPerformance($fileContent, $expectedRows, $maxDuration)
+    {
+        try {
+            $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('perf-test');
+            file_put_contents($fileName, $fileContent);
+            $startTime = microtime(true);
+            $reader = new CsvReader($fileName);
+            $rows = 0;
+            foreach ($reader as $line){
+                $rows++;
+            }
+            $duration = microtime(true) - $startTime;
+            self::assertSame($expectedRows, $rows);
+            self::assertLessThanOrEqual($maxDuration, $duration);
+        } finally {
+            @unlink($fileName);
+        }
+    }
+
+    public function getPerformanceTestInputs()
+    {
+        yield '1M-simple-rows' => [
+            str_repeat("abc,def,\"xyz\"\n", 1000000),
+            1000000,
+            8.0
+        ];
+
+        yield '1M-empty-lines-n' => [
+            str_repeat("\n", 1000000),
+            1000000,
+            8.0
+        ];
+
+        yield '1M-no-separators' => [
+            str_repeat(md5('abc') . "\n", 1000000),
+            1000000,
+            8.0
+        ];
     }
 }

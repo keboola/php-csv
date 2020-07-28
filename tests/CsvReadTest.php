@@ -7,9 +7,7 @@ use Keboola\Csv\CsvReader;
 use Keboola\Csv\CsvWriter;
 use Keboola\Csv\Exception;
 use Keboola\Csv\InvalidArgumentException;
-use phpDocumentor\Reflection\Types\Void_;
 use PHPUnit\Framework\TestCase;
-use Webmozart\Assert\Assert;
 
 class CsvReadTest extends TestCase
 {

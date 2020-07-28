@@ -53,7 +53,10 @@ class CsvReader extends AbstractCsvFile implements \Iterator
         $this->options = new CsvOptions($delimiter, $enclosure, $escapedBy);
         $this->setSkipLines($skipLines);
         $this->setFile($file);
+
         $this->lineBreak = $this->detectLineBreak();
+        $this->validateLineBreak();
+
         rewind($this->filePointer);
         $this->header = $this->readLine();
         $this->rewind();
@@ -124,8 +127,6 @@ class CsvReader extends AbstractCsvFile implements \Iterator
      */
     protected function readLine()
     {
-        $this->validateLineBreak();
-
         // allow empty enclosure hack
         $enclosure = !$this->getEnclosure() ? chr(0) : $this->getEnclosure();
         $escapedBy = !$this->getEscapedBy() ? chr(0) : $this->getEscapedBy();
@@ -138,15 +139,7 @@ class CsvReader extends AbstractCsvFile implements \Iterator
      */
     protected function validateLineBreak()
     {
-        try {
-            $lineBreak = $this->getLineBreak();
-        } catch (Exception $e) {
-            throw new InvalidArgumentException(
-                "Failed to detect line break: " . $e->getMessage(),
-                Exception::INVALID_PARAM,
-                $e
-            );
-        }
+        $lineBreak = $this->getLineBreak();
         if (in_array($lineBreak, ["\r\n", "\n"])) {
             return $lineBreak;
         }

@@ -90,7 +90,7 @@ class CsvWriter extends AbstractCsvFile
                 "Cannot write to CSV file " . $this->fileName .
                 ($ret === false && error_get_last() ? 'Error: ' . error_get_last()['message'] : '') .
                 ' Return: ' . json_encode($ret) .
-                ' To write: ' . strlen($str) . ' Written: ' . $ret,
+                ' To write: ' . strlen($str) . ' Written: ' . (int) $ret,
                 Exception::WRITE_ERROR
             );
         }

@@ -2,6 +2,9 @@ version: "2"
 plugins:
   phpmd:
     enabled: true
+    checks:
+      CleanCode/StaticAccess:
+        enabled: false
   phpcodesniffer:
     enabled: true
   sonar-php:

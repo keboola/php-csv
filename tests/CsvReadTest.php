@@ -137,6 +137,24 @@ class CsvReadTest extends TestCase
         self::assertEquals($expected, iterator_to_array($csvFile));
     }
 
+    public function testParseMacLineEndsInField()
+    {
+        $csvFile = new CsvReader(__DIR__ . '/data/test-input.lineBreaks.csv', ",", '"', '\\');
+
+        $expected = [
+            [
+                'test',
+                "some text\rwith\r\\r line breaks\rinside\rbut\rrows\rare\rusing \\n \\\"line\\\" break\r",
+            ],
+            [
+                'name', 'data'
+            ]
+        ];
+
+        self::assertEquals($expected, iterator_to_array($csvFile));
+    }
+
+
     public function testEmptyHeader()
     {
         $csvFile = new CsvReader(__DIR__ . '/data/test-input.empty.csv', ',', '"');
@@ -364,14 +382,6 @@ class CsvReadTest extends TestCase
         ];
     }
 
-    public function testInvalidNewLines()
-    {
-        self::expectException(Exception::class);
-        self::expectExceptionMessage('Invalid line break. Please use unix \n or win \r\n line breaks.');
-        new CsvReader(__DIR__ . DIRECTORY_SEPARATOR . 'data/binary');
-    }
-
-
     public function testValidWithoutRewind()
     {
         $fileName = __DIR__ . '/data/simple.csv';
@@ -478,5 +488,55 @@ class CsvReadTest extends TestCase
         self::expectException(Exception::class);
         self::expectExceptionMessage('Invalid file: array');
         new CsvReader(['bad']);
+    }
+
+    /**
+     * @dataProvider getPerformanceTestInputs
+     * @param string $fileContent
+     * @param int $expectedRows
+     * @param float $maxDuration
+     */
+    public function testPerformance($fileContent, $expectedRows, $maxDuration)
+    {
+        self::markTestSkipped(
+            'Run this test only manually. Because the duration is very different in local CI environment.'
+        );
+
+        try {
+            $fileName = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('perf-test');
+            file_put_contents($fileName, $fileContent);
+            $startTime = microtime(true);
+            $reader = new CsvReader($fileName);
+            $rows = 0;
+            foreach ($reader as $line){
+                $rows++;
+            }
+            $duration = microtime(true) - $startTime;
+            self::assertSame($expectedRows, $rows);
+            self::assertLessThanOrEqual($maxDuration, $duration);
+        } finally {
+            @unlink($fileName);
+        }
+    }
+
+    public function getPerformanceTestInputs()
+    {
+        yield '1M-simple-rows' => [
+            str_repeat("abc,def,\"xyz\"\n", 1000000),
+            1000000,
+            8.0
+        ];
+
+        yield '1M-empty-lines-n' => [
+            str_repeat("\n", 1000000),
+            1000000,
+            8.0
+        ];
+
+        yield '1M-no-separators' => [
+            str_repeat(md5('abc') . "\n", 1000000),
+            1000000,
+            8.0
+        ];
     }
 }

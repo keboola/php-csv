@@ -6,6 +6,8 @@ use Keboola\Csv\CsvOptions;
 use Keboola\Csv\CsvWriter;
 use Keboola\Csv\Exception;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_Constraint_Or;
+use PHPUnit_Framework_Constraint_StringContains;
 
 class CsvWriteTest extends TestCase
 {
@@ -87,9 +89,19 @@ class CsvWriteTest extends TestCase
         ];
 
         $csvFile->writeRow($rows[0]);
-        self::expectException(Exception::class);
-        self::expectExceptionMessage("Cannot write data into column: stdClass::");
-        $csvFile->writeRow($rows[1]);
+
+        try {
+            $csvFile->writeRow($rows[1]);
+            self::fail('Expected exception was not thrown.');
+        } catch (Exception $e) {
+            // Exception message differs between PHP versions.
+            $or = new PHPUnit_Framework_Constraint_Or();
+            $or->setConstraints([
+                new PHPUnit_Framework_Constraint_StringContains("Cannot write data into column: stdClass::"),
+                new PHPUnit_Framework_Constraint_StringContains("Cannot write data into column: (object) array(\n)")
+            ]);
+            self::assertThat($e->getMessage(), $or);
+        }
     }
 
     public function testWriteValidObject()
@@ -182,9 +194,24 @@ class CsvWriteTest extends TestCase
         $pointer = fopen($fileName, 'r');
         $csvFile = new CsvWriter($pointer);
         $rows = [['col1', 'col2']];
-        self::expectException(Exception::class);
-        self::expectExceptionMessage('Cannot write to CSV file  Return: 0 To write: 14 Written: 0');
-        $csvFile->writeRow($rows[0]);
+
+        try {
+            $csvFile->writeRow($rows[0]);
+            self::fail('Expected exception was not thrown.');
+        } catch (Exception $e) {
+            // Exception message differs between PHP versions.
+            $or = new PHPUnit_Framework_Constraint_Or();
+            $or->setConstraints([
+                new PHPUnit_Framework_Constraint_StringContains(
+                    'Cannot write to CSV file  Return: 0 To write: 14 Written: 0'
+                ),
+                new PHPUnit_Framework_Constraint_StringContains(
+                    'Cannot write to CSV file Error: fwrite(): ' .
+                    'write of 14 bytes failed with errno=9 Bad file descriptor Return: false To write: 14 Written: 0'
+                )
+            ]);
+            self::assertThat($e->getMessage(), $or);
+        }
     }
 
     public function testInvalidPointer2()

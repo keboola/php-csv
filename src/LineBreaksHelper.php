@@ -4,6 +4,8 @@ namespace Keboola\Csv;
 
 class LineBreaksHelper
 {
+    const REGEXP_DELIMITER = '~';
+
     /**
      * Detect line-breaks style in CSV file
      * @param string $sample
@@ -60,13 +62,12 @@ class LineBreaksHelper
          * enclosure: |"|, escapedBy: none, regexp: ~"(?>(?>"")|[^"])*"~
          * enclosure: |"|, escapedBy: |\|,  regexp: ~"(?>(?>\\"|\\\\)|[^"])*"~
         */
-        $regexpDelimiter = '~';
         // @formatter:off
         $regexp =
             // regexp start
-            $regexpDelimiter .
+            self::REGEXP_DELIMITER .
                 // enclosure start
-                preg_quote($enclosure, $regexpDelimiter) .
+                preg_quote($enclosure, self::REGEXP_DELIMITER) .
                     /*
                      * Once-only group => if there is a match, do not try other alternatives
                      * See: https://www.php.net/manual/en/regexp.reference.onlyonce.php
@@ -78,19 +79,19 @@ class LineBreaksHelper
                             // once-only group start
                             '(?>' .
                                 // escaped enclosure
-                                preg_quote($escapedEnclosure, $regexpDelimiter) .
+                                preg_quote($escapedEnclosure, self::REGEXP_DELIMITER) .
                                 // OR escaped escape char
-                                ($escapedEscape ? '|' . preg_quote($escapedEscape, $regexpDelimiter) : '') .
+                                ($escapedEscape ? '|' . preg_quote($escapedEscape, self::REGEXP_DELIMITER) : '') .
                             // group end
                             ')' .
                             // OR not enclosure
-                            '|[^' . preg_quote($enclosure, $regexpDelimiter) . ']' .
+                            '|[^' . preg_quote($enclosure, self::REGEXP_DELIMITER) . ']' .
                     // group end
                     ')*' .
                 // enclosure end
-                preg_quote($enclosure, $regexpDelimiter) .
+                preg_quote($enclosure, self::REGEXP_DELIMITER) .
             // regexp end
-            $regexpDelimiter;
+            self::REGEXP_DELIMITER;
         // @formatter:on
 
         return preg_replace($regexp, $doubleEnclosure, $sample);

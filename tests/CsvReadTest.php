@@ -137,32 +137,24 @@ class CsvReadTest extends TestCase
         self::assertEquals($expected, iterator_to_array($csvFile));
     }
 
-    public function testUtf8BOM()
+    /**
+     * @dataProvider bomProvider
+     */
+    public function testUtf8BOM($bomFile)
     {
-        $csvFile = new CsvReader(__DIR__ . '/data/test-input.utf8.bom.csv', ",", '"');
+        $csvFile = new CsvReader(__DIR__ . '/data/bom/' . $bomFile . '.csv');
+        self::assertEquals(['id', 'name',], $csvFile->getHeader());
+    }
 
-        $expected = [
-            [
-                'id', 'name',
-            ],
-            [
-                '0', '- unchecked -',
-            ],
-            [
-                '26', 'czech',
-            ],
-            [
-                '1', 'english',
-            ],
-            [
-                '11', 'finnish',
-            ],
-            [
-                "24", "french",
-            ],
+    public function bomProvider()
+    {
+        return [
+            ['utf32BigEndianBom'],
+            ['utf32LittleEndianBom'],
+            ['utf16BigEndianBom'],
+            ['utf16LittleEndianBom'],
+            ['utf8Bom'],
         ];
-
-        self::assertEquals($expected, iterator_to_array($csvFile));
     }
 
     public function testParseMacLineEndsInField()

@@ -137,6 +137,26 @@ class CsvReadTest extends TestCase
         self::assertEquals($expected, iterator_to_array($csvFile));
     }
 
+    /**
+     * @dataProvider bomProvider
+     */
+    public function testUtf8BOM($bomFile)
+    {
+        $csvFile = new CsvReader(__DIR__ . '/data/bom/' . $bomFile . '.csv');
+        self::assertEquals(['id', 'name',], $csvFile->getHeader());
+    }
+
+    public function bomProvider()
+    {
+        return [
+            ['utf32BigEndianBom'],
+            ['utf32LittleEndianBom'],
+            ['utf16BigEndianBom'],
+            ['utf16LittleEndianBom'],
+            ['utf8Bom'],
+        ];
+    }
+
     public function testParseMacLineEndsInField()
     {
         $csvFile = new CsvReader(__DIR__ . '/data/test-input.lineBreaks.csv', ",", '"', '\\');

@@ -58,7 +58,7 @@ class CsvReader extends AbstractCsvFile implements \Iterator
         $this->validateLineBreak();
 
         rewind($this->filePointer);
-        $this->header = $this->readLine();
+        $this->header = UTF8BOMHelper::detectAndRemoveBOM($this->readLine());
         $this->rewind();
     }
 

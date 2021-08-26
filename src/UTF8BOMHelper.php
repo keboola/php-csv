@@ -28,6 +28,7 @@ class UTF8BOMHelper
                  ] as $bomString) {
             if (strpos($header[0], $bomString) === 0) {
                 $header[0] = trim(substr($header[0], strlen($bomString)), '"');
+                break;
             }
         }
 

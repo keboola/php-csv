@@ -137,6 +137,34 @@ class CsvReadTest extends TestCase
         self::assertEquals($expected, iterator_to_array($csvFile));
     }
 
+    public function testUtf8BOM()
+    {
+        $csvFile = new CsvReader(__DIR__ . '/data/test-input.utf8.bom.csv', ",", '"');
+
+        $expected = [
+            [
+                'id', 'name',
+            ],
+            [
+                '0', '- unchecked -',
+            ],
+            [
+                '26', 'czech',
+            ],
+            [
+                '1', 'english',
+            ],
+            [
+                '11', 'finnish',
+            ],
+            [
+                "24", "french",
+            ],
+        ];
+
+        self::assertEquals($expected, iterator_to_array($csvFile));
+    }
+
     public function testParseMacLineEndsInField()
     {
         $csvFile = new CsvReader(__DIR__ . '/data/test-input.lineBreaks.csv', ",", '"', '\\');

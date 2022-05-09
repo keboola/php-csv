@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Keboola\Csv\Tests;
 
 use Keboola\Csv\CsvReader;

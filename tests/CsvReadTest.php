@@ -20,9 +20,9 @@ class CsvReadTest extends TestCase
     public function testAccessors()
     {
         $csvFile = new CsvReader(__DIR__ . '/data/test-input.csv');
-        self::assertEquals("\"", $csvFile->getEnclosure());
-        self::assertEquals("", $csvFile->getEscapedBy());
-        self::assertEquals(",", $csvFile->getDelimiter());
+        self::assertEquals('"', $csvFile->getEnclosure());
+        self::assertEquals('', $csvFile->getEscapedBy());
+        self::assertEquals(',', $csvFile->getDelimiter());
     }
 
     public function testColumnsCount()
@@ -41,15 +41,15 @@ class CsvReadTest extends TestCase
         $csvFile = new CsvReader(__DIR__ . '/data/' . $fileName, $delimiter, '"');
 
         $expected = [
-            "id",
-            "idAccount",
-            "date",
-            "totalFollowers",
-            "followers",
-            "totalStatuses",
-            "statuses",
-            "kloutScore",
-            "timestamp",
+            'id',
+            'idAccount',
+            'date',
+            'totalFollowers',
+            'followers',
+            'totalStatuses',
+            'statuses',
+            'kloutScore',
+            'timestamp',
         ];
         self::assertEquals($expected, $csvFile->getHeader());
     }
@@ -60,13 +60,13 @@ class CsvReadTest extends TestCase
             ['test-input.csv', ','],
             ['test-input.win.csv', ','],
             ['test-input.tabs.csv', "\t"],
-            ['test-input.tabs.csv', "	"],
+            ['test-input.tabs.csv', '	'],
         ];
     }
 
     public function testParse()
     {
-        $csvFile = new CsvReader(__DIR__ . '/data/escaping.csv', ",", '"');
+        $csvFile = new CsvReader(__DIR__ . '/data/escaping.csv', ',', '"');
 
         $rows = [];
         foreach ($csvFile as $row) {
@@ -93,7 +93,7 @@ class CsvReadTest extends TestCase
                 "columns with\nnew line", "columns with\ttab",
             ],
             [
-                "Columns with WINDOWS\r\nnew line", "second",
+                "Columns with WINDOWS\r\nnew line", 'second',
             ],
             [
                 'column with \n \t \\\\', 'second col',
@@ -105,7 +105,7 @@ class CsvReadTest extends TestCase
 
     public function testParseEscapedBy()
     {
-        $csvFile = new CsvReader(__DIR__ . '/data/escapingEscapedBy.csv', ",", '"', '\\');
+        $csvFile = new CsvReader(__DIR__ . '/data/escapingEscapedBy.csv', ',', '"', '\\');
 
         $expected = [
             [
@@ -127,7 +127,7 @@ class CsvReadTest extends TestCase
                 "columns with\nnew line", "columns with\ttab",
             ],
             [
-                "Columns with WINDOWS\r\nnew line", "second",
+                "Columns with WINDOWS\r\nnew line", 'second',
             ],
             [
                 'column with \n \t \\\\', 'second col',
@@ -159,7 +159,7 @@ class CsvReadTest extends TestCase
 
     public function testParseMacLineEndsInField()
     {
-        $csvFile = new CsvReader(__DIR__ . '/data/test-input.lineBreaks.csv', ",", '"', '\\');
+        $csvFile = new CsvReader(__DIR__ . '/data/test-input.lineBreaks.csv', ',', '"', '\\');
 
         $expected = [
             [
@@ -167,8 +167,8 @@ class CsvReadTest extends TestCase
                 "some text\rwith\r\\r line breaks\rinside\rbut\rrows\rare\rusing \\n \\\"line\\\" break\r",
             ],
             [
-                'name', 'data'
-            ]
+                'name', 'data',
+            ],
         ];
 
         self::assertEquals($expected, iterator_to_array($csvFile));
@@ -223,15 +223,15 @@ class CsvReadTest extends TestCase
         $csvFile = new CsvReader(__DIR__ . '/data/test-input.csv');
 
         $expected = [
-            "id",
-            "idAccount",
-            "date",
-            "totalFollowers",
-            "followers",
-            "totalStatuses",
-            "statuses",
-            "kloutScore",
-            "timestamp",
+            'id',
+            'idAccount',
+            'date',
+            'totalFollowers',
+            'followers',
+            'totalStatuses',
+            'statuses',
+            'kloutScore',
+            'timestamp',
         ];
 
         // header line
@@ -327,9 +327,9 @@ class CsvReadTest extends TestCase
         try {
             $csv = new CsvReader(__DIR__ . '/nonexistent.csv');
             $csv->getHeader();
-            self::fail("Must throw exception.");
+            self::fail('Must throw exception.');
         } catch (Exception $e) {
-            self::assertContains('Cannot open file', $e->getMessage());
+            self::assertStringContainsString('Cannot open file', $e->getMessage());
             self::assertEquals(1, $e->getCode());
         }
     }
@@ -365,7 +365,7 @@ class CsvReadTest extends TestCase
     {
         self::expectException(InvalidArgumentException::class);
         self::expectExceptionMessage($message);
-        new CsvReader(__DIR__ . '/data/test-input.csv', ",", $enclosure);
+        new CsvReader(__DIR__ . '/data/test-input.csv', ',', $enclosure);
     }
 
     public function invalidEnclosureProvider()
@@ -398,7 +398,7 @@ class CsvReadTest extends TestCase
     {
         return [
             ['invalid', 'Number of lines to skip must be a positive integer. "invalid" received.'],
-            [-123, 'Number of lines to skip must be a positive integer. "-123" received.']
+            [-123, 'Number of lines to skip must be a positive integer. "-123" received.'],
         ];
     }
 
@@ -452,7 +452,7 @@ class CsvReadTest extends TestCase
 
         $writer->writeRow($rows[0]);
         $reader->next();
-        self::assertEquals(false, $reader->current(), "Reader must be at end of file");
+        self::assertEquals(false, $reader->current(), 'Reader must be at end of file');
         $writer->writeRow($rows[1]);
         $writer->writeRow($rows[2]);
         $reader->rewind();
@@ -528,7 +528,7 @@ class CsvReadTest extends TestCase
             $startTime = microtime(true);
             $reader = new CsvReader($fileName);
             $rows = 0;
-            foreach ($reader as $line){
+            foreach ($reader as $line) {
                 $rows++;
             }
             $duration = microtime(true) - $startTime;
@@ -544,19 +544,19 @@ class CsvReadTest extends TestCase
         yield '1M-simple-rows' => [
             str_repeat("abc,def,\"xyz\"\n", 1000000),
             1000000,
-            8.0
+            8.0,
         ];
 
         yield '1M-empty-lines-n' => [
             str_repeat("\n", 1000000),
             1000000,
-            8.0
+            8.0,
         ];
 
         yield '1M-no-separators' => [
             str_repeat(md5('abc') . "\n", 1000000),
             1000000,
-            8.0
+            8.0,
         ];
     }
 }

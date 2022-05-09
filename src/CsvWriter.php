@@ -50,8 +50,8 @@ class CsvWriter extends AbstractCsvFile
         ];
         if (!in_array($lineBreak, $allowedLineBreaks)) {
             throw new Exception(
-                "Invalid line break: " . json_encode($lineBreak) .
-                " allowed line breaks: " . json_encode($allowedLineBreaks),
+                'Invalid line break: ' . json_encode($lineBreak) .
+                ' allowed line breaks: ' . json_encode($allowedLineBreaks),
                 Exception::INVALID_PARAM
             );
         }
@@ -87,7 +87,7 @@ class CsvWriter extends AbstractCsvFile
          as an error. Therefore both conditions are necessary. */
         if (($ret === false) || (($ret === 0) && (strlen($str) > 0))) {
             throw new Exception(
-                "Cannot write to CSV file " . $this->fileName .
+                'Cannot write to CSV file ' . $this->fileName .
                 ($ret === false && error_get_last() ? 'Error: ' . error_get_last()['message'] : '') .
                 ' Return: ' . json_encode($ret) .
                 ' To write: ' . strlen($str) . ' Written: ' . (int) $ret,
@@ -114,7 +114,7 @@ class CsvWriter extends AbstractCsvFile
                 )
             )) {
                 throw new Exception(
-                    "Cannot write data into column: " . var_export($column, true),
+                    'Cannot write data into column: ' . var_export($column, true),
                     Exception::WRITE_ERROR
                 );
             }

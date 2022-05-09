@@ -1,0 +1,511 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method Keboola\\\\Csv\\\\AbstractCsvFile\\:\\:closeFile\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/AbstractCsvFile.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\AbstractCsvFile\\:\\:openCsvFile\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/AbstractCsvFile.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\AbstractCsvFile\\:\\:openCsvFile\\(\\) has parameter \\$fileName with no type specified\\.$#"
+			count: 1
+			path: src/AbstractCsvFile.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\AbstractCsvFile\\:\\:setFile\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/AbstractCsvFile.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\CsvOptions\\:\\:validateDelimiter\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/CsvOptions.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\CsvOptions\\:\\:validateEnclosure\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/CsvOptions.php
+
+		-
+			message: "#^Class Keboola\\\\Csv\\\\CsvReader implements generic interface Iterator but does not specify its types\\: TKey, TValue$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\CsvReader\\:\\:getHeader\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\CsvReader\\:\\:openCsvFile\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\CsvReader\\:\\:openCsvFile\\(\\) has parameter \\$fileName with no type specified\\.$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\CsvReader\\:\\:readLine\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\CsvReader\\:\\:validateSkipLines\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Offset 'message' does not exist on array\\{type\\: int, message\\: string, file\\: string, line\\: int\\}\\|null\\.$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^PHPDoc tag @param has invalid value \\(\\$fileName\\)\\: Unexpected token \"\\$fileName\", expected type at offset 18$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Parameter \\#1 \\$header of static method Keboola\\\\Csv\\\\UTF8BOMHelper\\:\\:detectAndRemoveBOM\\(\\) expects array, array\\|false\\|null given\\.$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Parameter \\#1 \\$sample of static method Keboola\\\\Csv\\\\LineBreaksHelper\\:\\:detectLineBreaks\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function trim expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Parameter \\#2 \\$length of function fgetcsv expects int\\<0, max\\>, null given\\.$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Property Keboola\\\\Csv\\\\AbstractCsvFile\\:\\:\\$filePointer \\(resource\\) does not accept resource\\|false\\.$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Property Keboola\\\\Csv\\\\CsvReader\\:\\:\\$currentRow type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Property Keboola\\\\Csv\\\\CsvReader\\:\\:\\$header type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/CsvReader.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\CsvWriter\\:\\:openCsvFile\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/CsvWriter.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\CsvWriter\\:\\:rowToStr\\(\\) has parameter \\$row with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/CsvWriter.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\CsvWriter\\:\\:setLineBreak\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/CsvWriter.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\CsvWriter\\:\\:validateLineBreak\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/CsvWriter.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\CsvWriter\\:\\:writeRow\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/CsvWriter.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\CsvWriter\\:\\:writeRow\\(\\) has parameter \\$row with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/CsvWriter.php
+
+		-
+			message: "#^Offset 'message' does not exist on array\\{type\\: int, message\\: string, file\\: string, line\\: int\\}\\|null\\.$#"
+			count: 1
+			path: src/CsvWriter.php
+
+		-
+			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, bool\\|float\\|int\\|object\\|string given\\.$#"
+			count: 1
+			path: src/CsvWriter.php
+
+		-
+			message: "#^Property Keboola\\\\Csv\\\\AbstractCsvFile\\:\\:\\$filePointer \\(resource\\) does not accept resource\\|false\\.$#"
+			count: 1
+			path: src/CsvWriter.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\LineBreaksHelper\\:\\:clearCsvValues\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: src/LineBreaksHelper.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\UTF8BOMHelper\\:\\:detectAndRemoveBOM\\(\\) has parameter \\$header with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/UTF8BOMHelper.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\UTF8BOMHelper\\:\\:detectAndRemoveBOM\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/UTF8BOMHelper.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvOptionsTest\\:\\:testAccessors\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvOptionsTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvOptionsTest\\:\\:testInvalidDelimiter\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvOptionsTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvOptionsTest\\:\\:testInvalidDelimiterEmpty\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvOptionsTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvOptionsTest\\:\\:testInvalidEnclosure\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvOptionsTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:bomProvider\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:getPerformanceTestInputs\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:invalidDelimiterProvider\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:invalidEnclosureProvider\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:invalidSkipLinesProvider\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testAccessors\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testColumnsCount\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testEmptyHeader\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testException\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testExistingFileShouldBeCreated\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testHeaderNoRewindOnGetHeader\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testInitInvalidFileShouldThrowException\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testInvalidDelimiter\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testInvalidEnclosureShouldThrowException\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testInvalidFile\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testInvalidLineBreak\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testInvalidPointer\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testInvalidSkipLines\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testIterator\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testLineBreakWithoutRewind\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testLineEndingsDetection\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testParse\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testParseEscapedBy\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testParseMacLineEndsInField\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testPerformance\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testRead\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testReadPointer\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testSkipNoLines\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testSkipsHeaders\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testSkipsMultipleLines\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testSkipsOverflow\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testUtf8BOM\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testUtf8BOM\\(\\) has parameter \\$bomFile with no type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testValidWithoutRewind\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testWriteReadInTheMiddle\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:validCsvFiles\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:validLineBreaksData\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$file of class Keboola\\\\Csv\\\\CsvReader constructor expects resource\\|string, array\\<int, string\\> given\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$file of class Keboola\\\\Csv\\\\CsvReader constructor expects resource\\|string, resource\\|false given\\.$#"
+			count: 2
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$fp of function fread expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$fp of function rewind expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Parameter \\#5 \\$skipLines of class Keboola\\\\Csv\\\\CsvReader constructor expects int, mixed given\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvWriteTest\\:\\:invalidFileNameProvider\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvWriteTest\\:\\:testAccessors\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvWriteTest\\:\\:testInvalidFile\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvWriteTest\\:\\:testInvalidFileName\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvWriteTest\\:\\:testInvalidPointer\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvWriteTest\\:\\:testInvalidPointer2\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvWriteTest\\:\\:testNewFileShouldBeCreated\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvWriteTest\\:\\:testNonStringWrite\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvWriteTest\\:\\:testWrite\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvWriteTest\\:\\:testWriteInvalidObject\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvWriteTest\\:\\:testWriteLineBreak\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvWriteTest\\:\\:testWritePointer\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvWriteTest\\:\\:testWriteValidObject\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$file of class Keboola\\\\Csv\\\\CsvWriter constructor expects resource\\|string, array\\<int, string\\> given\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$file of class Keboola\\\\Csv\\\\CsvWriter constructor expects resource\\|string, resource\\|false given\\.$#"
+			count: 3
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$fp of function fclose expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$fp of function fwrite expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: tests/CsvWriteTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\LineBreaksHelperTest\\:\\:getDataSet\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/LineBreaksHelperTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\LineBreaksHelperTest\\:\\:testLineBreaksDetection\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/LineBreaksHelperTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\UTF8BOMHelperTest\\:\\:bomProvider\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/UTF8BOMHelperTest.php
+
+		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\UTF8BOMHelperTest\\:\\:testDetectAndRemoveBOM\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/UTF8BOMHelperTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$header of static method Keboola\\\\Csv\\\\UTF8BOMHelper\\:\\:detectAndRemoveBOM\\(\\) expects array, mixed given\\.$#"
+			count: 1
+			path: tests/UTF8BOMHelperTest.php

@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+
+  dev:
+    build: .
+    tty: true
+    volumes:
+      - ./:/code
+    working_dir: /code

@@ -120,7 +120,7 @@ class CsvWriter extends AbstractCsvFile
             }
 
             $return[] = $this->getEnclosure() .
-                str_replace($this->getEnclosure(), str_repeat($this->getEnclosure(), 2), $column) .
+                str_replace($this->getEnclosure(), str_repeat($this->getEnclosure(), 2), $column ?? '') .
                 $this->getEnclosure();
         }
         return implode($this->getDelimiter(), $return) . $this->lineBreak;

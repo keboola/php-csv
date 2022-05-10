@@ -65,7 +65,7 @@ abstract class AbstractCsvFile
         } elseif (is_resource($file)) {
             $this->filePointer = $file;
         } else {
-            throw new InvalidArgumentException("Invalid file: " . var_export($file, true));
+            throw new InvalidArgumentException('Invalid file: ' . var_export($file, true));
         }
     }
 

@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Keboola\Csv\Tests;
 
 use Keboola\Csv\CsvOptions;
 use Keboola\Csv\CsvWriter;
 use Keboola\Csv\Exception;
+use PHPUnit\Framework\Constraint\LogicalOr;
+use PHPUnit\Framework\Constraint\StringContains;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_Constraint_Or;
-use PHPUnit_Framework_Constraint_StringContains;
+use stdClass;
 
 class CsvWriteTest extends TestCase
 {
@@ -49,7 +52,7 @@ class CsvWriteTest extends TestCase
             ],
             [
                 'column with \n \t \\\\', 'second col',
-            ]
+            ],
         ];
 
         foreach ($rows as $row) {
@@ -84,7 +87,7 @@ class CsvWriteTest extends TestCase
                 'col1', 'col2',
             ],
             [
-                '1', new \stdClass(),
+                '1', new stdClass(),
             ],
         ];
 
@@ -95,10 +98,10 @@ class CsvWriteTest extends TestCase
             self::fail('Expected exception was not thrown.');
         } catch (Exception $e) {
             // Exception message differs between PHP versions.
-            $or = new PHPUnit_Framework_Constraint_Or();
+            $or = new LogicalOr();
             $or->setConstraints([
-                new PHPUnit_Framework_Constraint_StringContains("Cannot write data into column: stdClass::"),
-                new PHPUnit_Framework_Constraint_StringContains("Cannot write data into column: (object) array(\n)")
+                new StringContains('Cannot write data into column: stdClass::'),
+                new StringContains("Cannot write data into column: (object) array(\n)"),
             ]);
             self::assertThat($e->getMessage(), $or);
         }
@@ -148,7 +151,7 @@ class CsvWriteTest extends TestCase
     public function invalidFileNameProvider()
     {
         return [
-            ["", 'Filename cannot be empty'],
+            ['', 'Filename cannot be empty'],
             ["\0", 'fopen() expects parameter 1 to be a valid path, string given'],
         ];
     }
@@ -159,7 +162,7 @@ class CsvWriteTest extends TestCase
         $csvFile = new CsvWriter($fileName);
         $row = [['nested']];
         self::expectException(Exception::class);
-        self::expectExceptionMessage("Cannot write data into column: array");
+        self::expectExceptionMessage('Cannot write data into column: array');
         $csvFile->writeRow($row);
     }
 
@@ -200,15 +203,15 @@ class CsvWriteTest extends TestCase
             self::fail('Expected exception was not thrown.');
         } catch (Exception $e) {
             // Exception message differs between PHP versions.
-            $or = new PHPUnit_Framework_Constraint_Or();
+            $or = new LogicalOr();
             $or->setConstraints([
-                new PHPUnit_Framework_Constraint_StringContains(
+                new StringContains(
                     'Cannot write to CSV file  Return: 0 To write: 14 Written: 0'
                 ),
-                new PHPUnit_Framework_Constraint_StringContains(
+                new StringContains(
                     'Cannot write to CSV file Error: fwrite(): ' .
                     'write of 14 bytes failed with errno=9 Bad file descriptor Return: false To write: 14 Written: 0'
-                )
+                ),
             ]);
             self::assertThat($e->getMessage(), $or);
         }

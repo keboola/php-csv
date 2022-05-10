@@ -1,10 +1,7 @@
-# Keboola CSV reader/writer [![Build Status](https://travis-ci.com/keboola/php-csv.svg?branch=master)](https://travis-ci.com/keboola/php-csv)
-
+# Keboola CSV reader/writer
 [![Latest Stable Version](https://poser.pugx.org/keboola/csv/v/stable.svg)](https://packagist.org/packages/keboola/csv)
 [![License](https://poser.pugx.org/keboola/csv/license.svg)](https://packagist.org/packages/keboola/csv)
 [![Total Downloads](https://poser.pugx.org/keboola/csv/downloads.svg)](https://packagist.org/packages/keboola/csv)
-[![Maintainability](https://api.codeclimate.com/v1/badges/869a0ab5c1d228279ab0/maintainability)](https://codeclimate.com/github/keboola/php-csv/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/869a0ab5c1d228279ab0/test_coverage)](https://codeclimate.com/github/keboola/php-csv/test_coverage)
 
 The library provides a simple reader and writer for CSV files according to [RFC4180](https://tools.ietf.org/html/rfc4180). 
 The library is licensed under the [MIT](https://github.com/keboola/php-csv/blob/master/LICENSE) license. The library provides 
@@ -120,3 +117,21 @@ require 'vendor/autoload.php';
 ```
 
 Read more in [Composer documentation](http://getcomposer.org/doc/01-basic-usage.md)
+
+
+## Development
+
+Clone this repository and init the workspace with following command:
+
+```
+git clone https://github.com/keboola/php-csv.git
+cd php-csv
+docker-compose build
+docker-compose run --rm dev composer install --no-scripts
+```
+
+Run the test suite using this command:
+
+```
+docker-compose run --rm dev composer tests
+```

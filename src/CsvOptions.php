@@ -6,7 +6,7 @@ class CsvOptions
 {
     const DEFAULT_DELIMITER = ',';
     const DEFAULT_ENCLOSURE = '"';
-    const DEFAULT_ESCAPED_BY = "";
+    const DEFAULT_ESCAPED_BY = '';
 
     /**
      * @var string
@@ -49,7 +49,7 @@ class CsvOptions
     {
         if (strlen($enclosure) > 1) {
             throw new InvalidArgumentException(
-                "Enclosure must be a single character. " . json_encode($enclosure) . " received",
+                'Enclosure must be a single character. ' . json_encode($enclosure) . ' received',
                 Exception::INVALID_PARAM
             );
         }
@@ -63,14 +63,14 @@ class CsvOptions
     {
         if (strlen($delimiter) > 1) {
             throw new InvalidArgumentException(
-                "Delimiter must be a single character. " . json_encode($delimiter) . " received",
+                'Delimiter must be a single character. ' . json_encode($delimiter) . ' received',
                 Exception::INVALID_PARAM
             );
         }
 
-        if (strlen($delimiter) == 0) {
+        if (strlen($delimiter) === 0) {
             throw new InvalidArgumentException(
-                "Delimiter cannot be empty.",
+                'Delimiter cannot be empty.',
                 Exception::INVALID_PARAM
             );
         }

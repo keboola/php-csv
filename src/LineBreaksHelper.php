@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Keboola\Csv;
 
 class LineBreaksHelper
@@ -31,7 +33,6 @@ class LineBreaksHelper
             }
             $lineBreaksPositions[$lineBreak] = $position;
         }
-
 
         asort($lineBreaksPositions);
         reset($lineBreaksPositions);
@@ -94,6 +95,6 @@ class LineBreaksHelper
             self::REGEXP_DELIMITER;
         // @formatter:on
 
-        return preg_replace($regexp, $doubleEnclosure, $sample);
+        return preg_replace($regexp, $doubleEnclosure, (string) $sample);
     }
 }

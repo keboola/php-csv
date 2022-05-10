@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Keboola\Csv\Tests;
 
 use Keboola\Csv\LineBreaksHelper;
@@ -26,7 +28,10 @@ class LineBreaksHelperTest extends TestCase
         self::assertSame($expectedOutput, $output2);
 
         // Test line breaks detection
-        self::assertSame(json_encode($expectedLineBreak), json_encode(LineBreaksHelper::detectLineBreaks($input, $enclosure, $escapedBy)));
+        self::assertSame(
+            json_encode($expectedLineBreak),
+            json_encode(LineBreaksHelper::detectLineBreaks($input, $enclosure, $escapedBy))
+        );
     }
 
     public function getDataSet()
@@ -34,23 +39,23 @@ class LineBreaksHelperTest extends TestCase
         $lineEnds = [
           'n' => "\n",
           'r' => "\r",
-          "r-n" => "\r\n",
+          'r-n' => "\r\n",
         ];
 
-        yield "empty" => [
+        yield 'empty' => [
             '"',
             '',
             '',
             '',
-            "\n"
+            "\n",
         ];
 
-        yield "empty-escaped-by" => [
+        yield 'empty-escaped-by' => [
             '"',
             '\\',
             '',
             '',
-            "\n"
+            "\n",
         ];
 
         foreach ($lineEnds as $prefix => $lineEnd) {
@@ -71,7 +76,7 @@ class LineBreaksHelperTest extends TestCase
                     '"",""',
                     '"",""',
                 ]),
-                $lineEnd
+                $lineEnd,
             ];
 
             yield "$prefix-simple-escaped-by" => [
@@ -82,7 +87,7 @@ class LineBreaksHelperTest extends TestCase
                     'line without enclosure,second column',
                     '"enclosure \" in column","hello \\\\"',
                     '"line with enclosure","second column"',
-                    '"column with enclosure \", and comma inside text","second column enclosure in text \""'
+                    '"column with enclosure \", and comma inside text","second column enclosure in text \""',
                 ]),
                 implode($lineEnd, [
                     'col1,col2',
@@ -91,7 +96,7 @@ class LineBreaksHelperTest extends TestCase
                     '"",""',
                     '"",""',
                 ]),
-                $lineEnd
+                $lineEnd,
             ];
 
             yield "$prefix-multiline-n" => [
@@ -105,7 +110,7 @@ class LineBreaksHelperTest extends TestCase
                     '"",""',
                     '"",""',
                 ]),
-                $lineEnd
+                $lineEnd,
             ];
 
             yield "$prefix-multiline-r" => [
@@ -119,7 +124,7 @@ class LineBreaksHelperTest extends TestCase
                     '"",""',
                     '"",""',
                 ]),
-                $lineEnd
+                $lineEnd,
             ];
 
             yield "$prefix-multiline-r-n" => [
@@ -133,7 +138,7 @@ class LineBreaksHelperTest extends TestCase
                     '"",""',
                     '"",""',
                 ]),
-                $lineEnd
+                $lineEnd,
             ];
         }
     }

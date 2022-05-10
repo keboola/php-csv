@@ -1,0 +1,25 @@
+name: 'GitHub Actions'
+'on':
+  - push
+concurrency: 'ci-${{ github.ref }}'
+env:
+  APP_IMAGE: keboola-php-csv
+  DOCKERHUB_USER: '${{ secrets.DOCKERHUB_USER }}'
+  DOCKERHUB_TOKEN: '${{ secrets.DOCKERHUB_TOKEN }}'
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: 'Check out the repo'
+        uses: actions/checkout@v2
+      -
+        name: 'Docker login'
+        if: env.DOCKERHUB_TOKEN
+        run: 'docker login --username "$DOCKERHUB_USER" --password "$DOCKERHUB_TOKEN"'
+      -
+        name: 'Build image'
+        run: 'docker build -t $APP_IMAGE .'
+      -
+        name: 'Run tests'
+        run: 'docker run ${{env.APP_IMAGE}} composer ci'

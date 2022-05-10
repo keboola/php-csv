@@ -7,3 +7,4 @@ composer.phar
 vendor
 *.kdev4
 .kdev4
+.phpunit.result.cache

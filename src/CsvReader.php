@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Keboola\Csv;
 
-class CsvReader extends AbstractCsvFile implements \Iterator
+use Iterator;
+
+class CsvReader extends AbstractCsvFile implements Iterator
 {
     /**
      * @deprecated use Keboola\Csv\CsvOptions::DEFAULT_ENCLOSURE
@@ -96,11 +100,11 @@ class CsvReader extends AbstractCsvFile implements \Iterator
     {
         if (!is_file($fileName)) {
             throw new Exception(
-                "Cannot open file " . $fileName,
+                'Cannot open file ' . $fileName,
                 Exception::FILE_NOT_EXISTS
             );
         }
-        $this->filePointer = @fopen($fileName, "r");
+        $this->filePointer = @fopen($fileName, 'r');
         if (!$this->filePointer) {
             throw new Exception(
                 "Cannot open file {$fileName} " . error_get_last()['message'],

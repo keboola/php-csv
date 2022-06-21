@@ -67,6 +67,20 @@ class LineBreaksHelperTest extends TestCase
         ];
 
         foreach ($lineEnds as $prefix => $lineEnd) {
+            yield "$prefix-empty-enclosure" => [
+                '',
+                '',
+                implode($lineEnd, [
+                    'col1,col2',
+                    'abc,def',
+                ]),
+                implode($lineEnd, [
+                    'col1,col2',
+                    'abc,def',
+                ]),
+                $lineEnd,
+            ];
+
             yield "$prefix-simple" => [
                 '"',
                 '',

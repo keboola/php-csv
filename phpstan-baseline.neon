@@ -66,11 +66,6 @@ parameters:
 			path: src/CsvReader.php
 
 		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$fileName\\)\\: Unexpected token \"\\$fileName\", expected type at offset 18$#"
-			count: 1
-			path: src/CsvReader.php
-
-		-
 			message: "#^Parameter \\#1 \\$header of static method Keboola\\\\Csv\\\\UTF8BOMHelper\\:\\:detectAndRemoveBOM\\(\\) expects array, array\\|false\\|null given\\.$#"
 			count: 1
 			path: src/CsvReader.php

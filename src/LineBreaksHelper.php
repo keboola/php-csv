@@ -53,6 +53,10 @@ class LineBreaksHelper
      */
     public static function clearCsvValues($sample, $enclosure, $escapedBy)
     {
+        if (empty($enclosure)) {
+            return $sample;
+        }
+
         // Usually an enclosure character is escaped by doubling it, however, the escapeBy can be used
         $doubleEnclosure = $enclosure . $enclosure;
         $escapedEnclosure = empty($escapedBy) ? $doubleEnclosure : $escapedBy . $enclosure;

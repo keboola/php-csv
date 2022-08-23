@@ -150,9 +150,16 @@ class CsvWriteTest extends TestCase
 
     public function invalidFileNameProvider()
     {
+        if (PHP_VERSION_ID < 80000) {
+            return [
+                ['', 'Filename cannot be empty'],
+                ["\0", 'fopen() expects parameter 1 to be a valid path, string given'],
+            ];
+        }
+
         return [
-            ['', 'Filename cannot be empty'],
-            ["\0", 'fopen() expects parameter 1 to be a valid path, string given'],
+            ['', 'Path cannot be empty'],
+            ["\0", 'Argument #1 ($filename) must not contain any null bytes'],
         ];
     }
 
@@ -212,6 +219,10 @@ class CsvWriteTest extends TestCase
                     'Cannot write to CSV file Error: fwrite(): ' .
                     'write of 14 bytes failed with errno=9 Bad file descriptor Return: false To write: 14 Written: 0'
                 ),
+                new StringContains(
+                    'Cannot write to CSV file Error: fwrite(): ' .
+                    'Write of 14 bytes failed with errno=9 Bad file descriptor Return: false To write: 14 Written: 0'
+                )
             ]);
             self::assertThat($e->getMessage(), $or);
         }

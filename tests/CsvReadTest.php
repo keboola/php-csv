@@ -175,9 +175,15 @@ class CsvReadTest extends TestCase
     }
 
 
-    public function testEmptyHeader()
+    public function testEmptyCsv(): void
     {
         $csvFile = new CsvReader(__DIR__ . '/data/test-input.empty.csv', ',', '"');
+        self::assertEquals([], $csvFile->getHeader());
+    }
+
+    public function testEmptyHeader(): void
+    {
+        $csvFile = new CsvReader(__DIR__ . '/data/test-input.emptyHeader.csv', ',', '"');
         self::assertEquals([], $csvFile->getHeader());
     }
 

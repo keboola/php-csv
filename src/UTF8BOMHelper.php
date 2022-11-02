@@ -12,7 +12,7 @@ class UTF8BOMHelper
      */
     public static function detectAndRemoveBOM($header)
     {
-        if (!is_array($header)) {
+        if (!is_array($header) || empty($header) || $header[0] === null) {
             return $header;
         }
         $utf32BigEndianBom = chr(0x00) . chr(0x00) . chr(0xFE) . chr(0xFF);

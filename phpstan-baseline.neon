@@ -216,11 +216,6 @@ parameters:
 			path: tests/CsvReadTest.php
 
 		-
-			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testEmptyHeader\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: tests/CsvReadTest.php
-
-		-
 			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testException\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/CsvReadTest.php

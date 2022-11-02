@@ -23,6 +23,13 @@ class UTF8BOMHelperTest extends TestCase
         $this->assertSame(['id', 'name'], UTF8BOMHelper::detectAndRemoveBOM($firstLine));
     }
 
+    public function testDetectAndRemoveBOMEdgeCases(): void
+    {
+        $this->assertSame([null], UTF8BOMHelper::detectAndRemoveBOM([null]));
+        $this->assertSame([], UTF8BOMHelper::detectAndRemoveBOM([]));
+        $this->assertSame(null, UTF8BOMHelper::detectAndRemoveBOM(null)); // @phpstan-ignore-line
+    }
+
     public function bomProvider()
     {
         return [

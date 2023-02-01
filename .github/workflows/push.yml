@@ -1,0 +1,22 @@
+name: Test
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions:
+          - '5.6'
+          - '7.4'
+          - '8.0'
+          - '8.1'
+    steps:
+      - uses: actions/checkout@v2
+      - run: composer self-update
+      - run: composer install --prefer-dist --no-interaction
+      - run: composer ci

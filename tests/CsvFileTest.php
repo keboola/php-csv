@@ -176,12 +176,12 @@ class CsvFileTest extends TestCase
     }
 
     /**
-     * @expectedException \Keboola\Csv\InvalidArgumentException
      * @dataProvider invalidLineBreaksData
      * @param string $file
      */
     public function testInvalidLineBreak($file)
     {
+        $this->expectException(\Keboola\Csv\InvalidArgumentException::class);
         $csvFile = new CsvFile(__DIR__ . '/data/' . $file);
         $csvFile->validateLineBreak();
     }

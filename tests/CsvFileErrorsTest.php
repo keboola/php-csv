@@ -31,7 +31,7 @@ class CsvFileErrorsTest extends TestCase
     public function testInvalidFileName($filename, $message)
     {
         if (PHP_MAJOR_VERSION > 7) {
-            $this->markTestSkipped();
+            $this->markTestSkipped('Skipped for php8 since SplFileInfo throws ValueError.');
         }
         $csv = new CsvFile($filename);
         self::expectException(Exception::class);

@@ -38,7 +38,7 @@
         "tests": "phpunit",
         "ci": [
             "@composer validate --strict",
-            "@build"
+            "@tests"
         ]
     }
 }

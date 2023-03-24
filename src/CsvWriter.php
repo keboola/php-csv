@@ -147,7 +147,7 @@ class CsvWriter extends AbstractCsvFile
             $columnValue = ($column === false) ? '0' : ($column ?? '');
 
             $escapedColumn = str_replace($enclosure, $escapedEnclosure, $columnValue);
-            $return[] = sprintf("%s%s%s", $enclosure, $escapedColumn, $enclosure);
+            $return[] = sprintf('%s%s%s', $enclosure, $escapedColumn, $enclosure);
         }
         return implode($this->getDelimiter(), $return) . $this->lineBreak;
     }

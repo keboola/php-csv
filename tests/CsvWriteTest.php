@@ -63,11 +63,11 @@ class CsvWriteTest extends TestCase
                 3, null,
             ],
             [
-                'true', 1.123
+                'true', 1.123,
             ],
             [
-                '1', 'null'
-            ]
+                '1', 'null',
+            ],
         ];
 
         foreach ($rows as $row) {

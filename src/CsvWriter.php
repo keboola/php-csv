@@ -142,9 +142,12 @@ class CsvWriter extends AbstractCsvFile
                 );
             }
 
-            $return[] = $this->getEnclosure() .
-                str_replace($this->getEnclosure(), str_repeat($this->getEnclosure(), 2), $column ?? '') .
-                $this->getEnclosure();
+            $enclosure = $this->getEnclosure();
+            $escapedEnclosure = str_repeat($enclosure, 2);
+            $columnValue = ($column === false) ? '0' : ($column ?? '');
+
+            $escapedColumn = str_replace($enclosure, $escapedEnclosure, $columnValue);
+            $return[] = sprintf("%s%s%s", $enclosure, $escapedColumn, $enclosure);
         }
         return implode($this->getDelimiter(), $return) . $this->lineBreak;
     }

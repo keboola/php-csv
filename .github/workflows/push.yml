@@ -23,9 +23,7 @@ jobs:
         run: 'docker login --username "$DOCKERHUB_USER" --password "$DOCKERHUB_TOKEN"'
       -
         name: 'Build image'
-        run: 'docker build -t $APP_IMAGE .'
+        run: 'docker build --build-arg PHP_VERSION=${{ matrix.php_version }} -t $APP_IMAGE .'
       -
         name: 'Run tests'
-        run: |
-            export PHP_VERSION="${{ matrix.php_version }}"
-            docker run ${{env.APP_IMAGE}} composer ci
+        run: 'docker run ${{env.APP_IMAGE}} composer ci'

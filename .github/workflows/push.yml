@@ -9,6 +9,10 @@ env:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php_version: [ 8.2, 8.1, 8.0, 7.4 ]
     steps:
       -
         name: 'Check out the repo'
@@ -22,4 +26,6 @@ jobs:
         run: 'docker build -t $APP_IMAGE .'
       -
         name: 'Run tests'
-        run: 'docker run ${{env.APP_IMAGE}} composer ci'
+        run: |
+            export PHP_VERSION="${{ matrix.php_version }}"
+            docker run ${{env.APP_IMAGE}} composer ci

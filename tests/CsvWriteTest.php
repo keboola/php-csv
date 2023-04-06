@@ -53,6 +53,21 @@ class CsvWriteTest extends TestCase
             [
                 'column with \n \t \\\\', 'second col',
             ],
+            [
+                1, true,
+            ],
+            [
+                2, false,
+            ],
+            [
+                3, null,
+            ],
+            [
+                'true', 1.123,
+            ],
+            [
+                '1', 'null',
+            ],
         ];
 
         foreach ($rows as $row) {
@@ -70,6 +85,11 @@ class CsvWriteTest extends TestCase
                     '"column with enclosure "", and comma inside text","second column enclosure in text """',
                     "\"columns with\nnew line\",\"columns with\ttab\"",
                     '"column with \\n \\t \\\\","second col"',
+                    '"1","1"',
+                    '"2","0"',
+                    '"3",""',
+                    '"true","1.123"',
+                    '"1","null"',
                     '',
                 ]
             ),

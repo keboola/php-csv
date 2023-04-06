@@ -131,7 +131,7 @@ parameters:
 			path: src/CsvWriter.php
 
 		-
-			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, bool\\|float\\|int\\|object\\|string given\\.$#"
+			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, float\\|int\\|object\\|string\\|true given\\.$#"
 			count: 1
 			path: src/CsvWriter.php
 

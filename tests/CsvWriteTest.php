@@ -222,7 +222,7 @@ class CsvWriteTest extends TestCase
                 new StringContains(
                     'Cannot write to CSV file Error: fwrite(): ' .
                     'Write of 14 bytes failed with errno=9 Bad file descriptor Return: false To write: 14 Written: 0'
-                )
+                ),
             ]);
             self::assertThat($e->getMessage(), $or);
         }

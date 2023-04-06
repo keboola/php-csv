@@ -9,17 +9,21 @@ env:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php_version: [ 8.2, 8.1, 8.0, 7.4 ]
     steps:
       -
         name: 'Check out the repo'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
         name: 'Docker login'
         if: env.DOCKERHUB_TOKEN
         run: 'docker login --username "$DOCKERHUB_USER" --password "$DOCKERHUB_TOKEN"'
       -
         name: 'Build image'
-        run: 'docker build -t $APP_IMAGE .'
+        run: 'docker build --build-arg PHP_VERSION=${{ matrix.php_version }} -t $APP_IMAGE .'
       -
         name: 'Run tests'
         run: 'docker run ${{env.APP_IMAGE}} composer ci'

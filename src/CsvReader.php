@@ -169,6 +169,7 @@ class CsvReader extends AbstractCsvFile implements Iterator
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         rewind($this->getFilePointer());
@@ -217,6 +218,7 @@ class CsvReader extends AbstractCsvFile implements Iterator
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->currentRow;
@@ -225,6 +227,7 @@ class CsvReader extends AbstractCsvFile implements Iterator
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->currentRow = $this->readLine();
@@ -234,6 +237,7 @@ class CsvReader extends AbstractCsvFile implements Iterator
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->rowCounter;
@@ -242,6 +246,7 @@ class CsvReader extends AbstractCsvFile implements Iterator
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->currentRow !== false;

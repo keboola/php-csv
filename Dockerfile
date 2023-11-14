@@ -1,4 +1,5 @@
-FROM php:7.4
+ARG PHP_VERSION=1.21
+FROM php:${PHP_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG COMPOSER_FLAGS="--prefer-dist --no-interaction"

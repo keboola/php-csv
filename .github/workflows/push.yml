@@ -9,6 +9,13 @@ env:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php:
+          - '5.6'
+          - '7.4'
+          - '8.0'
+          - '8.1'
     steps:
       -
         name: 'Check out the repo'
@@ -19,7 +26,7 @@ jobs:
         run: 'docker login --username "$DOCKERHUB_USER" --password "$DOCKERHUB_TOKEN"'
       -
         name: 'Build image'
-        run: 'docker build -t $APP_IMAGE .'
+        run: 'docker build --build-arg="PHP_VERSION=${{ matrix.php}}" -t $APP_IMAGE .'
       -
         name: 'Run tests'
         run: 'docker run ${{env.APP_IMAGE}} composer ci'

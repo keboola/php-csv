@@ -2,6 +2,9 @@
 
 namespace Keboola\Csv;
 
+use TypeError;
+use ValueError;
+
 class CsvWriter extends AbstractCsvFile
 {
     /**
@@ -63,7 +66,15 @@ class CsvWriter extends AbstractCsvFile
      */
     protected function openCsvFile($fileName)
     {
-        $this->filePointer = @fopen($fileName, 'w');
+        try {
+            $this->filePointer = @fopen($fileName, 'w');
+        } catch (ValueError $e) {
+            throw new Exception(
+                "Cannot open file {$fileName} " . $e->getMessage(),
+                Exception::FILE_NOT_EXISTS,
+                $e
+            );
+        }
         if (!$this->filePointer) {
             throw new Exception(
                 "Cannot open file {$fileName} " . error_get_last()['message'],
@@ -79,7 +90,18 @@ class CsvWriter extends AbstractCsvFile
     public function writeRow(array $row)
     {
         $str = $this->rowToStr($row);
-        $ret = @fwrite($this->getFilePointer(), $str);
+        try {
+            $ret = @fwrite($this->getFilePointer(), $str);
+        } catch (TypeError $e) {
+            throw new Exception(
+                'Cannot write to CSV file ' . $this->fileName .
+                'Error: ' . $e->getMessage() .
+                ' Return: false' .
+                ' To write: ' . strlen($str) . ' Written: 0',
+                Exception::WRITE_ERROR,
+                $e
+            );
+        }
 
         /* According to http://php.net/fwrite the fwrite() function
          should return false on error. However not writing the full

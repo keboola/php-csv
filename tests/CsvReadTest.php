@@ -31,6 +31,12 @@ class CsvReadTest extends TestCase
         self::assertEquals(9, $csv->getColumnsCount());
     }
 
+    public function testNewlineDetectionEdgecaseWithCrLf()
+    {
+        $this->expectExceptionMessage('Invalid line break. Please use unix \n or win \r\n line breaks.');
+        new CsvReader(__DIR__ . '/data/test-input-edgecase.crlf.csv');
+    }
+
     /**
      * @dataProvider validCsvFiles
      * @param string $fileName

@@ -13,6 +13,7 @@ class CsvReader extends AbstractCsvFile implements Iterator
      * @deprecated use Keboola\Csv\CsvOptions::DEFAULT_ENCLOSURE
      */
     const DEFAULT_ESCAPED_BY = CsvOptions::DEFAULT_ESCAPED_BY;
+    const SAMPLE_SIZE = 10000;
 
     /**
      * @var int
@@ -124,7 +125,12 @@ class CsvReader extends AbstractCsvFile implements Iterator
     protected function detectLineBreak()
     {
         @rewind($this->getFilePointer());
-        $sample = @fread($this->getFilePointer(), 10000);
+        $sample = @fread($this->getFilePointer(), self::SAMPLE_SIZE);
+        if (substr($sample, -1) === "\r") {
+            // we might have hit the file in the middle of CR+LF, only getting CR
+            @rewind($this->getFilePointer());
+            $sample = @fread($this->getFilePointer(), self::SAMPLE_SIZE+1);
+        }
 
         return LineBreaksHelper::detectLineBreaks($sample, $this->getEnclosure(), $this->getEscapedBy());
     }

@@ -33,7 +33,8 @@ class CsvReadTest extends TestCase
 
     public function testNewlineDetectionEdgecaseWithCrLf()
     {
-        $this->expectExceptionMessage('Invalid line break. Please use unix \n or win \r\n line breaks.');
+        $this->expectNotToPerformAssertions();
+        // this used to throw "Invalid line break. Please use unix \n or win \r\n line breaks." before the fix
         new CsvReader(__DIR__ . '/data/test-input-edgecase.crlf.csv');
     }
 

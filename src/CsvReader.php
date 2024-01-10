@@ -93,7 +93,7 @@ class CsvReader extends AbstractCsvFile implements Iterator
         if (!is_int($skipLines) || $skipLines < 0) {
             throw new InvalidArgumentException(
                 "Number of lines to skip must be a positive integer. \"$skipLines\" received.",
-                Exception::INVALID_PARAM
+                Exception::INVALID_PARAM,
             );
         }
     }
@@ -107,14 +107,14 @@ class CsvReader extends AbstractCsvFile implements Iterator
         if (!is_file($fileName)) {
             throw new Exception(
                 'Cannot open file ' . $fileName,
-                Exception::FILE_NOT_EXISTS
+                Exception::FILE_NOT_EXISTS,
             );
         }
         $this->filePointer = @fopen($fileName, 'r');
         if (!$this->filePointer) {
             throw new Exception(
                 "Cannot open file {$fileName} " . error_get_last()['message'],
-                Exception::FILE_NOT_EXISTS
+                Exception::FILE_NOT_EXISTS,
             );
         }
     }
@@ -126,7 +126,7 @@ class CsvReader extends AbstractCsvFile implements Iterator
     {
         @rewind($this->getFilePointer());
         $sample = @fread($this->getFilePointer(), self::SAMPLE_SIZE);
-        if (substr($sample, -1) === "\r") {
+        if (substr((string) $sample, -1) === "\r") {
             // we might have hit the file in the middle of CR+LF, only getting CR
             @rewind($this->getFilePointer());
             $sample = @fread($this->getFilePointer(), self::SAMPLE_SIZE+1);
@@ -161,7 +161,7 @@ class CsvReader extends AbstractCsvFile implements Iterator
 
         throw new InvalidArgumentException(
             "Invalid line break. Please use unix \\n or win \\r\\n line breaks.",
-            Exception::INVALID_PARAM
+            Exception::INVALID_PARAM,
         );
     }
 

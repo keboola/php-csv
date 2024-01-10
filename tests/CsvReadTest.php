@@ -273,7 +273,7 @@ class CsvReadTest extends TestCase
             CsvOptions::DEFAULT_DELIMITER,
             CsvOptions::DEFAULT_ENCLOSURE,
             CsvOptions::DEFAULT_ESCAPED_BY,
-            1
+            1,
         );
         self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
         self::assertEquals([
@@ -292,7 +292,7 @@ class CsvReadTest extends TestCase
             CsvOptions::DEFAULT_DELIMITER,
             CsvOptions::DEFAULT_ENCLOSURE,
             CsvOptions::DEFAULT_ESCAPED_BY,
-            0
+            0,
         );
         self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
         self::assertEquals([
@@ -312,7 +312,7 @@ class CsvReadTest extends TestCase
             CsvOptions::DEFAULT_DELIMITER,
             CsvOptions::DEFAULT_ENCLOSURE,
             CsvOptions::DEFAULT_ESCAPED_BY,
-            3
+            3,
         );
         self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
         self::assertEquals([
@@ -329,7 +329,7 @@ class CsvReadTest extends TestCase
             CsvOptions::DEFAULT_DELIMITER,
             CsvOptions::DEFAULT_ENCLOSURE,
             CsvOptions::DEFAULT_ESCAPED_BY,
-            100
+            100,
         );
         self::assertEquals(['id', 'isImported'], $csvFile->getHeader());
         self::assertEquals([], iterator_to_array($csvFile));
@@ -403,7 +403,7 @@ class CsvReadTest extends TestCase
             CsvOptions::DEFAULT_DELIMITER,
             CsvOptions::DEFAULT_ENCLOSURE,
             CsvOptions::DEFAULT_ENCLOSURE,
-            $skipLines
+            $skipLines,
         );
     }
 
@@ -482,9 +482,9 @@ class CsvReadTest extends TestCase
                     '"1","first"',
                     '"2","second"',
                     '',
-                ]
+                ],
             ),
-            $data
+            $data,
         );
     }
 
@@ -532,7 +532,7 @@ class CsvReadTest extends TestCase
     public function testPerformance($fileContent, $expectedRows, $maxDuration)
     {
         self::markTestSkipped(
-            'Run this test only manually. Because the duration is very different in local CI environment.'
+            'Run this test only manually. Because the duration is very different in local CI environment.',
         );
 
         try {

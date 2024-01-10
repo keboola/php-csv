@@ -281,6 +281,11 @@ parameters:
 			path: tests/CsvReadTest.php
 
 		-
+			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testNewlineDetectionEdgecaseWithCrLf\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: tests/CsvReadTest.php
+
+		-
 			message: "#^Method Keboola\\\\Csv\\\\Tests\\\\CsvReadTest\\:\\:testParse\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: tests/CsvReadTest.php

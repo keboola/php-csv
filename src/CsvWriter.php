@@ -55,7 +55,7 @@ class CsvWriter extends AbstractCsvFile
             throw new Exception(
                 'Invalid line break: ' . json_encode($lineBreak) .
                 ' allowed line breaks: ' . json_encode($allowedLineBreaks),
-                Exception::INVALID_PARAM
+                Exception::INVALID_PARAM,
             );
         }
     }
@@ -72,14 +72,14 @@ class CsvWriter extends AbstractCsvFile
             throw new Exception(
                 "Cannot open file {$fileName} " . $e->getMessage(),
                 Exception::FILE_NOT_EXISTS,
-                $e
+                $e,
             );
         }
 
         if (!$this->filePointer) {
             throw new Exception(
                 "Cannot open file {$fileName} " . error_get_last()['message'],
-                Exception::FILE_NOT_EXISTS
+                Exception::FILE_NOT_EXISTS,
             );
         }
     }
@@ -100,7 +100,7 @@ class CsvWriter extends AbstractCsvFile
                 ' Return: false' .
                 ' To write: ' . strlen($str) . ' Written: 0',
                 Exception::WRITE_ERROR,
-                $e
+                $e,
             );
         }
 
@@ -114,7 +114,7 @@ class CsvWriter extends AbstractCsvFile
                 ($ret === false && error_get_last() ? 'Error: ' . error_get_last()['message'] : '') .
                 ' Return: ' . json_encode($ret) .
                 ' To write: ' . strlen($str) . ' Written: ' . (int) $ret,
-                Exception::WRITE_ERROR
+                Exception::WRITE_ERROR,
             );
         }
     }
@@ -138,7 +138,7 @@ class CsvWriter extends AbstractCsvFile
             )) {
                 throw new Exception(
                     'Cannot write data into column: ' . var_export($column, true),
-                    Exception::WRITE_ERROR
+                    Exception::WRITE_ERROR,
                 );
             }
 

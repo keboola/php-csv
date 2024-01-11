@@ -30,7 +30,7 @@ class LineBreaksHelperTest extends TestCase
         // Test line breaks detection
         self::assertSame(
             json_encode($expectedLineBreak),
-            json_encode(LineBreaksHelper::detectLineBreaks($input, $enclosure, $escapedBy))
+            json_encode(LineBreaksHelper::detectLineBreaks($input, $enclosure, $escapedBy)),
         );
     }
 

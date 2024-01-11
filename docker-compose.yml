@@ -2,9 +2,13 @@ version: "3"
 
 services:
 
-  dev:
+  dev: &dev
     build: .
     tty: true
     volumes:
       - ./:/code
     working_dir: /code
+  dev-xdebug:
+    <<: *dev
+    build:
+      context: docker/xdebug

@@ -91,9 +91,9 @@ class CsvWriteTest extends TestCase
                     '"true","1.123"',
                     '"1","null"',
                     '',
-                ]
+                ],
             ),
-            $data
+            $data,
         );
     }
 
@@ -150,9 +150,9 @@ class CsvWriteTest extends TestCase
                     '"col1","col2"' ,
                     '"1","me string"',
                     '',
-                ]
+                ],
             ),
-            $data
+            $data,
         );
     }
 
@@ -211,9 +211,9 @@ class CsvWriteTest extends TestCase
                 [
                     '"col1","col2"' ,
                     'foo,bar',
-                ]
+                ],
             ),
-            $data
+            $data,
         );
     }
 
@@ -233,15 +233,15 @@ class CsvWriteTest extends TestCase
             $or = new LogicalOr();
             $or->setConstraints([
                 new StringContains(
-                    'Cannot write to CSV file  Return: 0 To write: 14 Written: 0'
+                    'Cannot write to CSV file  Return: 0 To write: 14 Written: 0',
                 ),
                 new StringContains(
                     'Cannot write to CSV file Error: fwrite(): ' .
-                    'write of 14 bytes failed with errno=9 Bad file descriptor Return: false To write: 14 Written: 0'
+                    'write of 14 bytes failed with errno=9 Bad file descriptor Return: false To write: 14 Written: 0',
                 ),
                 new StringContains(
                     'Cannot write to CSV file Error: fwrite(): ' .
-                    'Write of 14 bytes failed with errno=9 Bad file descriptor Return: false To write: 14 Written: 0'
+                    'Write of 14 bytes failed with errno=9 Bad file descriptor Return: false To write: 14 Written: 0',
                 ),
             ]);
             self::assertThat($e->getMessage(), $or);
@@ -258,7 +258,7 @@ class CsvWriteTest extends TestCase
         $rows = [['col1', 'col2']];
         self::expectException(Exception::class);
         self::expectExceptionMessage(
-            'a valid stream resource Return: false To write: 14 Written: '
+            'a valid stream resource Return: false To write: 14 Written: ',
         );
         $csvFile->writeRow($rows[0]);
     }
@@ -278,7 +278,7 @@ class CsvWriteTest extends TestCase
             $fileName,
             CsvOptions::DEFAULT_DELIMITER,
             CsvOptions::DEFAULT_ENCLOSURE,
-            "\r\n"
+            "\r\n",
         );
         $rows = [
             [
@@ -300,9 +300,9 @@ class CsvWriteTest extends TestCase
                     '"col1","col2"',
                     '"val1","val2"',
                     '',
-                ]
+                ],
             ),
-            $data
+            $data,
         );
     }
 }
